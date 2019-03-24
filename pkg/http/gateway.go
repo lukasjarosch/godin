@@ -7,7 +7,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
-	"github.com/lukasjarosch/microservice-structure/pkg/config"
+	"github.com/lukasjarosch/godin/pkg/config"
 )
 
 // GatewayHandler is a convenience-type. It has the same signature as the generated

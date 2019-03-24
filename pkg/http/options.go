@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/lukasjarosch/microservice-structure/pkg/config"
+	"github.com/lukasjarosch/godin/pkg/config"
 )
 
 // Option defines a settable option of the HTTP server

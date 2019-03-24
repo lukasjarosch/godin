@@ -16,7 +16,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"github.com/lukasjarosch/microservice-structure/pkg/config"
+	"github.com/lukasjarosch/godin/pkg/config"
 )
 
 type GRPCImplementation func(s *grpc.Server)

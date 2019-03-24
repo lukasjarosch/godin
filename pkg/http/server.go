@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/lukasjarosch/microservice-structure/pkg/config"
+	"github.com/lukasjarosch/godin/pkg/config"
 )
 
 // Endpoint wraps a HTTP endpoint
