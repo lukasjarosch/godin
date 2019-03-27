@@ -32,10 +32,10 @@ func init() {
 var newCommand = &cobra.Command{
 	Use:   "new",
 	Short: "Setup a new microservice structure",
-	Run:   new,
+	Run:   handler,
 }
 
-func new(cmd *cobra.Command, args []string) {
+func handler(cmd *cobra.Command, args []string) {
 
 	logrus.SetLevel(logrus.DebugLevel)
 
@@ -61,7 +61,10 @@ func new(cmd *cobra.Command, args []string) {
 	}
 
 	// add some basic templates
-	godin.AddTemplate(template.NewTemplate())
+	godin.AddTemplate(template.NewTemplateFile("README.tpl", path.Join(projectPath, "README.md"), false))
+	godin.AddTemplate(template.NewTemplateFile("gitignore.tpl", path.Join(projectPath, ".gitignore"), false))
+	godin.AddTemplate(template.NewTemplateFile("Dockerfile.tpl", path.Join(projectPath, "Dockerfile"), false))
+
 	godin.Render()
 
 }
