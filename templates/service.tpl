@@ -10,7 +10,7 @@ import (
 )
 
 // ExampleAPI is the actual business-logic which you want to provide
-type ExampleAPI struct {
+type {{ .ServiceName }}API struct {
 	config *config.Config
 	logger *logrus.Logger
 }
@@ -31,19 +31,10 @@ func NewExampleAPI(config *config.Config, logger *logrus.Logger) *ExampleAPI {
 }
 
 // Greeting implements the business-logic for this RPC
-func (e *ExampleAPI) Greeting(name string) (greeting string, err error) {
+func (e *ExampleAPI) Hello(name string) (greeting string, err error) {
 	if name == "" {
 		return "", ErrEmptyName
 	}
 
 	return fmt.Sprintf("Hey there, " + name), nil
-}
-
-// Farewell implements the business-logic for this RPC
-func (e *ExampleAPI) Farewell(name string) (farewell string, err error) {
-	if name == "" {
-		return "", ErrEmptyName
-	}
-
-	return fmt.Sprintf("See you soon, " + name), nil
 }

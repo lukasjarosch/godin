@@ -4,7 +4,7 @@ import (
 	"{{ .ModuleName }}/internal/config"
 	service "{{ .ModuleName }}/internal/{{ .ServiceName }}"
 	godin "github.com/lukasjarosch/godin/pkg/grpc"
-	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1/"
+	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1"
 	"github.com/lukasjarosch/godin/pkg/http"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
