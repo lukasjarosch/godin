@@ -14,15 +14,22 @@ type GodinProject struct {
 	path        string // absolute path to the root of the godin project
 	folders     []string
 	templates   []template.File
+	Data        *template.Data
 }
 
 // NewGodinProject creates an empty, preconfigured project
 func NewGodinProject(serviceName string, path string) *GodinProject {
 	logrus.Infof("creating godin project '%s' in %s", serviceName, path)
 
+	data := &template.Data{
+		ServiceName:serviceName,
+		ProjectRootPath: path,
+	}
+
 	return &GodinProject{
 		serviceName: serviceName,
 		path:        path,
+		Data:        data,
 	}
 }
 
@@ -39,7 +46,7 @@ func (p *GodinProject) AddTemplate(template template.File) {
 // Render will call Render() on every registered File
 func (p *GodinProject) Render() error {
 	for _, tpl := range p.templates {
-		if err := tpl.Render(); err != nil {
+		if err := tpl.Render(p.Data); err != nil {
 			logrus.Error(err)
 			continue
 		}

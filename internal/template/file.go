@@ -6,12 +6,13 @@ import (
 	"os"
 	"path"
 	tpl "text/template"
+
 	"github.com/sirupsen/logrus"
 )
 
 // File defines the interface for our template-files
 type File interface {
-	Render() error
+	Render(data *Data) error
 }
 
 // file defines a single template-file
@@ -35,7 +36,7 @@ func NewTemplateFile(name string, path string, goSource bool) *file {
 // Every other template is written using template.Execute()
 //
 // TODO: Catch file exists errors and handle them, better not overwrite things :)
-func (t *file) Render() error {
+func (t *file) Render(data *Data) error {
 
 	template, err := tpl.ParseFiles(path.Join(".", "templates", t.Name))
 	if err != nil {
@@ -50,10 +51,10 @@ func (t *file) Render() error {
 
 	if t.goSource {
 		logrus.Infof("[template] rendered %s", t.TargetPath)
-		return t.renderGoCode(f, template)
+		return t.renderGoCode(f, template, data)
 	}
 
-	err = template.Execute(f, "no data")
+	err = template.Execute(f, data)
 	if err != nil {
 		return err
 	}
@@ -64,10 +65,10 @@ func (t *file) Render() error {
 
 // renderGoCode parses the given file using the given template. The parsed file is
 // written into a bytes.Buffer which is used to format the source before writing the file.
-func (t *file) renderGoCode(f *os.File, template *tpl.Template) error {
+func (t *file) renderGoCode(f *os.File, template *tpl.Template, data *Data) error {
 	var out bytes.Buffer
 
-	err := template.Execute(&out, struct{}{})
+	err := template.Execute(&out, data)
 	if err != nil {
 		return err
 	}

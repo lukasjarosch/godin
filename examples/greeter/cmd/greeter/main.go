@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	cfg "{{ .ModuleName }}/internal/config"
-	svc "{{ .ModuleName }}/internal/server"
+	cfg "github.com/lukasjarosch/godin/examples/greeter/internal/config"
+	svc "github.com/lukasjarosch/godin/examples/greeter/internal/server"
 	"github.com/lukasjarosch/godin/pkg/grpc"
 	"github.com/sirupsen/logrus"
 )
@@ -24,7 +24,7 @@ func main() {
 	config := cfg.NewConfig()
 	logger := initLogging(config.LogDebug)
 
-    // setup our gRPC server
+	// setup our gRPC server
 	server := svc.NewServer(config, logger)
 	logger.WithFields(logrus.Fields{
 		"instance":   server.GRPC.Options.ID,
