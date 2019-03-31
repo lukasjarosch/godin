@@ -16,6 +16,10 @@ type Service struct {
 	API Protobuf
 	// Methods holds all business methods of the service including their parameters and comments
 	Methods []ServiceMethod
+	// All service dependencies
+	Dependencies []Dependency
+	// Errors specifies all errors of the service's business domain
+	Errors []ErrorSpec
 }
 
 // Protobuf configures the API of the service
@@ -65,6 +69,35 @@ func (m ServiceMethod) Signature() string {
 type Variable struct {
 	Type string
 	Name string
+}
+
+func (v Variable) DefaultValue(specification *Specification) string {
+	switch v.Type {
+	case "string":
+		return ""
+	case "int64":
+	case "int32":
+	case "int":
+		return "0"
+	case "boolean":
+		return "false"
+	case "error":
+		return "nil"
+	}
+
+	for _, s := range specification.Models.Structs {
+		if strings.ToLower(v.Name) == strings.ToLower(s.Name) {
+			return fmt.Sprintf("%s{}", s.Name)
+		}
+	}
+
+	for _, e := range specification.Models.Enums {
+		if strings.ToLower(e.Name) == strings.ToLower(v.Name) {
+			return "0"
+		}
+	}
+
+	return ErrModelUnspecified.Error()
 }
 
 func (a Variable) String() string {

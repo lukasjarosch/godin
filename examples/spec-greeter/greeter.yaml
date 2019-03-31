@@ -23,6 +23,11 @@ service:
   api:
     service: "GreeterAPI"
     package: "godin.greeter.v1beta1"
+  dependencies:
+    - name: "config"
+      type: "*config.Config"
+    - name: "logger"
+      type: "*logrus.Logger"
   methods:
     - name: "Hello"
       comments:
@@ -37,3 +42,6 @@ service:
           name: "greeting"
         - type: "error"
           name: "err"
+  errors:
+    - name: "ErrEmptyName"
+      message: "no name given, duh"
