@@ -3,6 +3,7 @@ module github.com/lukasjarosch/godin
 go 1.12
 
 require (
+	github.com/go-yaml/yaml v2.1.0+incompatible // indirect
 	github.com/google/uuid v1.1.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
@@ -14,4 +15,5 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3 // indirect
 	google.golang.org/grpc v1.19.1
+	gopkg.in/yaml.v2 v2.0.0-20170812160011-eb3733d160e7
 )

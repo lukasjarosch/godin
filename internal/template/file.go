@@ -8,6 +8,7 @@ import (
 	tpl "text/template"
 
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 )
 
 // File defines the interface for our template-files
@@ -38,10 +39,14 @@ func NewTemplateFile(name string, path string, goSource bool) *file {
 // TODO: Catch file exists errors and handle them, better not overwrite things :)
 func (t *file) Render(data *Data) error {
 
-	template, err := tpl.ParseFiles(path.Join(".", "templates", t.Name))
+	templatePath := path.Join(".", "templates", t.Name)
+	templateData, err := ioutil.ReadFile(templatePath)
 	if err != nil {
-		return err
+	    return err
 	}
+
+
+	template, err := tpl.New(templatePath).Funcs(FunctionMap(data)).Parse(string(templateData))
 
 	f, err := os.Create(t.TargetPath)
 	if err != nil {

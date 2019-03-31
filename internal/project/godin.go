@@ -6,30 +6,34 @@ import (
 
 	"github.com/lukasjarosch/godin/internal/template"
 
+	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
 )
 
 type GodinProject struct {
-	serviceName string
-	path        string // absolute path to the root of the godin project
-	folders     []string
-	templates   []template.File
-	Data        *template.Data
+	folders   []string
+	templates []template.File
+	Path      string
+	Data      *template.Data
+	Spec      *specification.Specification
 }
 
 // NewGodinProject creates an empty, preconfigured project
-func NewGodinProject(serviceName string, path string) *GodinProject {
-	logrus.Infof("creating godin project '%s' in %s", serviceName, path)
+func NewGodinProject(spec *specification.Specification, path string) *GodinProject {
 
+	// setup the template data with the specification
 	data := &template.Data{
-		ServiceName:serviceName,
+		ServiceName:     spec.Service.Name,
 		ProjectRootPath: path,
+		GrpcServiceName: spec.Service.API.Service,
+		ModuleName:      spec.Project.Module,
+		Spec:            spec,
 	}
 
 	return &GodinProject{
-		serviceName: serviceName,
-		path:        path,
-		Data:        data,
+		Data: data,
+		Spec: spec,
+		Path: path,
 	}
 }
 
@@ -58,7 +62,7 @@ func (p *GodinProject) Render() error {
 // MkdirAll creates all project folders which have been registered with AddFolder()
 func (p *GodinProject) MkdirAll() error {
 	for _, folder := range p.folders {
-		f := p.Path(folder)
+		f := p.FolderPath(folder)
 
 		if _, err := os.Stat(f); err == nil {
 			logrus.Infof("[skip] path exists %s", f)
@@ -75,7 +79,7 @@ func (p *GodinProject) MkdirAll() error {
 	return nil
 }
 
-// Path returns the given (relative) path as absolute path based on the project root
-func (p *GodinProject) Path(subPath string) string {
-	return path.Join(p.path, subPath)
+// FolderPath returns the given (relative) path as absolute path based on the project root
+func (p *GodinProject) FolderPath(subPath string) string {
+	return path.Join(p.Path, subPath)
 }

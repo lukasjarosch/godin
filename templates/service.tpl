@@ -1,15 +1,15 @@
 package {{ .ServiceName }}
 
 import (
-	"fmt"
-
 	"errors"
 
 	"{{ .ModuleName }}/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
-// ExampleAPI is the actual business-logic which you want to provide
+{{- $receiver := .ServiceName -}}
+
+// {{ .ServiceName }}API is the actual business-logic which you want to provide
 type {{ .ServiceName }}API struct {
 	config *config.Config
 	logger *logrus.Logger
@@ -20,9 +20,9 @@ var (
 )
 
 // NewExampleAPI returns our business-implementation of the ExampleAPI
-func NewExampleAPI(config *config.Config, logger *logrus.Logger) *ExampleAPI {
+func New{{ .GrpcServiceName }}(config *config.Config, logger *logrus.Logger) *{{ .ServiceName }}API{
 
-	service := &ExampleAPI{
+	service := &{{ .ServiceName }}API{
 		logger: logger,
 		config: config,
 	}
@@ -30,11 +30,9 @@ func NewExampleAPI(config *config.Config, logger *logrus.Logger) *ExampleAPI {
 	return service
 }
 
+{{ range .Spec.Service.Methods -}}
 // Greeting implements the business-logic for this RPC
-func (e *ExampleAPI) Hello(name string) (greeting string, err error) {
-	if name == "" {
-		return "", ErrEmptyName
-	}
-
-	return fmt.Sprintf("Hey there, " + name), nil
+func (svc *{{ $receiver }}API) {{ .Name }}({{ arg_list .Name }}) ({{ ret_list .Name }}) {
 }
+{{- end }}
+

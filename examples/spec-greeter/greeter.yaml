@@ -1,0 +1,22 @@
+project:
+  module: "github.com/lukasjarosch/godin/example/spec-greeter"
+service:
+  name: "greeter"
+  handler: "Greeter"
+  api:
+    service: "GreeterAPI"
+    package: "godin.greeter.v1beta1"
+  methods:
+    - name: "Hello"
+      comments:
+        - "Hello implements the Hello() gRPC method"
+      arguments:
+        - type: "context.Context"
+          name: "ctx"
+        - type: "string"
+          name: "name"
+      returns:
+        - type: "string"
+          name: "greeting"
+        - type: "error"
+          name: "err"
