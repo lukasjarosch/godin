@@ -1,7 +1,7 @@
 package server
 
 import (
-	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1/"
+	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1"
 	"github.com/lukasjarosch/godin/examples/greeter/internal/config"
 	service "github.com/lukasjarosch/godin/examples/greeter/internal/greeter"
 	godin "github.com/lukasjarosch/godin/pkg/grpc"
