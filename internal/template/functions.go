@@ -3,12 +3,15 @@ package template
 import (
 	tpl "text/template"
 	"strings"
+	"fmt"
+	"github.com/lukasjarosch/godin/internal/specification"
 )
 
 func FunctionMap(data *Data) tpl.FuncMap {
 	return tpl.FuncMap{
 		"arg_list": ArgumentList(data),
 		"ret_list": ReturnList(data),
+		"enum_body": EnumBody(data),
 	}
 }
 
@@ -27,7 +30,7 @@ func ArgumentList(data *Data) func(method string) string {
 				return strings.Join(argList, ", ")
 			}
 		}
-		return "UNSPECIFIED"
+		return "UNSPECIFIED METHOD"
 	}
 }
 
@@ -44,6 +47,24 @@ func ReturnList(data *Data) func(method string) string {
 				return strings.Join(retList, ", ")
 			}
 		}
-		return "UNSPECIFIED"
+		return "UNSPECIFIED METHOD"
+	}
+}
+
+func EnumBody(data *Data) func(enum specification.Enumeration) string {
+	return func(spec specification.Enumeration) string {
+		format := "%s = %d"
+
+		for _, e := range data.Spec.Models.Enums {
+			if e.Name == spec.Name {
+				var body []string
+
+				for i, field := range e.Fields {
+					body = append(body, fmt.Sprintf(format, field, i))
+				}
+				return strings.Join(body, "\n")
+			}
+		}
+		return "UNSPECIFIED MODEL"
 	}
 }

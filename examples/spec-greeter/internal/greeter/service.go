@@ -1,7 +1,6 @@
 package greeter
 
 import (
-	"context"
 	"errors"
 
 	"github.com/lukasjarosch/godin/example/spec-greeter/internal/config"
@@ -28,5 +27,5 @@ func NewGreeterAPI(config *config.Config, logger *logrus.Logger) *greeterAPI {
 }
 
 // Greeting implements the business-logic for this RPC
-func (svc *greeterAPI) Hello(ctx context.Context, name string) (greeting string, err error) {
+func (svc *greeterAPI) Hello(ctx context.Context, name string) (greeting Greeting, err error) {
 }

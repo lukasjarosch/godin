@@ -1,5 +1,22 @@
 project:
   module: "github.com/lukasjarosch/godin/example/spec-greeter"
+models:
+  structs:
+    - name: "Greeting"
+      comment:
+        - "Greeting stores a greeting for a specific name"
+      fields:
+        - name: "Name"
+          type: "string"
+        - name: "Text"
+          type: "string"
+  enums:
+    - name: "Languages"
+      comment:
+        - "Derp derp der"
+      fields:
+        - "German"
+        - "English"
 service:
   name: "greeter"
   handler: "Greeter"
@@ -16,7 +33,7 @@ service:
         - type: "string"
           name: "name"
       returns:
-        - type: "string"
+        - type: "Greeting"
           name: "greeting"
         - type: "error"
           name: "err"

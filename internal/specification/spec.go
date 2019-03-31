@@ -9,6 +9,7 @@ import (
 type Specification struct {
 	Project Project
 	Service Service
+	Models Models
 }
 
 func LoadPath(path string) (*Specification, error) {
