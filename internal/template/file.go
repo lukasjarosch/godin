@@ -7,6 +7,7 @@ import (
 	"path"
 	tpl "text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 )
@@ -46,7 +47,7 @@ func (t *file) Render(data *Data) error {
 	}
 
 
-	template, err := tpl.New(templatePath).Funcs(FunctionMap(data)).Parse(string(templateData))
+	template, err := tpl.New(templatePath).Funcs(FunctionMap(data)).Funcs(sprig.TxtFuncMap()).Parse(string(templateData))
 
 	f, err := os.Create(t.TargetPath)
 	if err != nil {

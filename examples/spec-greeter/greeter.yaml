@@ -19,15 +19,15 @@ models:
         - "English"
 service:
   name: "greeter"
+  description: "Greeter is able to greet people"
   handler: "Greeter"
   api:
     service: "GreeterAPI"
     package: "godin.greeter.v1beta1"
+
   dependencies:
-    - name: "config"
-      type: "*config.Config"
-    - name: "logger"
-      type: "*logrus.Logger"
+    - type: "logger"
+    - type: "config"
   methods:
     - name: "Hello"
       comments:

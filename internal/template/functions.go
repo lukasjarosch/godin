@@ -15,6 +15,8 @@ func FunctionMap(data *Data) tpl.FuncMap {
 		"enum_body":          EnumBody(data),
 		"deps_param_list":    DependencyParameterList(data),
 		"default_value_list": DefaultValueList(data),
+		"has_dependency": HasDependency(data),
+		"deps_value_mapping": DependencyValueMapping(data),
 	}
 }
 
@@ -75,10 +77,10 @@ func EnumBody(data *Data) func(enum specification.Enumeration) string {
 func DependencyParameterList(data *Data) func() string {
 	return func() string {
 		var paramList []string
-		for _, d := range data.Spec.Service.Dependencies {
+		for _, d := range data.Spec.ResolvedDependencies {
 			format := "%s %s"
 
-			paramList = append(paramList, fmt.Sprintf(format, d.Name, d.Type))
+			paramList = append(paramList, fmt.Sprintf(format, d.Name(), d.Type()))
 		}
 		return strings.Join(paramList, ", ")
 	}
@@ -93,5 +95,28 @@ func DefaultValueList(data *Data) func(vars []specification.Variable) string {
 		}
 
 		return strings.Join(list, ", ")
+	}
+}
+
+func HasDependency(data *Data) func(depType string) bool {
+	return func(depType string) bool {
+		for _, dep := range data.Spec.ResolvedDependencies	 {
+			if dep.Name() == depType {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+func DependencyValueMapping(data *Data) func() string {
+	return func() string {
+		var format = "%s: %s,"
+		var mappings []string
+
+		for _, dep := range data.Spec.ResolvedDependencies {
+			mappings = append(mappings, fmt.Sprintf(format, dep.Name(), dep.Name()))
+		}
+		return strings.Join(mappings, "\n")
 	}
 }

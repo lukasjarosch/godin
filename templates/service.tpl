@@ -4,15 +4,16 @@ import (
     "context"
 	"errors"
 
-	"{{ .ModuleName }}/internal/config"
-	"github.com/sirupsen/logrus"
+    {{ range .Spec.ResolvedDependencies }}
+    "{{ .Import }}"
+    {{- end }}
 )
 
-{{ $receiver := .ServiceName -}}
+{{ $receiver := .ServiceName | camelcase -}}
 
-// {{ .ServiceName }}API is the actual business-logic which you want to provide
-type {{ .ServiceName }}API struct {
-    {{- range .Spec.Service.Dependencies }}
+// {{ .Spec.Service.Description }}
+type {{ .ServiceName | camelcase }} struct {
+    {{- range .Spec.ResolvedDependencies }}
     {{ .Name }} {{ .Type }}
     {{- end }}
 }
@@ -23,20 +24,21 @@ var (
     {{- end }}
 )
 
-// NewExampleAPI returns our business-implementation of the ExampleAPI
-func New{{ .GrpcServiceName }}({{ deps_param_list }}) *{{ .ServiceName }}API{
+// New{{ .GrpcServiceName }} returns the business implementation of {{ .Spec.Service.API.Package }}.{{ .Spec.Service.API.Service }}
+func New{{ .GrpcServiceName }}({{ deps_param_list }}) *{{ .ServiceName | camelcase }}{
 
-	service := &{{ .ServiceName }}API{
-		logger: logger,
-		config: config,
+	service := &{{ .ServiceName | camelcase }}{
+	    {{ deps_value_mapping }}
 	}
 
 	return service
 }
 
 {{ range .Spec.Service.Methods -}}
-// Greeting implements the business-logic for this RPC
-func (svc *{{ $receiver }}API) {{ .Name }}({{ arg_list .Name }}) ({{ ret_list .Name }}) {
+{{- range .Comments }}
+// {{ . }}
+{{- end }}
+func (svc *{{ $receiver }}) {{ .Name }}({{ arg_list .Name }}) ({{ ret_list .Name }}) {
     return {{ default_value_list .Returns }}
 }
 {{- end }}

@@ -9,6 +9,8 @@ import (
 type Service struct {
 	// Name is the lowercase name of the service which is used for service discovery
 	Name string
+	// Description of the service
+	Description string
 	// Handler defines the name of the struct which implements the actual gRPC handler
 	Handler string
 	// API holds the configuration for the interface specification of the service.

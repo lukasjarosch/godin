@@ -12,6 +12,7 @@ type Specification struct {
 	Project Project
 	Service Service
 	Models  Models
+	ResolvedDependencies []ResolvedDependency
 }
 
 var (
@@ -33,4 +34,16 @@ func LoadPath(path string) (*Specification, error) {
 	}
 
 	return spec, nil
+}
+
+func (s *Specification) ResolveDependencies() error {
+	for _, dep := range s.Service.Dependencies {
+		resolved, err := dep.Resolve(s)
+		if err != nil {
+			return err
+		}
+
+		s.ResolvedDependencies = append(s.ResolvedDependencies, resolved)
+	}
+	return nil
 }

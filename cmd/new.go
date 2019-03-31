@@ -34,7 +34,10 @@ func handler(cmd *cobra.Command, args []string) {
 		logrus.Fatalf("failed to load specification: %v", err)
 	}
 
-	logrus.Info(spec.Models)
+	err = spec.ResolveDependencies()
+	if err != nil {
+	    logrus.Fatal(err)
+	}
 
 	// setup new project with specification
 	godin := project.NewGodinProject(spec, projectPath)
