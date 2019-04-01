@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/lukasjarosch/godin/example/spec-greeter/internal/config"
+	"github.com/lukasjarosch/godin/examples/spec-greeter/internal/config"
 	"github.com/sirupsen/logrus"
 )
 

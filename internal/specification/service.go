@@ -3,6 +3,7 @@ package specification
 import (
 	"fmt"
 	"strings"
+	"path"
 )
 
 // Service specifies a microservice
@@ -32,6 +33,15 @@ type Protobuf struct {
 	Service string
 	// Package holds the full package of the protobuf file
 	Package string
+	// Modules stores the go-module in which the protobuf stubs live
+	Module string
+}
+
+// Import returns a full importable module string for the protobufs
+// This will only work if your proto packages are 1:1 mappable to your folder structure of the protobuf-specs
+func (p Protobuf) Import() string {
+	packagePath := strings.Replace(p.Package, ".", "/", -1)
+	return path.Join(p.Module, packagePath)
 }
 
 // ServiceMethod defines the base data structure for representing a service method

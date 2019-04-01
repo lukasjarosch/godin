@@ -1,5 +1,5 @@
 project:
-  module: "github.com/lukasjarosch/godin/example/spec-greeter"
+  module: "github.com/lukasjarosch/godin/examples/spec-greeter"
 models:
   structs:
     - name: "Greeting"
@@ -24,6 +24,7 @@ service:
   api:
     service: "GreeterAPI"
     package: "godin.greeter.v1beta1"
+    module: "github.com/lukasjarosch/godin-api-go"
 
   dependencies:
     - type: "logger"
