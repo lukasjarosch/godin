@@ -1,35 +1,34 @@
 package server
 
 import (
-	"{{ .ModuleName }}/internal/config"
-	service "{{ .ModuleName }}/internal/{{ .ServiceName }}"
-	godin "github.com/lukasjarosch/godin/pkg/grpc"
-	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1"
-	"github.com/lukasjarosch/godin/pkg/http"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+
+    pb "{{ .Spec.Service.API.Import }}"
+	service "{{ .ModuleName }}/internal/{{ .ServiceName }}"
+	godin "github.com/lukasjarosch/godin/pkg/grpc"
+
+	"{{ .ModuleName }}/internal/config"
 )
 
 // server is a wrapper to hold all of our services stuff.
 // Anything related to the transport-layer can be set up here
-type server struct {
+type {{ .ServiceName | camelcase }}Server struct {
 	GRPC        *godin.Server
-	HTTPGateway *http.Server
 }
 
 // NewServer constructs a new Server using your service as gRPC handler implementation.
-func NewServer(config *config.Config, logger *logrus.Logger) *server {
+func NewServer({{ deps_param_list }}) *{{ .ServiceName | camelcase }}Server {
 
-	// setup the business logic with it's dependencies
-	svc := service.New{{ .GrpcServiceName }}(config, logger)
+	// setup the business logic the dependencies
+	svc := service.New{{ .ServiceName | camelcase }}({{ deps_name_list }})
 
-	// wrap our business logic in the transport handler
+	// wrap the business logic inside the transport handler
 	handler := New{{ .GrpcServiceName }}Handler(svc)
 
-	// attach our business logic to the gRPC server
+	// attach the handler to the gRPC server
 	impl := func(g *grpc.Server) {
-	    // TODO: register the server using your protobuf stub
-		greeter.RegisterGreeterAPIServer(g, handler)
+		pb.Register{{ .GrpcServiceName }}Server(g, handler)
 	}
 
 	// create the actual gRPC server
@@ -42,8 +41,7 @@ func NewServer(config *config.Config, logger *logrus.Logger) *server {
 		godin.GrpcNetworkPort(config.GrpcPort),
 	)
 
-	return &exampleServiceServer{
+	return &{{ .ServiceName | camelcase }}Server{
 		GRPC:        server,
-		HTTPGateway: gatewayServer,
 	}
 }

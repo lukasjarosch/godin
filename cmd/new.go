@@ -64,11 +64,10 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddTemplate(template.NewTemplateFile("service.tpl", path.Join(projectPath, "internal", spec.Service.Name, "service.go"), true))
 	godin.AddTemplate(template.NewTemplateFile("models.tpl", path.Join(projectPath, "internal", spec.Service.Name, "models.go"), true))
 	godin.AddTemplate(template.NewTemplateFile("handler.tpl", path.Join(projectPath, "internal", "server", "handler.go"), true))
+	godin.AddTemplate(template.NewTemplateFile("server.tpl", path.Join(projectPath, "internal", "server", "server.go"), true))
 
 	/*
 	godin.AddTemplate(template.NewTemplateFile("main.tpl", path.Join(projectPath, "cmd", serviceName, "main.go"), true))
-	godin.AddTemplate(template.NewTemplateFile("server.tpl", path.Join(projectPath, "internal", "server", "server.go"), true))
-	godin.AddTemplate(template.NewTemplateFile("handler.tpl", path.Join(projectPath, "internal", "server", "handler.go"), true))
 
 	*/
 	godin.Render()

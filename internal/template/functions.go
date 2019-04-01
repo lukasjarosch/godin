@@ -15,8 +15,9 @@ func FunctionMap(data *Data) tpl.FuncMap {
 		"enum_body":          EnumBody(data),
 		"deps_param_list":    DependencyParameterList(data),
 		"default_value_list": DefaultValueList(data),
-		"has_dependency": HasDependency(data),
+		"has_dependency":     HasDependency(data),
 		"deps_value_mapping": DependencyValueMapping(data),
+		"deps_name_list":     DependencyNameList(data),
 	}
 }
 
@@ -100,7 +101,7 @@ func DefaultValueList(data *Data) func(vars []specification.Variable) string {
 
 func HasDependency(data *Data) func(depType string) bool {
 	return func(depType string) bool {
-		for _, dep := range data.Spec.ResolvedDependencies	 {
+		for _, dep := range data.Spec.ResolvedDependencies {
 			if dep.Name() == depType {
 				return true
 			}
@@ -118,5 +119,17 @@ func DependencyValueMapping(data *Data) func() string {
 			mappings = append(mappings, fmt.Sprintf(format, dep.Name(), dep.Name()))
 		}
 		return strings.Join(mappings, "\n")
+	}
+}
+
+func DependencyNameList(data *Data) func() string {
+	return func() string {
+		var depList []string
+
+		for _, dep := range data.Spec.ResolvedDependencies {
+			depList = append(depList, dep.Name())
+		}
+
+		return strings.Join(depList, ", ")
 	}
 }

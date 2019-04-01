@@ -8,7 +8,7 @@ import (
 	service "{{ .ModuleName }}/internal/{{ .ServiceName }}"
 )
 
-// greeterAPIHandler is the transport-layer wrapper of our business-logic in the server package
+// greeterHandler is the transport-layer wrapper of our business-logic in the server package
 // Everything concerning requests/responses belongs in here. Only conversion (business-model <-> protobuf) should happen here actually.
 type {{ .ServiceName }}Handler struct {
 	implementation *service.{{ .ServiceName | camelcase }}

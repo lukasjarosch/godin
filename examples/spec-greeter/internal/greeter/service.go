@@ -10,20 +10,20 @@ import (
 
 // Greeter is able to greet people
 type Greeter struct {
+	config *config.Config
 	logger *logrus.Logger
-	config config.Config
 }
 
 var (
 	ErrEmptyName = errors.New("no name given, duh")
 )
 
-// NewGreeterAPI returns the business implementation of godin.greeter.v1beta1.GreeterAPI
-func NewGreeterAPI(logger *logrus.Logger, config config.Config) *Greeter {
+// NewGreeter returns the business implementation of godin.greeter.v1beta1.GreeterAPI
+func NewGreeter(config *config.Config, logger *logrus.Logger) *Greeter {
 
 	service := &Greeter{
-		logger: logger,
 		config: config,
+		logger: logger,
 	}
 
 	return service

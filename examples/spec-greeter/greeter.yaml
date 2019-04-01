@@ -27,8 +27,8 @@ service:
     module: "github.com/lukasjarosch/godin-api-go"
 
   dependencies:
-    - type: "logger"
     - type: "config"
+    - type: "logger"
   methods:
     - name: "Hello"
       comments:

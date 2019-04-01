@@ -24,8 +24,8 @@ var (
     {{- end }}
 )
 
-// New{{ .GrpcServiceName }} returns the business implementation of {{ .Spec.Service.API.Package }}.{{ .Spec.Service.API.Service }}
-func New{{ .GrpcServiceName }}({{ deps_param_list }}) *{{ .ServiceName | camelcase }}{
+// New{{ .ServiceName | camelcase }} returns the business implementation of {{ .Spec.Service.API.Package }}.{{ .Spec.Service.API.Service }}
+func New{{ .ServiceName | camelcase }}({{ deps_param_list }}) *{{ .ServiceName | camelcase }}{
 
 	service := &{{ .ServiceName | camelcase }}{
 	    {{ deps_value_mapping }}

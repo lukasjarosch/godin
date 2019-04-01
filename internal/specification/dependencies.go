@@ -53,7 +53,7 @@ type Configuration struct {
 }
 
 func (c Configuration) Type() string {
-	return "config.Config"
+	return "*config.Config"
 }
 
 func (c Configuration) Name() string {
