@@ -3,30 +3,33 @@ package server
 import (
 	"context"
 
-	greeter "github.com/lukasjarosch/godin-api-go/godin/greeter/v1beta1/"
+	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/codes"
+
+    pb "{{ .Spec.Service.API.Import }}"
 	service "{{ .ModuleName }}/internal/{{ .ServiceName }}"
 )
 
-// TODO: Implement all handlers for your gRPC service
-
-// greeterAPIHandler is the transport-layer wrapper of our business-logic in the server package
+// greeterHandler is the transport-layer wrapper of our business-logic in the server package
 // Everything concerning requests/responses belongs in here. Only conversion (business-model <-> protobuf) should happen here actually.
-type greeterAPIHandler struct {
-	implementation *service.GreeterService
+type {{ .ServiceName }}Handler struct {
+	implementation *service.{{ .ServiceName | camelcase }}
 }
 
-func NewGreeterAPIHandler(implementation *service.GreeterService) *greeterAPIHandler{
-	return &greeterAPIHandler{
+func New{{ .GrpcServiceName }}Handler(implementation *service.{{ .ServiceName | camelcase }}) *{{ .ServiceName }}Handler{
+	return &{{ .ServiceName }}Handler{
 		implementation: implementation,
 	}
 }
 
-func (e *greeterAPIHandler) Greeting(ctx context.Context, request *greeter.GreetingRequest) (*greeter.GreetingResponse, error) {
-	greeting, err := e.implementation.Greeting(request.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	return &greeter.GreetingResponse{Greeting: greeting}, nil
+{{ $serviceName := .ServiceName }}
+{{ $grpcService := .GrpcServiceName }}
+{{ $apiPackage := .Spec.Service.API.Package }}
+{{ range .Spec.Service.Methods }}
+// {{ .Name }} is the gRPC handler for {{ $apiPackage }}.{{ .Name }}()
+func (e *{{ $serviceName }}Handler) {{ .Name }}(ctx context.Context, request *pb.{{ .Name }}Request) (*pb.{{ .Name }}Response, error) {
+    // TODO: call e.implementation.{{ .Name }} and return the response
+    return nil, status.Error(codes.Unimplemented, "{{ $apiPackage }}.{{ $grpcService }}.{{ .Name }}() unimplemented")
 }
+{{- end }}
 

@@ -1,49 +1,44 @@
 package {{ .ServiceName }}
 
 import (
-	"fmt"
+    "context"
 
-	"errors"
-
-	"{{ .ModuleName }}/internal/config"
-	"github.com/sirupsen/logrus"
+    {{ range .Spec.ResolvedDependencies }}
+    "{{ .Import }}"
+    {{- end }}
 )
 
-// ExampleAPI is the actual business-logic which you want to provide
-type ExampleAPI struct {
-	config *config.Config
-	logger *logrus.Logger
+{{ $receiver := .ServiceName | camelcase -}}
+
+// {{ .Spec.Service.Description }}
+type {{ .ServiceName | camelcase }} struct {
+    {{- range .Spec.ResolvedDependencies }}
+    {{ .Name }} {{ .Type }}
+    {{- end }}
 }
 
 var (
-	ErrEmptyName = errors.New("the given name is empty")
+    {{ range .Spec.Service.Errors }}
+    {{ .Name }} = status.Error({{ .CodeString }}, "{{ .Message }}")
+    {{- end }}
 )
 
-// NewExampleAPI returns our business-implementation of the ExampleAPI
-func NewExampleAPI(config *config.Config, logger *logrus.Logger) *ExampleAPI {
+// New{{ .ServiceName | camelcase }} returns the business implementation of {{ .Spec.Service.API.Package }}.{{ .Spec.Service.API.Service }}
+func New{{ .ServiceName | camelcase }}({{ deps_param_list }}) *{{ .ServiceName | camelcase }}{
 
-	service := &ExampleAPI{
-		logger: logger,
-		config: config,
+	service := &{{ .ServiceName | camelcase }}{
+	    {{ deps_value_mapping }}
 	}
 
 	return service
 }
 
-// Greeting implements the business-logic for this RPC
-func (e *ExampleAPI) Greeting(name string) (greeting string, err error) {
-	if name == "" {
-		return "", ErrEmptyName
-	}
-
-	return fmt.Sprintf("Hey there, " + name), nil
+{{ range .Spec.Service.Methods -}}
+{{- range .Comments }}
+// {{ . }}
+{{- end }}
+func (svc *{{ $receiver }}) {{ .Name }}({{ arg_list .Name }}) ({{ ret_list .Name }}) {
+    return {{ default_value_list .Returns }}
 }
+{{- end }}
 
-// Farewell implements the business-logic for this RPC
-func (e *ExampleAPI) Farewell(name string) (farewell string, err error) {
-	if name == "" {
-		return "", ErrEmptyName
-	}
-
-	return fmt.Sprintf("See you soon, " + name), nil
-}

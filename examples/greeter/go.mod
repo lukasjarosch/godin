@@ -3,6 +3,7 @@ module github.com/lukasjarosch/godin/examples/greeter
 go 1.12
 
 require (
+	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
