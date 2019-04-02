@@ -2,7 +2,6 @@ package {{ .ServiceName }}
 
 import (
     "context"
-	"errors"
 
     {{ range .Spec.ResolvedDependencies }}
     "{{ .Import }}"
@@ -20,7 +19,7 @@ type {{ .ServiceName | camelcase }} struct {
 
 var (
     {{ range .Spec.Service.Errors }}
-    {{ .Name }} = errors.New("{{ .Message }}")
+    {{ .Name }} = status.Error({{ .CodeString }}, "{{ .Message }}")
     {{- end }}
 )
 

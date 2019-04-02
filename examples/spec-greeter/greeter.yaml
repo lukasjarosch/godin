@@ -13,7 +13,7 @@ models:
   enums:
     - name: "Languages"
       comment:
-        - "Derp derp der"
+        - "Derp derp derp"
       fields:
         - "German"
         - "English"
@@ -44,5 +44,6 @@ service:
         - type: "error"
           name: "err"
   errors:
-    - name: "ErrEmptyName"
+    - name: ErrEmptyName
       message: "no name given, duh"
+      code: InvalidArgument

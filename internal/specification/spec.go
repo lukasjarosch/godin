@@ -9,9 +9,9 @@ import (
 
 // Specification holds everything required to construct a microservice and it's dependencies
 type Specification struct {
-	Project Project
-	Service Service
-	Models  Models
+	Project              Project
+	Service              Service
+	Models               Models
 	ResolvedDependencies []ResolvedDependency
 }
 
@@ -44,6 +44,15 @@ func (s *Specification) ResolveDependencies() error {
 		}
 
 		s.ResolvedDependencies = append(s.ResolvedDependencies, resolved)
+	}
+	return nil
+}
+
+func (s *Specification) Validate() error {
+	for _, e := range s.Service.Errors {
+		if err := e.Validate(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

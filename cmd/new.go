@@ -34,6 +34,11 @@ func handler(cmd *cobra.Command, args []string) {
 		logrus.Fatalf("failed to load specification: %v", err)
 	}
 
+	err = spec.Validate()
+	if err != nil {
+	    logrus.Fatal(err)
+	}
+
 	err = spec.ResolveDependencies()
 	if err != nil {
 	    logrus.Fatal(err)
@@ -65,10 +70,7 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddTemplate(template.NewTemplateFile("models.tpl", path.Join(projectPath, "internal", spec.Service.Name, "models.go"), true))
 	godin.AddTemplate(template.NewTemplateFile("handler.tpl", path.Join(projectPath, "internal", "server", "handler.go"), true))
 	godin.AddTemplate(template.NewTemplateFile("server.tpl", path.Join(projectPath, "internal", "server", "server.go"), true))
+	godin.AddTemplate(template.NewTemplateFile("main.tpl", path.Join(projectPath, "cmd", spec.Service.Name, "main.go"), true))
 
-	/*
-	godin.AddTemplate(template.NewTemplateFile("main.tpl", path.Join(projectPath, "cmd", serviceName, "main.go"), true))
-
-	*/
 	godin.Render()
 }

@@ -29,6 +29,7 @@ type ResolvedDependency interface {
 	Type() string
 	Name() string
 	Import() string
+	Initialize() string
 }
 
 
@@ -47,6 +48,10 @@ func (l Logger) Import() string {
 	return "github.com/sirupsen/logrus"
 }
 
+func (l Logger) Initialize() string {
+	return "logger := initLogging(config.LogDebug)"
+}
+
 
 type Configuration struct {
 	modulePath string
@@ -62,4 +67,7 @@ func (c Configuration) Name() string {
 
 func (c Configuration) Import() string {
 	return path.Join(c.modulePath, "internal", "config")
+}
+func (c Configuration) Initialize() string {
+	return "config := cfg.NewConfig"
 }

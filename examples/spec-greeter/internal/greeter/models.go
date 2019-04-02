@@ -6,7 +6,7 @@ type Greeting struct {
 	Text string
 }
 
-// Derp derp der
+// Derp derp derp
 const (
 	German  = 0
 	English = 1

@@ -2,10 +2,11 @@ package greeter
 
 import (
 	"context"
-	"errors"
 
 	"github.com/lukasjarosch/godin/examples/spec-greeter/internal/config"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/codes"
 )
 
 // Greeter is able to greet people
@@ -15,7 +16,7 @@ type Greeter struct {
 }
 
 var (
-	ErrEmptyName = errors.New("no name given, duh")
+	ErrEmptyName = status.Error(codes.InvalidArgument, "no name given, duh")
 )
 
 // NewGreeter returns the business implementation of godin.greeter.v1beta1.GreeterAPI
