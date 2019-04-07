@@ -25,6 +25,25 @@ type Service struct {
 	Errors []ErrorSpec
 }
 
+// HasMethod checks whether a method with a given name exists in the service specification
+func (s *Service) HasMethod(name string) bool {
+	for _, m := range s.Methods {
+		if name == m.Name {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Service) GetMethod(name string) *ServiceMethod {
+	for _, m := range s.Methods {
+		if name == m.Name {
+			return &m
+		}
+	}
+	return nil
+}
+
 // Protobuf configures the API of the service
 // In future I want to extract this information directly by parsing proto files.
 // For now you need to specify some information from the proto files

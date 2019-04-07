@@ -43,6 +43,29 @@ service:
           name: "greeting"
         - type: "error"
           name: "err"
+    - name: "Burp"
+      comments:
+        - "Burp implements the Burp() gRPC method"
+      arguments:
+        - type: "context.Context"
+          name: "ctx"
+      returns:
+        - type: "string"
+          name: "name"
+        - type: "error"
+          name: "err"
+    - name: "Goodbye"
+      comments:
+      arguments:
+        - type: "context.Context"
+          name: "ctx"
+        - type: "string"
+          name: "name"
+      returns:
+        - type: "string"
+          name: "name"
+        - type: "error"
+          name: "err"
   errors:
     - name: ErrEmptyName
       message: "no name given, duh"
