@@ -25,7 +25,6 @@ service:
     service: "GreeterAPI"
     package: "godin.greeter.v1beta1"
     module: "github.com/lukasjarosch/godin-api-go"
-
   dependencies:
     - type: "config"
     - type: "logger"
@@ -43,7 +42,7 @@ service:
           name: "greeting"
         - type: "error"
           name: "err"
-    - name: "Burp"
+    - name: "Burp1"
       comments:
         - "Burp implements the Burp() gRPC method"
       arguments:
@@ -55,7 +54,6 @@ service:
         - type: "error"
           name: "err"
     - name: "Goodbye"
-      comments:
       arguments:
         - type: "context.Context"
           name: "ctx"
@@ -63,7 +61,7 @@ service:
           name: "name"
       returns:
         - type: "string"
-          name: "name"
+          name: "goodbye"
         - type: "error"
           name: "err"
   errors:

@@ -32,13 +32,13 @@ func NewGreeter(config *config.Config, logger *logrus.Logger) *Greeter {
 
 // Hello implements the Hello() gRPC method
 func (svc *Greeter) Hello(ctx context.Context, name string) (greeting Greeting, err error) {
-	return Greeting{},  nil
+	return Greeting{}, nil
 }
 
-func (svc *Greeter) Goodbye(ctx context.Context, name string) (name string, err error) {
+// Burp implements the Burp() gRPC method
+func (svc *Greeter) Burp(ctx context.Context) (name string, err error) {
 	return "", nil
 }
-
-func (svc *Greeter) Burp(ctx context.Context) (name string, err error) {
+func (svc *Greeter) Goodbye(ctx context.Context, name string) (goodbye string, err error) {
 	return "", nil
 }

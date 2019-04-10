@@ -7,9 +7,10 @@ import (
 	"path"
 	tpl "text/template"
 
+	"io/ioutil"
+
 	"github.com/Masterminds/sprig"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
 )
 
 // File defines the interface for our template-files
@@ -43,12 +44,10 @@ func (t *file) Render(data *Data) error {
 	templatePath := path.Join(".", "templates", t.Name)
 	templateData, err := ioutil.ReadFile(templatePath)
 	if err != nil {
-	    return err
+		return err
 	}
 
-
 	template, err := tpl.New(templatePath).Funcs(FunctionMap(data)).Funcs(sprig.TxtFuncMap()).Parse(string(templateData))
-
 	f, err := os.Create(t.TargetPath)
 	if err != nil {
 		return err
@@ -56,8 +55,12 @@ func (t *file) Render(data *Data) error {
 	defer f.Close()
 
 	if t.goSource {
+		err := t.renderGoCode(f, template, data)
+		if err != nil {
+		    return err
+		}
 		logrus.Infof("[template] rendered %s", t.TargetPath)
-		return t.renderGoCode(f, template, data)
+		return nil
 	}
 
 	err = template.Execute(f, data)
@@ -81,6 +84,7 @@ func (t *file) renderGoCode(f *os.File, template *tpl.Template, data *Data) erro
 
 	formatted, err := format.Source(out.Bytes())
 	if err != nil {
+		logrus.Info(template.ParseName)
 		return err
 	}
 

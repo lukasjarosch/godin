@@ -105,7 +105,7 @@ type Variable struct {
 func (v Variable) DefaultValue(specification *Specification) string {
 	switch v.Type {
 	case "string":
-		return ""
+		return "\"\""
 	case "int64":
 	case "int32":
 	case "int":

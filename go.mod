@@ -17,13 +17,13 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kelseyhightower/envconfig v1.3.0 // indirect
 	github.com/lukasjarosch/godin-api-go v0.0.0-20190329215035-f2fc3512a58b // indirect
+	github.com/manifoldco/promptui v0.3.2
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v0.9.2
 	github.com/sirupsen/logrus v1.4.0
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/vetcher/go-astra v1.2.0
-	golang.org/x/net v0.0.0-20181220203305-927f97764cc3
 	google.golang.org/grpc v1.19.1
 	gopkg.in/yaml.v2 v2.0.0-20170812160011-eb3733d160e7
 )

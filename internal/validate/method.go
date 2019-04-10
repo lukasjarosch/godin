@@ -25,6 +25,8 @@ func ValidateMethod(receiver string, spec *specification.ServiceMethod, impl *ty
 		return errors.New(fmt.Sprintf("RESULT-MISMATCH:\n\tspec: %s\n\timpl: %s", spec.Signature(), impl.Function.String()))
 	}
 
+	// TODO: check comments?
+
 	// validate param args
 	if err := meth.validateArgs(spec.Arguments, impl.Args); err != nil {
 		return err

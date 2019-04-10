@@ -30,6 +30,8 @@ github.com/lukasjarosch/godin v0.0.0-20190329220932-19f3014557a0 h1:l78g1bnFn9xx
 github.com/lukasjarosch/godin v0.0.0-20190329220932-19f3014557a0/go.mod h1:rDDl3IHf54tOjxakAOUhW78S3BUBcJXqVriSHqIHUKs=
 github.com/lukasjarosch/godin-api-go v0.0.0-20190329215035-f2fc3512a58b h1:UpImNl51syffkUnFVhESExiY/ImgvPUjL80TRzCFgW4=
 github.com/lukasjarosch/godin-api-go v0.0.0-20190329215035-f2fc3512a58b/go.mod h1:9ISyxxW3vts9WPjY+9IIO9JQutStxpoKuyTYUClVmys=
+github.com/lukasjarosch/godin-api-go v0.0.0-20190410184307-07a3b7d32fdf h1:MVRf/ftENooAshoxkwjNWGC9FI7Yc7zVFAx9YLR3+DM=
+github.com/lukasjarosch/godin-api-go v0.0.0-20190410184307-07a3b7d32fdf/go.mod h1:9ISyxxW3vts9WPjY+9IIO9JQutStxpoKuyTYUClVmys=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
