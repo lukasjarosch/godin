@@ -1,0 +1,8 @@
+{{ $package := .Package }}
+package {{ $package }}
+
+type Derp struct {}
+
+func NewDerp() *Derp {
+    return &Derp{}
+}
