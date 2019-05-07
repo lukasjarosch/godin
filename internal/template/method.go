@@ -18,17 +18,18 @@ type MethodPartial interface {
 	ReturnList() string
 	Name() string
 	Receiver() string
+	DefaultReturn() string
 }
 
 type methodTemplate struct {
 	method specification.ServiceMethod
-	service specification.Service
+	spec *specification.Specification
 }
 
-func NewMethodTemplate(service specification.Service, method specification.ServiceMethod) *methodTemplate {
+func NewMethodTemplate(spec *specification.Specification, method specification.ServiceMethod) *methodTemplate {
 	return &methodTemplate{
 		method: method,
-		service:service,
+		spec:spec,
 	}
 }
 
@@ -85,5 +86,15 @@ func (m *methodTemplate) Name() string {
 }
 
 func (m *methodTemplate) Receiver() string {
-	return fmt.Sprintf("svc *%s", strings.Title(m.service.Name))
+	return fmt.Sprintf("svc *%s", strings.Title(m.spec.Service.Name))
+}
+
+func (m *methodTemplate) DefaultReturn() string {
+	var list []string
+
+	for _, v := range m.method.Returns {
+		list = append(list, v.DefaultValue(m.spec))
+	}
+
+	return strings.Join(list, ", ")
 }
