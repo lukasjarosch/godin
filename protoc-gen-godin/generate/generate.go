@@ -1,19 +1,19 @@
 package generate
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 
-	"go/format"
+	"fmt"
 
+	"github.com/gobuffalo/packr"
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gen "github.com/golang/protobuf/protoc-gen-go/generator"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	tpl "github.com/lukasjarosch/godin/protoc-gen-godin/template"
-	"path"
+	"github.com/pkg/errors"
 )
 
 type Maker interface {
@@ -22,15 +22,17 @@ type Maker interface {
 
 type Generator struct {
 	*gen.Generator
+	box    packr.Box
 	reader io.Reader
 	writer io.Writer
 }
 
-func NewGenerator() *Generator {
+func NewGenerator(box packr.Box) *Generator {
 	return &Generator{
 		Generator: gen.New(),
 		reader:    os.Stdin,
 		writer:    os.Stdout,
+		box:       box,
 	}
 }
 
@@ -58,7 +60,7 @@ func (g *Generator) Generate() {
 
 	response, err := g.generate(request)
 	if err != nil {
-	    g.Error(err, "failed to generate response")
+		g.Error(err, "failed to generate response")
 	}
 
 	output, err := proto.Marshal(response)
@@ -89,37 +91,34 @@ func (g *Generator) generate(request *plugin.CodeGeneratorRequest) (*plugin.Code
 				Methods: service.Method,
 			})
 		}
-		wd, _ := os.Getwd()
-		// TODO: asset needs to be zipped into the binary
-		buf, err := ioutil.ReadFile(path.Join(wd, "template", "godin.pb.go.tmpl"))
+		s, err := g.box.Find("./godin.pb.go.tmpl")
 		if err != nil {
-			fmt.Println(err)
-			return nil, err
+			return nil, errors.Wrap(err, "could not load asset")
 		}
 
-		template, err := tpl.NewTemplate(buf)
+		template, err := tpl.NewTemplate(s)
 		if err != nil {
-			fmt.Println(err)
-			return nil, err
+			return nil, errors.Wrap(err, "failed to parse template")
 		}
 
 		output, err := template.Render(data)
 		if err != nil {
-			fmt.Println(err)
-			return nil, err
+			return nil, errors.Wrap(err, "failed to render template")
 		}
 
 		g.P(output.String())
 
-		formatted, err := format.Source(g.Bytes())
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
-		}
+		/*
+			formatted, err := format.Source(g.Bytes())
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to format source")
+			}
+		*/
 
+		filename := protoFile.GetName()[0 : len(".proto")+1]
 		file := &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String("godin.pb.go"),
-			Content: proto.String(string(formatted)),
+			Name:    proto.String(fmt.Sprintf("%s.godin.go", filename)),
+			Content: proto.String(string(output.Bytes())),
 		}
 		response.File = append(response.File, file)
 	}
