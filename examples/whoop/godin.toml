@@ -1,0 +1,6 @@
+
+[service]
+  file = "scheduler.go"
+  module = "bitbucket.org/jdbergmann/export/scheduler"
+  name = "scheduler"
+  namespace = "export"

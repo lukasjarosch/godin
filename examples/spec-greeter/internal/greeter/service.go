@@ -5,8 +5,6 @@ import (
 
 	"github.com/lukasjarosch/godin/examples/spec-greeter/internal/config"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/codes"
 )
 
 // Greeter is able to greet people
@@ -36,7 +34,7 @@ func (svc *Greeter) Hello(ctx context.Context, name string) (greeting Greeting, 
 }
 
 // Burp implements the Burp() gRPC method
-func (svc *Greeter) Burp(ctx context.Context) (name string, err error) {
+func (svc *Greeter) Burp1(ctx context.Context) (name string, err error) {
 	return "", nil
 }
 func (svc *Greeter) Goodbye(ctx context.Context, name string) (goodbye string, err error) {
