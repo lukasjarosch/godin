@@ -3,7 +3,11 @@ package generate
 import (
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"fmt"
 
@@ -14,6 +18,7 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	tpl "github.com/lukasjarosch/godin/protoc-gen-godin/template"
 	"github.com/pkg/errors"
+	"path"
 )
 
 type Maker interface {
@@ -55,7 +60,6 @@ func (g *Generator) Generate() {
 	g.WrapTypes()
 	g.SetPackageNames()
 	g.BuildTypeNameMap()
-	g.GenerateAllFiles()
 	g.Reset()
 
 	response, err := g.generate(request)
@@ -75,17 +79,25 @@ func (g *Generator) Generate() {
 
 func (g *Generator) generate(request *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
 	response := new(plugin.CodeGeneratorResponse)
-	for _, protoFile := range request.ProtoFile {
-		if len(protoFile.GetService()) <= 0 {
+	for _, file := range request.ProtoFile {
+		if len(file.GetService()) <= 0 {
 			continue
 		}
 
-		data := tpl.Data{
-			Package:  protoFile.GetPackage(),
-			Services: make([]tpl.Service, len(protoFile.Service)),
+		if file.Options == nil || file.Options.GoPackage == nil {
+			log.Fatalf("No go_package option defined in %s", *file.Name)
 		}
 
-		for _, service := range protoFile.Service {
+		i, p, _ := goPackageOption(*file)
+
+		data := tpl.Data{
+			Package:  p,
+			ProtoFileName: *file.Name,
+			ImportPath: i,
+			Services: make([]tpl.Service, len(file.Service)),
+		}
+
+		for _, service := range file.Service {
 			data.Services = append(data.Services, tpl.Service{
 				Name:    gen.CamelCase(service.GetName()),
 				Methods: service.Method,
@@ -115,12 +127,83 @@ func (g *Generator) generate(request *plugin.CodeGeneratorRequest) (*plugin.Code
 			}
 		*/
 
-		filename := protoFile.GetName()[0 : len(".proto")+1]
+		filename := file.GetName()[0 : len(".proto")+1]
 		file := &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String(fmt.Sprintf("%s.godin.go", filename)),
+			Name:    proto.String(path.Join(data.ImportPath, fmt.Sprintf("%s.godin.go", filename))),
 			Content: proto.String(string(output.Bytes())),
 		}
 		response.File = append(response.File, file)
 	}
 	return response, nil
+}
+
+// SNIPPETS BELOW ARE SHAMELESSLY STOLEN FROM: https://github.com/micro/protoc-gen-micro
+
+func cleanPackageName(name string) string {
+	name = strings.Map(badToUnderscore, name)
+	// Identifier must not be keyword or predeclared identifier: insert _.
+	if isGoKeyword[name] {
+		name = "_" + name
+	}
+	// Identifier must not begin with digit: insert _.
+	if r, _ := utf8.DecodeRuneInString(name); unicode.IsDigit(r) {
+		name = "_" + name
+	}
+	return string(name)
+}
+
+// badToUnderscore is the mapping function used to generate Go names from package names,
+// which can be dotted in the input .proto file.  It replaces non-identifier characters such as
+// dot or dash with underscore.
+func badToUnderscore(r rune) rune {
+	if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+		return r
+	}
+	return '_'
+}
+
+func goPackageOption(file protodescriptor.FileDescriptorProto) (impPath string, pkg string, ok bool) {
+	opt := file.GetOptions().GetGoPackage()
+	if opt == "" {
+		return "", "", false
+	}
+	// A semicolon-delimited suffix delimits the import path and package name.
+	sc := strings.Index(opt, ";")
+	if sc >= 0 {
+		return string(opt[:sc]), cleanPackageName(opt[sc+1:]), true
+	}
+	// The presence of a slash implies there's an import path.
+	slash := strings.LastIndex(opt, "/")
+	if slash >= 0 {
+		return string(opt), cleanPackageName(opt[slash+1:]), true
+	}
+	return "", cleanPackageName(opt), true
+}
+
+var isGoKeyword = map[string]bool{
+	"break":       true,
+	"case":        true,
+	"chan":        true,
+	"const":       true,
+	"continue":    true,
+	"default":     true,
+	"else":        true,
+	"defer":       true,
+	"fallthrough": true,
+	"for":         true,
+	"func":        true,
+	"go":          true,
+	"goto":        true,
+	"if":          true,
+	"import":      true,
+	"interface":   true,
+	"map":         true,
+	"package":     true,
+	"range":       true,
+	"return":      true,
+	"select":      true,
+	"struct":      true,
+	"switch":      true,
+	"type":        true,
+	"var":         true,
 }

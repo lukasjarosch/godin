@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package godin.example;
 
-option go_package="github.com/lukasjarosch/godin/protoc-gen-godin/example";
+option go_package="github.com/lukasjarosch/godin/protoc-gen-godin/example;example";
 
 message Foo {
   string Bar = 1;
@@ -10,12 +10,11 @@ message Foo {
 
 service ExampleService {
     rpc Foo(FooRequest) returns (FooResponse);
+    rpc Bar(BarRequest) returns (BarResponse);
 }
 
-message FooRequest {
+message FooRequest { }
+message FooResponse { }
 
-}
-
-message FooResponse {
-
-}
+message BarRequest {}
+message BarResponse {}

@@ -5,7 +5,9 @@ import (
 )
 
 type Data struct {
+	ProtoFileName string
 	Package string
+	ImportPath string
 	Services []Service
 }
 
