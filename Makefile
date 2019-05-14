@@ -9,4 +9,4 @@ build:
 	@GO11MODULE=on packr2 --legacy build -o ./bin/godin ${LDFLAGS}
 
 install:
-	@GO11MODULE=on go install ${LDFLAGS}
+	@GO11MODULE=on packr2 --legacy install ${LDFLAGS}
