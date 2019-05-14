@@ -15,11 +15,18 @@
 package main
 
 import (
-	"github.com/lukasjarosch/godin/cmd"
 	"github.com/gobuffalo/packr"
+	"github.com/lukasjarosch/godin/cmd"
+)
+
+// Version information is injected during compilation
+var (
+	Version   string
+	GitCommit string
+	BuildDate string
 )
 
 func main() {
 	box := packr.NewBox("./templates")
-	cmd.Execute(box)
+	cmd.Execute(Version, GitCommit, BuildDate, box)
 }
