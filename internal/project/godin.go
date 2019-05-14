@@ -6,6 +6,8 @@ import (
 
 	"github.com/lukasjarosch/godin/internal/template"
 
+	"os/exec"
+
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
@@ -86,4 +88,15 @@ func (p *GodinProject) MkdirAll() error {
 // FolderPath returns the given (relative) path as absolute path based on the project root
 func (p *GodinProject) FolderPath(subPath string) string {
 	return path.Join(p.Path, subPath)
+}
+
+// InitModule will initialize the module with the given name in the current directory
+func (p *GodinProject) InitModule(name string) error {
+	modCmd := exec.Command("go", "mod", "init", name)
+	err := modCmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
