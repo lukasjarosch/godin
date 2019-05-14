@@ -1,1 +1,1 @@
-# {{ .ServiceName }}
+# {{ .Service.Name }}

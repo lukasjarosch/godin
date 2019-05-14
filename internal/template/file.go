@@ -4,18 +4,16 @@ import (
 	"bytes"
 	"go/format"
 	"os"
-	"path"
 	tpl "text/template"
 
-	"io/ioutil"
-
 	"github.com/Masterminds/sprig"
+	"github.com/gobuffalo/packr"
 	"github.com/sirupsen/logrus"
 )
 
 // File defines the interface for our template-files
 type File interface {
-	Render(data *Data) error
+	Render(box packr.Box, data *Data) error
 }
 
 // file defines a single template-file
@@ -39,15 +37,20 @@ func NewTemplateFile(name string, path string, goSource bool) *file {
 // Every other template is written using template.Execute()
 //
 // TODO: Catch file exists errors and handle them, better not overwrite things :)
-func (t *file) Render(data *Data) error {
+func (t *file) Render(box packr.Box, data *Data) error {
 
-	templatePath := path.Join(".", "templates", t.Name)
-	templateData, err := ioutil.ReadFile(templatePath)
+	stat, _ := os.Stat(t.TargetPath)
+	if stat != nil {
+		logrus.Infof("[skip] template already written: %s", t.Name)
+		return nil
+	}
+
+	templateData, err := box.FindString(t.Name)
 	if err != nil {
 		return err
 	}
 
-	template, err := tpl.New(templatePath).Funcs(FunctionMap(data)).Funcs(sprig.TxtFuncMap()).Parse(string(templateData))
+	template, err := tpl.New(t.TargetPath).Funcs(sprig.TxtFuncMap()).Parse(templateData)
 	f, err := os.Create(t.TargetPath)
 	if err != nil {
 		return err
@@ -57,9 +60,9 @@ func (t *file) Render(data *Data) error {
 	if t.goSource {
 		err := t.renderGoCode(f, template, data)
 		if err != nil {
-		    return err
+			return err
 		}
-		logrus.Infof("[template] rendered %s", t.TargetPath)
+		logrus.Infof("[template] rendered %s", t.Name)
 		return nil
 	}
 
@@ -67,7 +70,7 @@ func (t *file) Render(data *Data) error {
 	if err != nil {
 		return err
 	}
-	logrus.Infof("[template] rendered %s", t.TargetPath)
+	logrus.Infof("[template] rendered %s", t.Name)
 
 	return nil
 }

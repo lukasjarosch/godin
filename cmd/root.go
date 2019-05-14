@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/gobuffalo/packr"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -27,9 +28,12 @@ var rootCmd = &cobra.Command{
 	Short: "Godin - An opinionated microservice toolkit",
 }
 
+var Box = packr.Box{}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
+func Execute(box packr.Box) {
+	Box = box
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
