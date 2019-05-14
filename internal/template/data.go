@@ -1,14 +1,16 @@
 package template
 
-import (
-	"github.com/lukasjarosch/godin/internal/specification"
-)
-
 type Data struct {
-	ProjectRootPath string
-	ServiceName string
-	ModuleName string
-	GrpcServiceName string
-	Spec *specification.Specification
+	Project Project
+	Service Service
 }
 
+type Project struct {
+	RootPath string
+}
+
+type Service struct {
+	Name      string
+	Namespace string
+	Module    string
+}

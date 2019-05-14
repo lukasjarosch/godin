@@ -14,8 +14,12 @@
 
 package main
 
-import "github.com/lukasjarosch/godin/cmd"
+import (
+	"github.com/lukasjarosch/godin/cmd"
+	"github.com/gobuffalo/packr"
+)
 
 func main() {
-	cmd.Execute()
+	box := packr.NewBox("./templates")
+	cmd.Execute(box)
 }

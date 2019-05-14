@@ -7,7 +7,9 @@ import (
 	"path"
 
 	"strings"
+	"github.com/dave/dst/decorator"
 
+	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/lukasjarosch/godin/internal/validate"
@@ -62,13 +64,21 @@ func validateHandler(cmd *cobra.Command, args []string) {
 			if strings.ToLower(result) == "y" {
 				logrus.Info(meth.Signature())
 
-				m := template.NewMethodTemplate(spec.Service, meth)
+				m := template.NewMethodTemplate(spec, meth)
 				out, err := m.Render()
 				if err != nil {
 					logrus.Error(err)
 					continue
 				}
-				logrus.Infof("Okay, here is what I'm going to insert into %s\n%s", serviceFile, out)
+				//logrus.Infof("Okay, here is what I'm going to insert into %s\n%s", serviceFile, out)
+
+				dst, err := parse.FromString(out)
+				if err != nil {
+					logrus.Error(err)
+					continue
+				}
+
+				decorator.Print(dst)
 			}
 		}
 	}

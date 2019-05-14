@@ -6,6 +6,7 @@ import (
 
 	"github.com/lukasjarosch/godin/internal/template"
 
+	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
 )
@@ -16,24 +17,27 @@ type GodinProject struct {
 	Path      string
 	Data      *template.Data
 	Spec      *specification.Specification
+	box       packr.Box
 }
 
 // NewGodinProject creates an empty, preconfigured project
-func NewGodinProject(spec *specification.Specification, path string) *GodinProject {
+func NewGodinProject(rootPath, serviceName, namespace, module string, box packr.Box) *GodinProject {
 
 	// setup the template data with the specification
 	data := &template.Data{
-		ServiceName:     spec.Service.Name,
-		ProjectRootPath: path,
-		GrpcServiceName: spec.Service.API.Service,
-		ModuleName:      spec.Project.Module,
-		Spec:            spec,
+		Project: template.Project{
+			RootPath: rootPath,
+		},
+		Service: template.Service{
+			Name:      serviceName,
+			Namespace: namespace,
+			Module:    module,
+		},
 	}
 
 	return &GodinProject{
 		Data: data,
-		Spec: spec,
-		Path: path,
+		box:  box,
 	}
 }
 
@@ -50,7 +54,7 @@ func (p *GodinProject) AddTemplate(template template.File) {
 // Render will call Render() on every registered File
 func (p *GodinProject) Render() error {
 	for _, tpl := range p.templates {
-		if err := tpl.Render(p.Data); err != nil {
+		if err := tpl.Render(p.box, p.Data); err != nil {
 			logrus.Error(err)
 			continue
 		}

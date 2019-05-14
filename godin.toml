@@ -1,0 +1,5 @@
+
+[service]
+  module = "bitbucket.org/jdbergmann/greeting/example"
+  name = "example"
+  namespace = "greeting"

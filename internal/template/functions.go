@@ -1,13 +1,6 @@
 package template
 
-import (
-	"fmt"
-	"strings"
-	tpl "text/template"
-
-	"github.com/lukasjarosch/godin/internal/specification"
-)
-
+/*
 func FunctionMap(data *Data) tpl.FuncMap {
 	return tpl.FuncMap{
 		"arg_list":           ArgumentList(data),
@@ -133,3 +126,4 @@ func DependencyNameList(data *Data) func() string {
 		return strings.Join(depList, ", ")
 	}
 }
+*/
