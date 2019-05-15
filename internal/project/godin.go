@@ -22,6 +22,14 @@ type GodinProject struct {
 	box       packr.Box
 }
 
+// EnsurePath check whether the given path exists in the filesystem or not.
+// If the path does not exist, a fatal error "not a godin project" is returned
+func EnsurePath(path string) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		logrus.Fatal("not a godin project")
+	}
+}
+
 // NewGodinProject creates an empty, preconfigured project
 func NewGodinProject(rootPath, serviceName, namespace, module string, box packr.Box) *GodinProject {
 
