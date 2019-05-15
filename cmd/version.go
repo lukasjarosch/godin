@@ -18,6 +18,6 @@ var versionCommand = &cobra.Command{
 }
 
 func versionCmd(cmd *cobra.Command, args []string) {
-	format := "Godin - The awesome go-kit project manager: v%s (%s), built: %s\n"
+	format := "Godin - go-kit project manager\nv%s (%s), built: %s\n"
 	fmt.Printf(format, Version, Commit, BuildDate)
 }
