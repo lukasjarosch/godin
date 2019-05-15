@@ -24,7 +24,7 @@ var addCommand = &cobra.Command{
 }
 
 func addCmd(cmd *cobra.Command, args []string) {
-	project.EnsurePath(ConfigFile)
+	project.EnsureConfig(true)
 
 	// ask user what to do
 	mod, err := promptModule()
@@ -36,8 +36,7 @@ func addCmd(cmd *cobra.Command, args []string) {
 	switch mod {
 	case "endpoint":
 		m := module.NewEndpoint()
-		err := m.Execute()
-		if err != nil {
+		if err := m.Execute(); err != nil {
 			logrus.Fatal(err)
 		}
 		break
@@ -48,7 +47,10 @@ func addCmd(cmd *cobra.Command, args []string) {
 		logrus.Fatal("work in progress")
 		break
 	case "producer":
-		logrus.Fatal("work in progress")
+		m := module.NewProducer()
+		if err := m.Execute(); err != nil {
+			logrus.Fatal(err)
+		}
 		break
 	case "test":
 		logrus.Fatal("work in progress")

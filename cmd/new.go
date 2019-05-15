@@ -30,18 +30,7 @@ var newCommand = &cobra.Command{
 func handler(cmd *cobra.Command, args []string) {
 
 	logrus.SetLevel(logrus.DebugLevel)
-
-	// create config file and load it directly
-	if _, err := os.Stat(ConfigFile); err == nil {
-		logrus.Fatal("Godin project already initialized")
-	}
-
-	os.Create(ConfigFile)
-	viper.SetConfigFile(ConfigFile)
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		logrus.Fatal(err)
-	}
+	project.EnsureConfig(false)
 
 	viper.Set("godin.version", Version)
 	viper.Set("godin.commit", Commit)
@@ -155,7 +144,7 @@ func prompt() {
 			prompting.MinLengthThree(),
 		),
 	)
-	grpcService , err := prompt.Run()
+	grpcService, err := prompt.Run()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -170,7 +159,7 @@ func prompt() {
 			prompting.Lowercase(),
 		),
 	)
-	protoPackage , err := prompt.Run()
+	protoPackage, err := prompt.Run()
 	if err != nil {
 		os.Exit(1)
 	}

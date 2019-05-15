@@ -11,6 +11,7 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type GodinProject struct {
@@ -22,12 +23,25 @@ type GodinProject struct {
 	box       packr.Box
 }
 
-// EnsurePath check whether the given path exists in the filesystem or not.
-// If the path does not exist, a fatal error "not a godin project" is returned
-func EnsurePath(path string) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		logrus.Fatal("not a godin project")
+// EnsureConfig checks whether the config is loadable.
+// If 'fatal' is false, the config is created in the current working directory
+// If 'fatal' is true, the function will Fatal()
+func EnsureConfig(fatal bool) {
+	cwd, _ := os.Getwd()
+	viper.SetConfigName("godin")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(cwd)
+	if err := viper.ReadInConfig(); err != nil {
+		if fatal {
+			logrus.Fatal("not a godin project")
+		}
+		os.Create("godin.toml")
+		logrus.Debug("godin.toml created")
 	}
+}
+
+func SaveConfig() {
+	viper.WriteConfigAs("godin.toml")
 }
 
 // NewGodinProject creates an empty, preconfigured project
