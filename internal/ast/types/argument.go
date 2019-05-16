@@ -5,6 +5,6 @@ import (
 )
 
 type Argument struct {
-	name, asField *ast.Ident
-	typ ast.Expr
+	Name, asField *ast.Ident
+	Typ ast.Expr
 }

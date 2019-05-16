@@ -2,7 +2,6 @@ package module
 
 import (
 	"os"
-	"path"
 
 	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/ast"
@@ -18,7 +17,7 @@ func NewEndpoint(data *internal.Data) *Endpoint {
 
 func (e *Endpoint) Execute() error {
 
-	f, err := os.Open(path.Join(e.Data.Project.RootPath, "internal", "service.go"))
+	f, err := os.Open(e.Data.ServiceFilePath())
 	if err != nil {
 		return err
 	}

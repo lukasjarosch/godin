@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/lukasjarosch/godin/develop/gopher.png">
 </p>
 
-# Godin - An opinionated toolkit for go-kit microservices
+# Godin - An opinionated toolkit for [go-kit](https://github.com/go-kit/kit) microservices
 > Work in progress
 
 

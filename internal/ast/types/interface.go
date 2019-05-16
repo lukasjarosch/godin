@@ -6,5 +6,5 @@ import (
 
 type Iface struct {
 	Name, Stub, Receiver *ast.Ident
-	Methods []method
+	Methods []Method
 }

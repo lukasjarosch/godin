@@ -2,6 +2,7 @@ package internal
 
 import (
 	"github.com/spf13/viper"
+	"path"
 )
 
 // Version information is injected during compilation
@@ -44,10 +45,14 @@ type Data struct {
 	Godin Godin
 	Protobuf Protobuf
 }
+func (d Data) ServiceFilePath() string {
+	return path.Join(d.Project.RootPath, "internal", "service.go")
+}
 
 type Project struct {
 	RootPath string
 }
+
 
 type Protobuf struct {
 	Service string

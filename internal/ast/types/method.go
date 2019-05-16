@@ -4,7 +4,7 @@ import (
 	"go/ast"
 )
 
-type method struct {
+type Method struct {
 	name *ast.Ident
 	params []Argument
 	resuts []Argument
