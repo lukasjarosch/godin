@@ -1,6 +1,11 @@
-# Godin - An opinionated toolkit for Go microservices
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lukasjarosch/godin/develop/gopher.png">
+</p>
 
+# Godin - An opinionated toolkit for go-kit microservices
+----
 > Work in progress
+
 
 ### Protobufs
 Protocol buffers are used to describe the APIs of an application.
