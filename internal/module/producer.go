@@ -1,15 +1,16 @@
 package module
 
 import (
-	"github.com/lukasjarosch/godin/internal/project"
+	"fmt"
+	"strings"
+
 	prompting "github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 type ProducerConfig struct {
 	Exchange string
-	Name string
+	Name     string
 }
 
 type Producer struct {
@@ -22,32 +23,19 @@ func NewProducer() *Producer {
 func (p *Producer) Execute() error {
 	logrus.Info("new amqp producer created")
 
-
-	name, exchange, err := p.prompt()
+	name, exchange, filename, err := p.prompt()
 	if err != nil {
-	    return err
-	}
-
-	if err := p.configure(name, exchange); err != nil {
 		return err
 	}
 
+	logrus.Infof("creating AMQP producer '%s' on exchange '%s': %s", name, exchange, filename)
+
 	// TODO: implement producer module
 
-
 	return nil
 }
 
-func (p *Producer) configure(name, exchange string) error {
-	producers := viper.GetStringSlice("producers.registered")
-	viper.Set("producers.registered", append(producers, name))
-	viper.Set("producers." + name + ".exchange", exchange)
-	project.SaveConfig()
-
-	return nil
-}
-
-func (p *Producer) prompt() (name, exchange string, err error) {
+func (p *Producer) prompt() (name, exchange, filename string, err error) {
 
 	prompt := prompting.NewPrompt(
 		"Enter the producer name (CamelCase)",
@@ -58,7 +46,7 @@ func (p *Producer) prompt() (name, exchange string, err error) {
 	)
 	name, err = prompt.Run()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
 	prompt = prompting.NewPrompt(
@@ -70,8 +58,21 @@ func (p *Producer) prompt() (name, exchange string, err error) {
 	)
 	exchange, err = prompt.Run()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return name, exchange, nil
+	prompt = prompting.NewPrompt(
+		"Enter the filename of the producer:",
+		fmt.Sprintf("%s.go", strings.ToLower(name)),
+		prompting.Validate(
+			prompting.MinLengthThree(),
+			prompting.GoSuffix(),
+		),
+	)
+	filename, err = prompt.Run()
+	if err != nil {
+		return "", "" ,"", err
+	}
+
+	return name, exchange, filename, nil
 }
