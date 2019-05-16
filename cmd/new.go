@@ -50,6 +50,10 @@ func handler(cmd *cobra.Command, args []string) {
 			Commit:Commit,
 			Build:BuildDate,
 		},
+		Protobuf: template.Protobuf{
+			Service: viper.GetString("protobuf.service"),
+			Package: viper.GetString("protobuf.package"),
+		},
 		Service: template.Service{
 			Name: viper.GetString("service.name"),
 			Namespace: viper.GetString("service.namespace"),

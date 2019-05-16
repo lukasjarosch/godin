@@ -4,10 +4,16 @@ type Data struct {
 	Project Project
 	Service Service
 	Godin Godin
+	Protobuf Protobuf
 }
 
 type Project struct {
 	RootPath string
+}
+
+type Protobuf struct {
+	Service string
+	Package string
 }
 
 type Service struct {
