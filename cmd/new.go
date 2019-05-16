@@ -69,15 +69,12 @@ func handler(cmd *cobra.Command, args []string) {
 
 	// add all required folders
 	godin.AddFolder("cmd")
+	godin.AddFolder(path.Join("cmd", data.Service.Name))
 	godin.AddFolder("internal")
-	godin.AddFolder("pkg")
 	godin.AddFolder("deployment")
-	godin.AddFolder("deployment/k8s")
-	godin.AddFolder("internal/grpc")
 	godin.AddFolder("internal/service")
 	godin.AddFolder(fmt.Sprintf("internal/service/%s", viper.GetString("service.name")))
 	godin.AddFolder("internal/service/middleware")
-	godin.AddFolder("internal/service/endpoint")
 	if err := godin.MkdirAll(); err != nil {
 		logrus.Fatal(err)
 	}
@@ -86,6 +83,8 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddTemplate(template.NewTemplateFile("README.tpl", path.Join(projectPath, "README.md"), false))
 	godin.AddTemplate(template.NewTemplateFile("gitignore.tpl", path.Join(projectPath, ".gitignore"), false))
 	godin.AddTemplate(template.NewTemplateFile("Dockerfile.tpl", path.Join(projectPath, "Dockerfile"), false))
+	godin.AddTemplate(template.NewTemplateFile(path.Join("k8s", "service.tpl"), path.Join(projectPath, "deployment", "service.yaml"), false))
+	godin.AddTemplate(template.NewTemplateFile(path.Join("k8s", "deployment.tpl"), path.Join(projectPath, "deployment", "deployment.yaml"), false))
 
 	godin.AddTemplate(template.NewTemplateFile("./internal/service.tpl", path.Join(projectPath, "internal", "service.go"), true))
 	godin.AddTemplate(template.NewTemplateFile("./internal/models.tpl", path.Join(projectPath, "internal", "models.go"), true))
@@ -96,6 +95,10 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddTemplate(template.NewTemplateFile(
 		"./internal/service/middleware/middleware.tpl",
 		path.Join(projectPath, "internal", "service", "middleware", "middleware.go"),
+		true))
+	godin.AddTemplate(template.NewTemplateFile(
+		"./cmd/service/main.tpl",
+		path.Join(projectPath, "cmd", data.Service.Name, "main.go"),
 		true))
 
 	godin.Render()
