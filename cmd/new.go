@@ -105,6 +105,14 @@ func handler(cmd *cobra.Command, args []string) {
 		"./internal/endpoint/set.tpl",
 		path.Join(projectPath, "internal", "service", "endpoint", "set.go"),
 		true))
+	godin.AddTemplate(template.NewTemplateFile(
+		"./internal/endpoint/endpoints.tpl",
+		path.Join(projectPath, "internal", "service", "endpoint", "endpoints.go"),
+		true))
+	godin.AddTemplate(template.NewTemplateFile(
+		"./internal/endpoint/request_response.tpl",
+		path.Join(projectPath, "internal", "service", "endpoint", "request_response.go"),
+		true))
 
 	godin.Render()
 
