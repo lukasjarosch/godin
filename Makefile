@@ -1,4 +1,4 @@
-GIT_TAG=`git describe --tags`
+GIT_TAG=`git describe --tags --abbrev=0`
 COMMIT=`git rev-parse --short HEAD`
 PACKR=$(which packr2)
 BUILD_DATE=$(shell date +%FT%T%z)
