@@ -1,5 +1,9 @@
 package service
 
+import (
+    "errors"
+)
+
 {{ $service := title .Service.Name }}
 
 // TODO: {{ $service }} documentation

@@ -73,6 +73,7 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddFolder("internal")
 	godin.AddFolder("deployment")
 	godin.AddFolder("internal/service")
+	godin.AddFolder("internal/service/endpoint")
 	godin.AddFolder(fmt.Sprintf("internal/service/%s", viper.GetString("service.name")))
 	godin.AddFolder("internal/service/middleware")
 	if err := godin.MkdirAll(); err != nil {
@@ -99,6 +100,10 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.AddTemplate(template.NewTemplateFile(
 		"./cmd/service/main.tpl",
 		path.Join(projectPath, "cmd", data.Service.Name, "main.go"),
+		true))
+	godin.AddTemplate(template.NewTemplateFile(
+		"./internal/endpoint/set.tpl",
+		path.Join(projectPath, "internal", "service", "endpoint", "set.go"),
 		true))
 
 	godin.Render()

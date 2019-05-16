@@ -4,6 +4,8 @@ import (
 	"os"
 
 	"github.com/go-kit/kit/log"
+	"{{ .Service.Name }}/internal"
+	"{{ .Service.Name }}/internal/service/{{ .Service.Name }}"
 )
 
 func main() {
@@ -13,16 +15,11 @@ func main() {
 		logger = log.With(logger, "timestamp", log.DefaultTimestampUTC)
 	}
 
-	logger.Log("fatal", "this godin project does not yet provide any functionality")
-	os.Exit(1)
+    // setup service implementation
+	var svc service.{{ title .Service.Name }}
+	svc = {{ .Service.Name }}.NewImplementation(logger)
 
-    /*
-	var svc service.Example
-	svc = example.NewExampleService(logger)
-	svc = middleware.NewLogMiddleware(logger)(svc)
-	*/
-
-	// endpoints := endpoint.Endpoints(svc)
+	endpoints := endpoint.Endpoints(svc)
 
 	// grpcHandler := grpc.NewGrpcServer(endpoints, logger)
 
