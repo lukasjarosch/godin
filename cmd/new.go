@@ -6,6 +6,7 @@ import (
 
 	"path"
 
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/project"
 	prompting "github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/lukasjarosch/godin/internal/template"
@@ -33,36 +34,14 @@ func handler(cmd *cobra.Command, args []string) {
 	}
 	os.Create("godin.toml")
 
-	viper.Set("godin.version", Version)
-	viper.Set("godin.commit", Commit)
-	viper.Set("godin.build", BuildDate)
-
 	// initialize config with user data
 	projectPath, _ := os.Getwd()
 	viper.Set("project.path", projectPath)
 	prompt()
 	project.SaveConfig()
 
-	// setup the template data
-	data := &template.Data{
-		Project: template.Project{
-			RootPath: viper.GetString("project.path"),
-		},
-		Godin: template.Godin{
-			Version:Version,
-			Commit:Commit,
-			Build:BuildDate,
-		},
-		Protobuf: template.Protobuf{
-			Service: viper.GetString("protobuf.service"),
-			Package: viper.GetString("protobuf.package"),
-		},
-		Service: template.Service{
-			Name: viper.GetString("service.name"),
-			Namespace: viper.GetString("service.namespace"),
-			Module: viper.GetString("service.module"),
-		},
-	}
+	// setup the godin data
+	data := internal.DataFromConfig()
 
 	// set-up godin project
 	godin := project.NewGodinProject(data, Box)

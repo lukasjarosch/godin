@@ -3,10 +3,12 @@ COMMIT=`git rev-parse --short HEAD`
 PACKR=$(which packr2)
 BUILD_DATE=$(shell date +%FT%T%z)
 
-LDFLAGS=-ldflags "-X=main.Version=$(GIT_TAG) -X=main.GitCommit=$(COMMIT) -X=main.BuildDate=${BUILD_DATE}"
+LDFLAGS="-X=github.com/lukasjarosch/godin/internal.Version=$(GIT_TAG) \
+		-X=github.com/lukasjarosch/godin/internal.Commit=$(COMMIT) \
+		-X=github.com/lukasjarosch/godin/internal.BuildDate=${BUILD_DATE}"
 
 build:
-	@GO11MODULE=on packr2 --legacy build -o ./bin/godin ${LDFLAGS}
+	@GO11MODULE=on packr2 --legacy build -o ./bin/godin -ldflags ${LDFLAGS}
 
 install:
-	@GO11MODULE=on packr2 --legacy install ${LDFLAGS}
+	@GO11MODULE=on packr2 --legacy install -ldflags ${LDFLAGS}

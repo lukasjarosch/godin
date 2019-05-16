@@ -4,15 +4,15 @@ import (
 	"os"
 	"path"
 
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/ast"
-	"github.com/lukasjarosch/godin/internal/template"
 )
 
 type Endpoint struct {
-	Data *template.Data
+	Data *internal.Data
 }
 
-func NewEndpoint(data *template.Data) *Endpoint {
+func NewEndpoint(data *internal.Data) *Endpoint {
 	return &Endpoint{Data: data}
 }
 

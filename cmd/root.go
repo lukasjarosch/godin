@@ -29,17 +29,11 @@ var rootCmd = &cobra.Command{
 }
 
 var Box = packr.Box{}
-var Version = "0.0.0"
-var Commit = ""
-var BuildDate = ""
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute(version, commit, buildDate string, box packr.Box) {
+func Execute(box packr.Box) {
 	Box = box
-	Version = version
-	Commit = commit
-	BuildDate = buildDate
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

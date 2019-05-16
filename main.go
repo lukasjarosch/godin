@@ -26,14 +26,7 @@ import (
 	"github.com/lukasjarosch/godin/cmd"
 )
 
-// Version information is injected during compilation
-var (
-	Version   string
-	GitCommit string
-	BuildDate string
-)
-
 func main() {
 	box := packr.NewBox("./templates")
-	cmd.Execute(Version, GitCommit, BuildDate, box)
+	cmd.Execute(box)
 }

@@ -3,13 +3,12 @@ package cmd
 import (
 	"os"
 
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/module"
 	"github.com/lukasjarosch/godin/internal/project"
-	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/manifoldco/promptui"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var AvailableModules = []string{"endpoint", "middleware", "repository", "consumer", "producer", "test"}
@@ -31,25 +30,7 @@ func addCmd(cmd *cobra.Command, args []string) {
 	}
 
 	// setup the template data
-	data := &template.Data{
-		Project: template.Project{
-			RootPath: viper.GetString("project.path"),
-		},
-		Godin: template.Godin{
-			Version: Version,
-			Commit:  Commit,
-			Build:   BuildDate,
-		},
-		Protobuf: template.Protobuf{
-			Service: viper.GetString("protobuf.service"),
-			Package: viper.GetString("protobuf.package"),
-		},
-		Service: template.Service{
-			Name:      viper.GetString("service.name"),
-			Namespace: viper.GetString("service.namespace"),
-			Module:    viper.GetString("service.module"),
-		},
-	}
+	data := internal.DataFromConfig()
 
 	// ask user what to do
 	mod, err := promptModule()

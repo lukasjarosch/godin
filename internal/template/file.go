@@ -6,6 +6,7 @@ import (
 	"os"
 	tpl "text/template"
 
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/Masterminds/sprig"
 	"github.com/gobuffalo/packr"
 	"github.com/sirupsen/logrus"
@@ -13,7 +14,7 @@ import (
 
 // File defines the interface for our template-files
 type File interface {
-	Render(box packr.Box, data *Data) error
+	Render(box packr.Box, data *internal.Data) error
 }
 
 // file defines a single template-file
@@ -37,7 +38,7 @@ func NewTemplateFile(name string, path string, goSource bool) *file {
 // Every other template is written using template.Execute()
 //
 // TODO: Catch file exists errors and handle them, better not overwrite things :)
-func (t *file) Render(box packr.Box, data *Data) error {
+func (t *file) Render(box packr.Box, data *internal.Data) error {
 
 	stat, _ := os.Stat(t.TargetPath)
 	if stat != nil {
@@ -77,7 +78,7 @@ func (t *file) Render(box packr.Box, data *Data) error {
 
 // renderGoCode parses the given file using the given template. The parsed file is
 // written into a bytes.Buffer which is used to format the source before writing the file.
-func (t *file) renderGoCode(f *os.File, template *tpl.Template, data *Data) error {
+func (t *file) renderGoCode(f *os.File, template *tpl.Template, data *internal.Data) error {
 	var out bytes.Buffer
 
 	err := template.Execute(&out, data)

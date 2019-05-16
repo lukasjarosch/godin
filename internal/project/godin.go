@@ -9,6 +9,7 @@ import (
 	"os/exec"
 
 	"github.com/gobuffalo/packr"
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -18,7 +19,7 @@ type GodinProject struct {
 	folders   []string
 	templates []template.File
 	Path      string
-	Data      *template.Data
+	Data      *internal.Data
 	Spec      *specification.Specification
 	box       packr.Box
 }
@@ -43,7 +44,7 @@ func SaveConfig() {
 }
 
 // NewGodinProject creates an empty, preconfigured project
-func NewGodinProject(data *template.Data, box packr.Box) *GodinProject {
+func NewGodinProject(data *internal.Data, box packr.Box) *GodinProject {
 	return &GodinProject{
 		Data: data,
 		box:  box,
