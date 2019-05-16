@@ -28,7 +28,10 @@ var newCommand = &cobra.Command{
 func handler(cmd *cobra.Command, args []string) {
 
 	logrus.SetLevel(logrus.DebugLevel)
-	project.EnsureConfig(false)
+	if err := project.HasConfig(); err == nil {
+		logrus.Fatal("project already initialized")
+	}
+	os.Create("godin.toml")
 
 	viper.Set("godin.version", Version)
 	viper.Set("godin.commit", Commit)

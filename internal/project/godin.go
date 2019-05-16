@@ -25,21 +25,17 @@ type GodinProject struct {
 
 const ConfigFile = "godin.toml"
 
-// EnsureConfig checks whether the config is loadable.
-// If 'fatal' is false, the config is created in the current working directory
-// If 'fatal' is true, the function will Fatal()
-func EnsureConfig(fatal bool) {
+// HasConfig checks whether the config is loadable.
+// If it is, it will automatically be loaded and true is returned.
+func HasConfig() error {
 	cwd, _ := os.Getwd()
 	viper.SetConfigName("godin")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(cwd)
 	if err := viper.ReadInConfig(); err != nil {
-		if fatal {
-			logrus.Fatal("not a godin project")
-		}
-		os.Create("godin.toml")
-		logrus.Debug("godin.toml created")
+		return err
 	}
+	return nil
 }
 
 func SaveConfig() {

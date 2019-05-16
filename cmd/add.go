@@ -24,7 +24,9 @@ var addCommand = &cobra.Command{
 }
 
 func addCmd(cmd *cobra.Command, args []string) {
-	project.EnsureConfig(true)
+	if err := project.HasConfig(); err != nil {
+		logrus.Fatal("project not initialized")
+	}
 
 	// ask user what to do
 	mod, err := promptModule()
