@@ -5,8 +5,7 @@ import (
 )
 
 type Method struct {
-	name *ast.Ident
-	params []Argument
-	resuts []Argument
-	structsResolved bool
+	Name            *ast.Ident
+	Params          []Argument
+	Results         []Argument
 }

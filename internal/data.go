@@ -53,7 +53,6 @@ type Project struct {
 	RootPath string
 }
 
-
 type Protobuf struct {
 	Service string
 	Package string
@@ -70,3 +69,4 @@ type Godin struct {
 	Commit string
 	Build string
 }
+

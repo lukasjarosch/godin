@@ -96,7 +96,7 @@ func handler(cmd *cobra.Command, args []string) {
 	godin.Render()
 
 	// initialize module
-	godin.InitModule(viper.GetString("service.module"))
+	godin.InitModule(data.Service.Module)
 	logrus.Info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	logrus.Warn("Godin has created your project, but it does not have any endpoints yet.")
 	logrus.Warn("You can call 'godin add' to create a new endpoint or find your own path :)")

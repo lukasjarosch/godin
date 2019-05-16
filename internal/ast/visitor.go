@@ -8,11 +8,11 @@ import (
 
 type (
 	parseVisitor struct {
-		src *types.AstContext
+		src *ServiceFileContext
 	}
 
 	typeSpecVisitor struct {
-		src   *types.AstContext
+		src   *ServiceFileContext
 		node  *ast.TypeSpec
 		name  *ast.Ident
 		iface *types.Iface
@@ -112,6 +112,11 @@ func (v *methodVisitor) Visit(n ast.Node) ast.Visitor {
 		if rn.IsExported() {
 			v.name = rn
 		}
+		v.depth++
+		return v
+	case *ast.FuncType:
+		v.depth++
+		v.isMethod = true
 		return v
 	case *ast.FieldList:
 		if v.params == nil {
@@ -122,6 +127,16 @@ func (v *methodVisitor) Visit(n ast.Node) ast.Visitor {
 			v.results = &[]types.Argument{}
 		}
 		return &argListVisitor{list: v.results}
+	case nil:
+		v.depth--
+		if v.depth == 0 && v.isMethod && v.name != nil {
+			*v.list = append(*v.list, types.Method{
+				Name:    v.name,
+				Params:  *v.params,
+				Results: *v.results,
+			})
+		}
+		return nil
 	}
 }
 
@@ -154,7 +169,7 @@ func (v *argVisitor) Visit(n ast.Node) ast.Visitor {
 		for _, n := range names {
 			*v.list = append(*v.list, types.Argument{
 				Name: n.(*ast.Ident),
-				Typ: tp,
+				Typ:  tp,
 			})
 		}
 	}
