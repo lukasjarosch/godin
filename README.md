@@ -3,7 +3,6 @@
 </p>
 
 # Godin - An opinionated toolkit for go-kit microservices
-----
 > Work in progress
 
 
