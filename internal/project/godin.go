@@ -23,6 +23,8 @@ type GodinProject struct {
 	box       packr.Box
 }
 
+const ConfigFile = "godin.toml"
+
 // EnsureConfig checks whether the config is loadable.
 // If 'fatal' is false, the config is created in the current working directory
 // If 'fatal' is true, the function will Fatal()
@@ -41,24 +43,11 @@ func EnsureConfig(fatal bool) {
 }
 
 func SaveConfig() {
-	viper.WriteConfigAs("godin.toml")
+	viper.WriteConfigAs(ConfigFile)
 }
 
 // NewGodinProject creates an empty, preconfigured project
-func NewGodinProject(rootPath, serviceName, namespace, module string, box packr.Box) *GodinProject {
-
-	// setup the template data with the specification
-	data := &template.Data{
-		Project: template.Project{
-			RootPath: rootPath,
-		},
-		Service: template.Service{
-			Name:      serviceName,
-			Namespace: namespace,
-			Module:    module,
-		},
-	}
-
+func NewGodinProject(data *template.Data, box packr.Box) *GodinProject {
 	return &GodinProject{
 		Data: data,
 		box:  box,

@@ -18,8 +18,6 @@ func init() {
 	rootCmd.AddCommand(newCommand)
 }
 
-const ConfigFile = "godin.toml"
-
 // rootCmd represents the base command when called without any subcommands
 var newCommand = &cobra.Command{
 	Use:   "new",
@@ -40,16 +38,27 @@ func handler(cmd *cobra.Command, args []string) {
 	projectPath, _ := os.Getwd()
 	viper.Set("project.path", projectPath)
 	prompt()
-	viper.WriteConfigAs(ConfigFile)
+	project.SaveConfig()
+
+	// setup the template data
+	data := &template.Data{
+		Project: template.Project{
+			RootPath: viper.GetString("project.path"),
+		},
+		Godin: template.Godin{
+			Version:Version,
+			Commit:Commit,
+			Build:BuildDate,
+		},
+		Service: template.Service{
+			Name: viper.GetString("service.name"),
+			Namespace: viper.GetString("service.namespace"),
+			Module: viper.GetString("service.module"),
+		},
+	}
 
 	// set-up godin project
-	godin := project.NewGodinProject(
-		viper.GetString("project.path"),
-		viper.GetString("service.name"),
-		viper.GetString("service.namespace"),
-		viper.GetString("service.module"),
-		Box,
-	)
+	godin := project.NewGodinProject(data, Box)
 
 	// add all required folders
 	godin.AddFolder("cmd")
