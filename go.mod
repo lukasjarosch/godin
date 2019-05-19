@@ -8,6 +8,7 @@ require (
 	github.com/Masterminds/sprig v2.18.0+incompatible
 	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf // indirect
 	github.com/dave/dst v0.23.1
+	github.com/dave/jennifer v1.3.0
 	github.com/fatih/structtag v1.0.0 // indirect
 	github.com/go-yaml/yaml v2.1.0+incompatible // indirect
 	github.com/gobuffalo/packr v1.25.0

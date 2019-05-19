@@ -10,7 +10,6 @@ import (
 
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal"
-	"github.com/lukasjarosch/godin/internal/specification"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -20,7 +19,6 @@ type GodinProject struct {
 	templates []template.File
 	Path      string
 	Data      *internal.Data
-	Spec      *specification.Specification
 	box       packr.Box
 }
 
