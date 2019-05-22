@@ -27,6 +27,6 @@ func syncCmd(cmd *cobra.Command, args []string) {
 	// setup the template data
 	data := internal.DataFromConfig()
 
-	e := generate.NewEndpoint(data)
-	e.Render()
+	l := generate.NewLogging(data)
+	l.Render()
 }
