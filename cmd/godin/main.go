@@ -21,9 +21,9 @@ func init() {
 			Version: "2.0.0",
 		},
 		Service: template.Service{
-			Name:       "Greeter",
-			Namespace:  "Godin",
-			ImportPath: "github.com/lukasjarosch/godin/example/greeter/internal/service",
+			Name:      "Greeter",
+			Namespace: "Godin",
+			Module:    "github.com/lukasjarosch/godin/example/greeter/internal/service",
 			Methods: []template.Method{
 				{
 					ServiceName: "Greeter",

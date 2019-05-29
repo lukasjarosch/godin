@@ -3,24 +3,48 @@ package template
 import (
 	"fmt"
 	"strings"
+
+	config "github.com/spf13/viper"
+	"github.com/lukasjarosch/godin/internal"
+	"github.com/vetcher/go-astra/types"
 )
 
 type Context struct {
 	Service Service
-	Godin Godin
+	Godin   Godin
+}
+
+// NewContextFromConfig will initialize the context will all the data from the configuration
+// The context is not fully populated after this call, but all configuration values are accessible.
+func NewContextFromConfig() Context {
+	ctx := Context{
+		Service: Service{
+			Name:      config.GetString("service.name"),
+			Namespace: config.GetString("service.namespace"),
+			Module:    config.GetString("service.module"),
+		},
+		Godin:Godin{
+			Version: internal.Version,
+			Build: internal.Build,
+			Commit: internal.Commit,
+		},
+	}
+
+	return ctx
 }
 
 type Godin struct {
 	Version string
-	Commit string
-	Build string
+	Commit  string
+	Build   string
 }
 
 type Service struct {
-	Name       string
+	Name      string
 	Namespace string
-	Methods    []Method
-	ImportPath string
+	Methods   []Method
+	Module    string
+	Interface types.Interface
 }
 
 type Variable struct {
@@ -31,9 +55,9 @@ type Variable struct {
 type Method struct {
 	// required for partials which do not have access to the Service struct
 	ServiceName string
-	Name string
-	Params []Variable
-	Returns []Variable
+	Name        string
+	Params      []Variable
+	Returns     []Variable
 }
 
 func (m Method) RequestName() string {
@@ -74,5 +98,3 @@ func (m Method) ReturnVariableList() string {
 
 	return strings.Join(list, ",")
 }
-
-
