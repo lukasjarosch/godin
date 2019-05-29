@@ -1,11 +1,13 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/project"
 	"github.com/sirupsen/logrus"
-	"github.com/lukasjarosch/godin/internal"
-	"github.com/lukasjarosch/godin/internal/generate"
+	"github.com/spf13/cobra"
+	"github.com/vetcher/go-astra"
+	"github.com/vetcher/go-astra/types"
+	"path"
 )
 
 func init() {
@@ -27,6 +29,30 @@ func syncCmd(cmd *cobra.Command, args []string) {
 	// setup the template data
 	data := internal.DataFromConfig()
 
-	l := generate.NewLogging(data)
-	l.Render()
+	fileNames := []string{
+		"internal/service/" + data.Service.Name + "/implementation.go",
+		"internal/service/middleware/logging.go",
+	}
+
+	var files []*types.File
+	for _, fileName := range fileNames {
+		f, err := astra.ParseFile(path.Join(data.Project.RootPath, fileName))
+		if err != nil {
+			logrus.Fatal(err)
+		}
+		files = append(files, f)
+	}
+
+	parsed, err := astra.MergeFiles(files)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	logrus.Infof("parsed all files: %s", parsed.Name)
+
+	// for each file to be modified
+	// parse with astra and check which functions already exist
+	// render partial templates of those who are missing
+	// append those partials to the file
+	// save
 }

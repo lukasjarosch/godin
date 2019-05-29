@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/lukasjarosch/godin/internal"
-	"github.com/lukasjarosch/godin/internal/ast"
 	"github.com/lukasjarosch/godin/internal/module"
 	"github.com/lukasjarosch/godin/internal/project"
 	"github.com/manifoldco/promptui"
@@ -38,14 +37,8 @@ func addCmd(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	serviceFile := ast.NewFile("service.go", f)
-	serviceFileContext, err := serviceFile.Process()
-	if err != nil {
-	    logrus.Fatal(err)
-	}
-	logrus.Infof("parsed service file, %d methods in service %s",
-		len(serviceFileContext.Interfaces[0].Methods),
-		serviceFileContext.Interfaces[0].Name.Name)
+
+	logrus.Info(f.Name())
 
 	// ask user what to do
 	mod, err := promptModule()
@@ -56,10 +49,7 @@ func addCmd(cmd *cobra.Command, args []string) {
 
 	switch mod {
 	case "endpoint":
-		m := module.NewEndpoint(data, serviceFileContext)
-		if err := m.Execute(); err != nil {
-			logrus.Fatal(err)
-		}
+		logrus.Fatal("work in progress")
 		break
 	case "middleware":
 		logrus.Fatal("work in progress")
