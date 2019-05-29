@@ -22,6 +22,8 @@ var initCommand = &cobra.Command{
 
 func initCmd(cmd *cobra.Command, args []string) {
 
+	logrus.SetLevel(logrus.DebugLevel)
+
 	// check if already an initialized project
 	if _, err := os.Stat(godin.ConfigFilename()); err == nil {
 		logrus.Fatal("project already initialized")
@@ -33,8 +35,15 @@ func initCmd(cmd *cobra.Command, args []string) {
 	if err := project.SetupDirectories(); err != nil {
 		logrus.Fatal(err)
 	}
+	logrus.Info("folder structure created")
 
 	if err := template.WriteDockerfile(TemplateFilesystem); err != nil {
 		logrus.Error(err)
 	}
+	logrus.Info("generated Dockerfile")
+
+	if err := template.WriteGitignore(TemplateFilesystem); err != nil {
+		logrus.Error(err)
+	}
+	logrus.Info("generated .gitignore")
 }
