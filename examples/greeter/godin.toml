@@ -1,0 +1,21 @@
+
+[godin]
+  version = "0.0.0"
+
+[project]
+  created = "Wed, 29 May 2019 18:01:33 CEST"
+
+[protobuf]
+  package = "yyy"
+  service = "yyy"
+
+[service]
+  module = "yyy"
+  name = "yyy"
+  namespace = "yyy"
+
+  [service.middleware]
+    authorization = false
+    caching = false
+    logging = true
+    recovery = true

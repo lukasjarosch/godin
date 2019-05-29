@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 	"github.com/lukasjarosch/godin/internal"
 )
@@ -19,6 +18,6 @@ var versionCommand = &cobra.Command{
 }
 
 func versionCmd(cmd *cobra.Command, args []string) {
-	format := "Godin - go-kit project manager\nv%s (%s), built: %s\n"
-	fmt.Printf(format, internal.Version, internal.Commit, internal.BuildDate)
+	format := "godin version %s (%s), %s\n"
+	fmt.Printf(format, internal.Version, internal.Commit, internal.Build)
 }

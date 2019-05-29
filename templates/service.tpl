@@ -1,44 +1,14 @@
-package {{ .ServiceName }}
+package service
 
 import (
-    "context"
-
-    {{ range .Spec.ResolvedDependencies }}
-    "{{ .Import }}"
-    {{- end }}
+    "errors"
 )
 
-{{ $receiver := .ServiceName | camelcase -}}
-
-// {{ .Spec.Service.Description }}
-type {{ .ServiceName | camelcase }} struct {
-    {{- range .Spec.ResolvedDependencies }}
-    {{ .Name }} {{ .Type }}
-    {{- end }}
+// TODO: {{ .ServiceName }} documentation
+type {{ .ServiceName }} interface {
 }
 
+// Application errors
 var (
-    {{ range .Spec.Service.Errors }}
-    {{ .Name }} = status.Error({{ .CodeString }}, "{{ .Message }}")
-    {{- end }}
+    ErrNotImplemented = errors.New("endpoint not implemented")
 )
-
-// New{{ .ServiceName | camelcase }} returns the business implementation of {{ .Spec.Service.API.Package }}.{{ .Spec.Service.API.Service }}
-func New{{ .ServiceName | camelcase }}({{ deps_param_list }}) *{{ .ServiceName | camelcase }}{
-
-	service := &{{ .ServiceName | camelcase }}{
-	    {{ deps_value_mapping }}
-	}
-
-	return service
-}
-
-{{ range .Spec.Service.Methods -}}
-{{- range .Comments }}
-// {{ . }}
-{{- end }}
-func (svc *{{ $receiver }}) {{ .Name }}({{ arg_list .Name }}) ({{ ret_list .Name }}) {
-    return {{ default_value_list .Returns }}
-}
-{{- end }}
-

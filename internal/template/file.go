@@ -2,100 +2,81 @@ package template
 
 import (
 	"bytes"
-	"go/format"
-	"os"
-	tpl "text/template"
+	"path"
+	"path/filepath"
+	"text/template"
 
-	"github.com/lukasjarosch/godin/internal"
+	"fmt"
+	"os"
+
 	"github.com/Masterminds/sprig"
 	"github.com/gobuffalo/packr"
-	"github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 )
 
-// File defines the interface for our template-files
-type File interface {
-	Render(box packr.Box, data *internal.Data) error
+// file template rendering
+// a template-file can include one/more partials
+// each file therefore needs a different set of data
+
+type File struct {
+	BaseTemplate
+	tpl       *template.Template
+	templates []string
 }
 
-// file defines a single template-file
-type file struct {
-	Name       string // Name is the template filename
-	TargetPath string // Absolute path, output path
-	goSource   bool   // Set and the template will be formatted
-}
+func NewFile(name string, isGoSource bool) *File {
+	wd, _ := os.Getwd()
 
-// NewTemplateFile returns a new file
-func NewTemplateFile(name string, path string, goSource bool) *file {
-	return &file{
-		Name:       name,
-		TargetPath: path,
-		goSource:   goSource,
+	return &File{
+		BaseTemplate: BaseTemplate{
+			name:       name,
+			isGoSource: isGoSource,
+			rootPath:   wd,
+		},
 	}
 }
 
-// Render will parse the template and write it out as file
-// If the template is defined as goSource, the renderGoCode() function is called for processing
-// Every other template is written using template.Execute()
-//
-// TODO: Catch file exists errors and handle them, better not overwrite things :)
-func (t *file) Render(box packr.Box, data *internal.Data) error {
-
-	stat, _ := os.Stat(t.TargetPath)
-	if stat != nil {
-		logrus.Infof("[skip] template already written: %s", t.Name)
-		return nil
-	}
-
-	templateData, err := box.FindString(t.Name)
+// prepare the templates paths which might be included by the loaded template file
+func (f *File) prepare() error {
+	partials, err := filepath.Glob(f.PartialsGlob())
 	if err != nil {
 		return err
 	}
 
-	template, err := tpl.New(t.TargetPath).Funcs(sprig.TxtFuncMap()).Parse(templateData)
-	f, err := os.Create(t.TargetPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
+	f.templates = append(f.templates, f.TemplatePath())
+	f.templates = append(f.templates, partials...)
 
-	if t.goSource {
-		err := t.renderGoCode(f, template, data)
+	return nil
+}
+
+// Render the specified template file
+func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, err error) {
+	if err := f.prepare(); err != nil {
+		return nil, err
+	}
+
+	var templateData string
+	for _, tpl := range f.templates {
+		tmp, err := fs.FindString(tpl)
 		if err != nil {
-			return err
+			return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", tpl))
 		}
-		logrus.Infof("[template] rendered %s", t.Name)
-		return nil
+		templateData += tmp
 	}
 
-	err = template.Execute(f, data)
+	buf := bytes.Buffer{}
+	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Parse(templateData)
 	if err != nil {
-		return err
-	}
-	logrus.Infof("[template] rendered %s", t.Name)
-
-	return nil
-}
-
-// renderGoCode parses the given file using the given template. The parsed file is
-// written into a bytes.Buffer which is used to format the source before writing the file.
-func (t *file) renderGoCode(f *os.File, template *tpl.Template, data *internal.Data) error {
-	var out bytes.Buffer
-
-	err := template.Execute(&out, data)
-	if err != nil {
-		return err
+		return nil, err
 	}
 
-	formatted, err := format.Source(out.Bytes())
-	if err != nil {
-		logrus.Info(template.ParseName)
-		return err
+	if err := f.tpl.Execute(&buf, templateContext); err != nil {
+		return nil, err
 	}
 
-	_, err = f.Write(formatted)
-	if err != nil {
-		return err
+	if f.isGoSource {
+		return f.FormatCode(buf.Bytes())
 	}
 
-	return nil
+	return buf.Bytes(), nil
 }

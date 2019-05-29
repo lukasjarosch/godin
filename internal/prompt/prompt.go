@@ -12,9 +12,9 @@ type Prompt struct {
 
 func NewPrompt(label, defaultValue string, validateFunc promptui.ValidateFunc) *Prompt {
 	prompt := promptui.Prompt{
-		Label:   fmt.Sprintf("%s ", label),
-		Default: defaultValue,
-		Validate:validateFunc,
+		Label:    fmt.Sprintf("%s ", label),
+		Default:  defaultValue,
+		Validate: validateFunc,
 	}
 
 	return &Prompt{
