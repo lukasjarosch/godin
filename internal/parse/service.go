@@ -133,24 +133,41 @@ func (s *Service) validateNamedResults() error {
 func (s *Service) validateCustomTypes() (err error) {
 	for _, meth := range s.Interface.Methods {
 		for _, arg := range meth.Args {
-			if !IsBuiltin(arg.Type) {
-				err = s.findCustomTypeDeclaration(arg.Type.String())
+			name := s.normalizeType(arg.Type)
+			_, ok := BuiltinTypes[name]
+			if !ok {
+				err = s.findCustomTypeDeclaration(name)
 			}
 		}
 
 		for _, res := range meth.Results {
-			if !IsBuiltin(res.Type) {
-				err = s.findCustomTypeDeclaration(res.Type.String())
+			name := s.normalizeType(res.Type)
+
+			_, ok := BuiltinTypes[name]
+			if !ok {
+				err = s.findCustomTypeDeclaration(name)
 			}
 		}
 	}
 	return err
 }
 
+// normalizeType will remove any unary modifiers from the type string. This is required for a proper resolution/lookup
+// of types
+func (s *Service) normalizeType(t Type) string {
+	cleanName := strings.Trim(t.String(), "*")
+	cleanName = strings.Trim(cleanName, "[]*")
+	cleanName = strings.Trim(cleanName, "*[]")
+	cleanName = strings.Trim(cleanName, "[]")
+
+	return cleanName
+}
+
 // findCustomTypeDeclaration searches for a given typeName inside the current file.
 // It will search in structs and types. It will also try to search in the imports, but one should
 // not rely on that to work. It's just present to ensure that we can use context.Context in the service-file.
 func (s *Service) findCustomTypeDeclaration(name string) error {
+
 	for _, s := range s.File.Structures {
 		if s.Name == name {
 			return nil

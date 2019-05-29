@@ -5,8 +5,10 @@ import (
 	"strings"
 
 	"github.com/lukasjarosch/godin/internal"
-	config "github.com/spf13/viper"
 	"github.com/lukasjarosch/godin/internal/parse"
+	config "github.com/spf13/viper"
+	"github.com/vetcher/go-astra/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Context struct {
@@ -57,10 +59,10 @@ func PopulateFromService(ctx Context, service *parse.Service) Context {
 		}
 
 		methods = append(methods, Method{
-			Name:     meth.Name,
-			Comments: meth.Docs,
-			Params:   params,
-			Returns:  returns,
+			Name:        meth.Name,
+			Comments:    meth.Docs,
+			Params:      params,
+			Returns:     returns,
 			ServiceName: serviceName,
 		})
 	}
@@ -88,6 +90,32 @@ type Variable struct {
 	Type string
 }
 
+// ResolveType resolves the type to use inside a template. It covers different combinations which should suffice most cases.
+func (v Variable) ResolveType() string {
+
+	if strings.Contains(v.Type, ".") {
+		return v.Type
+	}
+
+	if strings.HasPrefix(v.Type, "[]*") {
+		return fmt.Sprintf("[]*%s.%s", "service", strings.TrimLeft(v.Type, "[]*"))
+	}
+
+	if strings.HasPrefix(v.Type, "*[]") {
+		return fmt.Sprintf("*[]%s.%s", "service", strings.TrimLeft(v.Type, "[]*"))
+	}
+
+	if strings.HasPrefix(v.Type, "*") {
+		return fmt.Sprintf("*%s.%s", "service", strings.TrimLeft(v.Type, "*"))
+	}
+
+	if strings.HasPrefix(v.Type, "[]") {
+		return fmt.Sprintf("[]%s.%s", "service", strings.TrimLeft(v.Type, "[]"))
+	}
+
+	return fmt.Sprintf("%s.%s", "service", v.Type)
+}
+
 type Method struct {
 	// required for partials which do not have access to the Service struct
 	ServiceName string
@@ -109,7 +137,13 @@ func (m Method) ParamList() string {
 	var list []string
 
 	for _, arg := range m.Params {
-		list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
+		_, ok := types.BuiltinTypes[arg.Type]
+		if !ok {
+			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
+			logrus.Info(fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
+		} else {
+			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
+		}
 	}
 
 	return strings.Join(list, ", ")
@@ -119,7 +153,12 @@ func (m Method) ReturnList() string {
 	var list []string
 
 	for _, arg := range m.Returns {
-		list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
+		_, ok := types.BuiltinTypes[arg.Type]
+		if !ok {
+			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
+		} else {
+			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
+		}
 	}
 
 	return strings.Join(list, ", ")

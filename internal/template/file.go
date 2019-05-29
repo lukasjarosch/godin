@@ -3,7 +3,6 @@ package template
 import (
 	"bytes"
 	"path"
-	"path/filepath"
 	"text/template"
 
 	"fmt"
@@ -37,21 +36,16 @@ func NewFile(name string, isGoSource bool) *File {
 }
 
 // prepare the templates paths which might be included by the loaded template file
-func (f *File) prepare() error {
-	partials, err := filepath.Glob(f.PartialsGlob())
-	if err != nil {
-		return err
-	}
-
+func (f *File) prepare(fs packr.Box) error {
 	f.templates = append(f.templates, f.TemplatePath())
-	f.templates = append(f.templates, partials...)
+	f.templates = append(f.templates, "partials/service_method.tpl")
 
 	return nil
 }
 
 // Render the specified template file
 func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, err error) {
-	if err := f.prepare(); err != nil {
+	if err := f.prepare(fs); err != nil {
 		return nil, err
 	}
 
@@ -67,11 +61,12 @@ func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, e
 	buf := bytes.Buffer{}
 	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Parse(templateData)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Parse")
 	}
 
+
 	if err := f.tpl.Execute(&buf, templateContext); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Execute")
 	}
 
 	if f.isGoSource {

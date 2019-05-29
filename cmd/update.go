@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	config "github.com/spf13/viper"
+	"path/filepath"
 )
 
 func init() {
@@ -48,6 +49,28 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	tplContext := template.NewContextFromConfig()
 	tplContext = template.PopulateFromService(tplContext, service)
 
-	logrus.Infof("%+v", tplContext)
+	wd, _ := os.Getwd()
+	implementationFile := filepath.Join(wd, "internal", "service", tplContext.Service.Name, "implementation.go")
+
+	if _, err := os.Stat(implementationFile); err != nil {
+
+		// implementation.go does not exist, generate the whole file
+		logrus.Info("implementation.go does not yet exist, creating")
+		implementation := template.NewGenerator(template.GenerateOptions{
+			Context: tplContext,
+			TargetFile: implementationFile,
+			Overwrite: true,
+			IsGoSource: true,
+			Template: "implementation",
+		})
+		if err := implementation.GenerateFile(TemplateFilesystem); err != nil {
+		   	logrus.Fatalf("failed to generate implementation.go: %s", err.Error())
+		}
+		rel, _ := filepath.Rel(wd, implementationFile)
+		logrus.Infof("generated %s", rel)
+
+	} else {
+		logrus.Info("implementation.go already exist, updating")
+	}
 
 }
