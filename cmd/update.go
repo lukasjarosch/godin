@@ -3,13 +3,13 @@ package cmd
 import (
 	"os"
 
+	"strings"
+
 	"github.com/lukasjarosch/godin/internal/godin"
+	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/lukasjarosch/godin/internal/parse"
-	"path/filepath"
-	"strings"
-	"github.com/spf13/viper"
+	config "github.com/spf13/viper"
 )
 
 func init() {
@@ -40,27 +40,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Fatalf("failed to load configuration: %s", err.Error())
 	}
 
-	// interface name: Title of ServiceName
-	interfaceName := strings.Title(viper.GetString("service.name"))
-
 	// parse service.go
-	wd, _ := os.Getwd()
-	service := parse.NewServiceParser(filepath.Join(wd, "internal", "service", "service.go"))
-	if err := service.ParseFile(); err != nil {
-		logrus.Fatalf("failed to parse service.go: %s", err.Error())
-	}
-	logrus.Info("parsed service.go")
+	interfaceName := strings.Title(config.GetString("service.name"))
+	service := godin.ParseServiceFile(interfaceName)
 
-	if err := service.FindInterface(interfaceName); err != nil {
-		logrus.Fatalf("unable to find service interface: %s", err.Error())
-	}
-	logrus.Infof("found interface: %s", interfaceName)
+	// prepare template context for rendering
+	tplContext := template.NewContextFromConfig()
+	tplContext = template.PopulateFromService(tplContext, service)
 
-	if err := service.ValidateInterface(); err != nil {
-		logrus.Fatalf("interface invalid: %s", err.Error())
-	}
-	logrus.Info("interface is valid")
-
-	// tplContext := template.NewContextFromConfig()
+	logrus.Infof("%+v", tplContext)
 
 }

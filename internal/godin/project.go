@@ -1,14 +1,17 @@
 package godin
 
 import (
+	"os"
 	"time"
 
 	"path/filepath"
 
 	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/fs"
+	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	config "github.com/spf13/viper"
 )
 
@@ -19,6 +22,7 @@ var DefaultDirectoryList = []string{
 	"internal/service/endpoint",
 	"internal/service/middleware",
 	"pkg/grpc",
+	"strings",
 }
 
 type Project struct {
@@ -69,4 +73,25 @@ func (p *Project) SetupDirectories() error {
 	}
 
 	return nil
+}
+
+func ParseServiceFile(interfaceName string) *parse.Service {
+	wd, _ := os.Getwd()
+	service := parse.NewServiceParser(filepath.Join(wd, "internal", "service", "service.go"))
+	if err := service.ParseFile(); err != nil {
+		logrus.Fatalf("failed to parse service.go: %s", err.Error())
+	}
+	logrus.Info("parsed service.go")
+
+	if err := service.FindInterface(interfaceName); err != nil {
+		logrus.Fatalf("unable to find service interface: %s", err.Error())
+	}
+	logrus.Infof("found interface: %s", interfaceName)
+
+	if err := service.ValidateInterface(); err != nil {
+		logrus.Fatalf("interface invalid: %s", err.Error())
+	}
+	logrus.Info("interface is valid")
+
+	return service
 }

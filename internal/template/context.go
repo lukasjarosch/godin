@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	config "github.com/spf13/viper"
 	"github.com/lukasjarosch/godin/internal"
-	"github.com/vetcher/go-astra/types"
+	config "github.com/spf13/viper"
+	"github.com/lukasjarosch/godin/internal/parse"
 )
 
 type Context struct {
@@ -23,12 +23,49 @@ func NewContextFromConfig() Context {
 			Namespace: config.GetString("service.namespace"),
 			Module:    config.GetString("service.module"),
 		},
-		Godin:Godin{
+		Godin: Godin{
 			Version: internal.Version,
-			Build: internal.Build,
-			Commit: internal.Commit,
+			Build:   internal.Build,
+			Commit:  internal.Commit,
 		},
 	}
+
+	return ctx
+}
+
+// PopulateFromService will populate an existing Context with the available data from the parse service-file
+func PopulateFromService(ctx Context, service *parse.Service) Context {
+	serviceName := config.GetString("service.name")
+
+	// map go-astra/types Method to our Method struct
+	var methods []Method
+	for _, meth := range service.Interface.Methods {
+		var params []Variable
+		for _, arg := range meth.Args {
+			params = append(params, Variable{
+				Name: arg.Name,
+				Type: arg.Type.String(),
+			})
+		}
+
+		var returns []Variable
+		for _, ret := range meth.Results {
+			returns = append(returns, Variable{
+				Name: ret.Name,
+				Type: ret.Type.String(),
+			})
+		}
+
+		methods = append(methods, Method{
+			Name:     meth.Name,
+			Comments: meth.Docs,
+			Params:   params,
+			Returns:  returns,
+			ServiceName: serviceName,
+		})
+	}
+
+	ctx.Service.Methods = methods
 
 	return ctx
 }
@@ -44,7 +81,6 @@ type Service struct {
 	Namespace string
 	Methods   []Method
 	Module    string
-	Interface types.Interface
 }
 
 type Variable struct {
@@ -55,6 +91,7 @@ type Variable struct {
 type Method struct {
 	// required for partials which do not have access to the Service struct
 	ServiceName string
+	Comments    []string
 	Name        string
 	Params      []Variable
 	Returns     []Variable
