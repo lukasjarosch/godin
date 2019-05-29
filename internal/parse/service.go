@@ -21,6 +21,7 @@ func NewServiceParser(path string) *Service {
 	}
 }
 
+// ParseFile will use go-astra to parse the service-file
 func (s *Service) ParseFile() (err error) {
 	s.File, err = astra.ParseFile(s.path)
 	if err != nil {
@@ -29,6 +30,7 @@ func (s *Service) ParseFile() (err error) {
 	return nil
 }
 
+// FindInterface searches for an interface with the given name. If the interface is found, it's set to the Interface field
 func (s *Service) FindInterface(interfaceName string) error {
 	for _, iface := range s.File.Interfaces {
 		if iface.Name == interfaceName {
@@ -46,6 +48,7 @@ func (s *Service) FindInterface(interfaceName string) error {
 // + first parameter must be 'context.Context'
 // + last return parameter must be ' error'
 // + all results must be named
+// + if a custom type is used, it MUST be defined in the same file
 func (s *Service) ValidateInterface() (err error) {
 	err = s.validateMethodComments()
 	if err != nil {
@@ -63,6 +66,11 @@ func (s *Service) ValidateInterface() (err error) {
 	}
 
 	err = s.validateNamedResults()
+	if err != nil {
+		return err
+	}
+
+	err = s.validateCustomTypes()
 	if err != nil {
 		return err
 	}
@@ -97,8 +105,8 @@ func (s *Service) validateContextParameter() error {
 // validateErrorReturn iterates over all interface methods and checks whether every last argument is an error.
 // An error is returned if a method does not have an error as last return argument.
 func (s *Service) validateErrorReturn() error {
-	for _, meth:= range s.Interface.Methods {
-		lastReturn := meth.Results[len(meth.Results) - 1]
+	for _, meth := range s.Interface.Methods {
+		lastReturn := meth.Results[len(meth.Results)-1]
 
 		if lastReturn.Type.String() != "error" {
 			return fmt.Errorf("last return argument must be an error: %s", meth.Name)
@@ -108,6 +116,7 @@ func (s *Service) validateErrorReturn() error {
 	return nil
 }
 
+// validateNamedResults ensures that all return parameters are named. An error is returned if an unnamed param is found.
 func (s *Service) validateNamedResults() error {
 	for _, meth := range s.Interface.Methods {
 		for _, arg := range meth.Results {
@@ -117,4 +126,50 @@ func (s *Service) validateNamedResults() error {
 		}
 	}
 	return nil
+}
+
+// validateCustomTypes will try and search for any custom types inside the service.go file
+// if the type is not declared in the same file, an error is returned.
+func (s *Service) validateCustomTypes() (err error) {
+	for _, meth := range s.Interface.Methods {
+		for _, arg := range meth.Args {
+			if !IsBuiltin(arg.Type) {
+				err = s.findCustomTypeDeclaration(arg.Type.String())
+			}
+		}
+
+		for _, res := range meth.Results {
+			if !IsBuiltin(res.Type) {
+				err = s.findCustomTypeDeclaration(res.Type.String())
+			}
+		}
+	}
+	return err
+}
+
+// findCustomTypeDeclaration searches for a given typeName inside the current file.
+// It will search in structs and types. It will also try to search in the imports, but one should
+// not rely on that to work. It's just present to ensure that we can use context.Context in the service-file.
+func (s *Service) findCustomTypeDeclaration(name string) error {
+	for _, s := range s.File.Structures {
+		if s.Name == name {
+			return nil
+		}
+	}
+
+	for _, t := range s.File.Types {
+		if t.Name == name {
+			return nil
+		}
+	}
+
+	// maybe the type is imported (e.g. context.Context)
+	// this is not 100% acurate, but i should get the job done
+	for _, i := range s.File.Imports {
+		if strings.Contains(strings.ToLower(name), i.Package) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("type %s is not defined in service.go", name)
 }
