@@ -7,7 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/lukasjarosch/godin/internal/template"
+	config "github.com/spf13/viper"
 	"fmt"
+	"os/exec"
 )
 
 func init() {
@@ -60,5 +62,13 @@ func initCmd(cmd *cobra.Command, args []string) {
 		logrus.Error(fmt.Sprintf("failed to generate .gitinore: %s", err.Error()))
 	} else {
 		logrus.Info("generated .gitinore")
+	}
+
+	// init go module
+	modCmd := exec.Command("go", "mod", "init", config.GetString("service.module"))
+	if err := modCmd.Run(); err != nil {
+		logrus.Errorf("failed to init module: %s", err.Error())
+	} else {
+		logrus.Infof("initialized module %s", config.GetString("service.module"))
 	}
 }
