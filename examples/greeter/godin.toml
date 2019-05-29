@@ -1,0 +1,21 @@
+
+[godin]
+  version = "0.0.0"
+
+[project]
+  created = "Wed, 29 May 2019 19:17:22 CEST"
+
+[protobuf]
+  package = "github.com/lukasjarosch/godin-api-go/tree/master/godin/greeter/v1beta1"
+  service = "GreeterAPI"
+
+[service]
+  module = "github.com/lukasjarosch/godin/example/greeter"
+  name = "greeter"
+  namespace = "godin"
+
+  [service.middleware]
+    authorization = false
+    caching = false
+    logging = true
+    recovery = true
