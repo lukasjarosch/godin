@@ -1,40 +1,61 @@
 package template
 
 import (
-	"github.com/gobuffalo/packr"
-	"github.com/pkg/errors"
 	config "github.com/spf13/viper"
 )
 
-// WriteDockerfile will render the Dockerfile.tpl template to ./Dockerfile, overwriting existing files
-func WriteDockerfile(box packr.Box) error {
-	dockerfile := NewFile("Dockerfile", false)
-	data, err := dockerfile.Render(box, Context{
+var fileOptions = map[string]GenerateOptions{
+	"service_stub": {
+		Template:   "service_stub",
+		IsGoSource: false,
+		TargetFile: "internal/service/service.go",
+		Overwrite:  true,
+	},
+	"dockerfile": {
+		Template:   "Dockerfile",
+		IsGoSource: false,
+		TargetFile: "Dockerfile",
+		Overwrite:  true,
+	},
+	"gitignore": {
+		Template:   "gitignore",
+		IsGoSource: false,
+		TargetFile: ".gitignore",
+		Overwrite:  true,
+	},
+}
+
+func DockerfileOptions() GenerateOptions {
+	ctx := Context{
 		Service: Service{
 			Name: config.GetString("service.name"),
 		},
-	})
-	if err != nil {
-		return errors.Wrap(err, "WriteDockerfile")
-	}
-	file := NewFileWriter("Dockerfile", data)
-	if err := file.Write(true); err != nil {
-		return err
 	}
 
-	return nil
+	opts := fileOptions["dockerfile"]
+	opts.Context = ctx
+
+	return opts
 }
 
-func WriteGitignore(box packr.Box) error {
-	gitignore := NewFile("gitignore", false)
-	data, err := gitignore.Render(box, Context{})
-	if err != nil {
-		return errors.Wrap(err, "WriteGitignore")
-	}
-	file := NewFileWriter(".gitignore", data)
-	if err := file.Write(true); err != nil {
-		return err
+func ServiceStubOptions() GenerateOptions {
+	ctx := Context{
+		Service: Service{
+			Name: config.GetString("service.name"),
+		},
 	}
 
-	return nil
+	opts := fileOptions["service_stub"]
+	opts.Context = ctx
+
+	return opts
+}
+
+func GitignoreOptions() GenerateOptions {
+	ctx := Context{}
+
+	opts := fileOptions["gitignore"]
+	opts.Context = ctx
+
+	return opts
 }

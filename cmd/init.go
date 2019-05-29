@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/lukasjarosch/godin/internal/template"
+	"fmt"
 )
 
 func init() {
@@ -37,13 +38,27 @@ func initCmd(cmd *cobra.Command, args []string) {
 	}
 	logrus.Info("folder structure created")
 
-	if err := template.WriteDockerfile(TemplateFilesystem); err != nil {
-		logrus.Error(err)
+	// service.go
+	service := template.NewGenerator(template.ServiceStubOptions())
+	if err := service.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate service stub: %s", err.Error()))
+	} else {
+		logrus.Info("generated internal/service/service.go")
 	}
-	logrus.Info("generated Dockerfile")
 
-	if err := template.WriteGitignore(TemplateFilesystem); err != nil {
-		logrus.Error(err)
+	// Dockerfile
+	dockerfile := template.NewGenerator(template.DockerfileOptions())
+	if err := dockerfile.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate Dockerfile: %s", err.Error()))
+	} else {
+		logrus.Info("generated Dockerfile")
 	}
-	logrus.Info("generated .gitignore")
+
+	// gitignore
+	gitignore := template.NewGenerator(template.GitignoreOptions())
+	if err := gitignore.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate .gitinore: %s", err.Error()))
+	} else {
+		logrus.Info("generated .gitinore")
+	}
 }
