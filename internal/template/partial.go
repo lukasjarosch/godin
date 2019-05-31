@@ -2,15 +2,18 @@ package template
 
 import (
 	"bytes"
-	"os"
 	"path/filepath"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/gobuffalo/packr"
+	"github.com/pkg/errors"
+	"fmt"
 )
 
 type Partial struct {
 	BaseTemplate
+	tpl *template.Template
 }
 
 func NewPartial(name string, isGoSource bool) *Partial {
@@ -22,18 +25,24 @@ func NewPartial(name string, isGoSource bool) *Partial {
 	}
 }
 
-func (p *Partial) Render(templateContext interface{}) ([]byte, error) {
-	wd, _ := os.Getwd()
+func (p *Partial) Render(fs packr.Box, templateContext interface{}) (rendered []byte, err error) {
 
-	tpl, err := template.New(p.Filename()).
-		Funcs(sprig.TxtFuncMap()).
-		ParseFiles(filepath.Join(wd, "templates", "partials", p.Filename()))
+	templateData, err := fs.FindString(filepath.Join("partials", p.Filename()))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "FindString")
+	}
+
+	// in order to use the partial template definitions, we need to include them somewhere
+	// thus we just add the template to use itself
+	templateData += fmt.Sprintf("{{ template \"%s\" . }}", p.name)
+
+	p.tpl, err = template.New(p.Filename()).Funcs(sprig.TxtFuncMap()).Parse(templateData)
+	if err != nil {
+		return nil, errors.Wrap(err, "Parse")
 	}
 
 	buf := bytes.Buffer{}
-	if err := tpl.Execute(&buf, templateContext); err != nil {
+	if err := p.tpl.Execute(&buf, templateContext); err != nil {
 		return nil, err
 	}
 

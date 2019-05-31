@@ -2,10 +2,10 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	"path"
 	"text/template"
 
-	"fmt"
 	"os"
 
 	"github.com/Masterminds/sprig"
@@ -49,22 +49,29 @@ func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, e
 		return nil, err
 	}
 
-	var templateData string
-	for _, tpl := range f.templates {
-		tmp, err := fs.FindString(tpl)
-		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", tpl))
-		}
-		templateData += tmp
+	// parse base template first
+	tmp, err := fs.FindString(f.templates[0])
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[0]))
 	}
-
-	buf := bytes.Buffer{}
-	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Parse(templateData)
+	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Parse(tmp)
 	if err != nil {
 		return nil, errors.Wrap(err, "Parse")
 	}
 
+	// parse all loaded partial templates
+	for i := 1; i < len(f.templates); i++ {
+		tmp, err := fs.FindString(f.templates[i])
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[i]))
+		}
+		f.tpl, err = f.tpl.Parse(tmp)
+		if err != nil {
+			return nil, errors.Wrap(err, "Parse")
+		}
+	}
 
+	buf := bytes.Buffer{}
 	if err := f.tpl.Execute(&buf, templateContext); err != nil {
 		return nil, errors.Wrap(err, "Execute")
 	}

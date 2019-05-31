@@ -1,6 +1,7 @@
 package template
 
 import (
+	"github.com/sirupsen/logrus"
 	config "github.com/spf13/viper"
 )
 
@@ -23,6 +24,19 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: ".gitignore",
 		Overwrite:  true,
 	},
+	"implementation": {
+		Overwrite:  true,
+		IsGoSource: true,
+		Template:   "implementation",
+	},
+}
+
+func ImplementationFileOptions(tplContext Context, targetPath string) GenerateOptions {
+	ctx := fileOptions["implementation"]
+	ctx.TargetFile = targetPath
+	ctx.Context = tplContext
+
+	return ctx
 }
 
 func DockerfileOptions() GenerateOptions {

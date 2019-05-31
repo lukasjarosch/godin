@@ -8,7 +8,6 @@ import (
 	"github.com/lukasjarosch/godin/internal/parse"
 	config "github.com/spf13/viper"
 	"github.com/vetcher/go-astra/types"
-	"github.com/sirupsen/logrus"
 )
 
 type Context struct {
@@ -140,7 +139,6 @@ func (m Method) ParamList() string {
 		_, ok := types.BuiltinTypes[arg.Type]
 		if !ok {
 			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
-			logrus.Info(fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
 		} else {
 			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
 		}
@@ -173,4 +171,30 @@ func (m Method) ReturnVariableList() string {
 	}
 
 	return strings.Join(list, ",")
+}
+
+func MethodFromType(function *types.Function) Method {
+
+	var args []Variable
+	for _, arg := range function.Args {
+		args = append(args, Variable{
+			Name: arg.Name,
+			Type: arg.Type.String(),
+		})
+	}
+
+	var returns []Variable
+	for _, ret := range function.Results {
+		returns = append(returns, Variable{
+			Name: ret.Name,
+			Type: ret.Type.String(),
+		})
+	}
+
+	return Method{
+		Name: function.Name,
+		Params: args,
+		Returns: returns,
+		Comments: function.Docs,
+	}
 }

@@ -16,7 +16,7 @@ RUN adduser --disabled-password --gecos '' serviceuser
 # build binary
 WORKDIR /build
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build  -ldflags="-w -s" -o /bin/greeter ./cmd/greeter/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build  -ldflags="-w -s" -o /bin/yyy ./cmd/yyy/main.go
 
 
 #################
@@ -25,7 +25,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build  -ldflags
 FROM scratch
 
 #  service binary and assets
-COPY --from=builder /bin/greeter /greeter
+COPY --from=builder /bin/yyy /yyy
 COPY ./migrations /migrations
 
 # import from builder
@@ -36,5 +36,5 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 # better not run as root
 USER serviceuser
 
-ENTRYPOINT ["/greeter"]
+ENTRYPOINT ["/yyy"]
 

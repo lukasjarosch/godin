@@ -17,7 +17,7 @@ func NewServiceImplementation(logger log.Logger) *serviceImplementation {
 }
 
 {{ range .Service.Methods }}
- {{ template "service_method" . }}
+{{ template "service_method" . }}
 {{ end }}
 
 

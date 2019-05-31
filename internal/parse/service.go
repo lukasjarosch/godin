@@ -21,7 +21,7 @@ func NewServiceParser(path string) *Service {
 	}
 }
 
-// ParseFile will use go-astra to parse the service-file
+// ParseFile will use go-astra to parse the service-File
 func (s *Service) ParseFile() (err error) {
 	s.File, err = astra.ParseFile(s.path)
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *Service) FindInterface(interfaceName string) error {
 // + first parameter must be 'context.Context'
 // + last return parameter must be ' error'
 // + all results must be named
-// + if a custom type is used, it MUST be defined in the same file
+// + if a custom type is used, it MUST be defined in the same File
 func (s *Service) ValidateInterface() (err error) {
 	err = s.validateMethodComments()
 	if err != nil {
@@ -128,8 +128,8 @@ func (s *Service) validateNamedResults() error {
 	return nil
 }
 
-// validateCustomTypes will try and search for any custom types inside the service.go file
-// if the type is not declared in the same file, an error is returned.
+// validateCustomTypes will try and search for any custom types inside the service.go File
+// if the type is not declared in the same File, an error is returned.
 func (s *Service) validateCustomTypes() (err error) {
 	for _, meth := range s.Interface.Methods {
 		for _, arg := range meth.Args {
@@ -163,9 +163,9 @@ func (s *Service) normalizeType(t Type) string {
 	return cleanName
 }
 
-// findCustomTypeDeclaration searches for a given typeName inside the current file.
+// findCustomTypeDeclaration searches for a given typeName inside the current File.
 // It will search in structs and types. It will also try to search in the imports, but one should
-// not rely on that to work. It's just present to ensure that we can use context.Context in the service-file.
+// not rely on that to work. It's just present to ensure that we can use context.Context in the service-File.
 func (s *Service) findCustomTypeDeclaration(name string) error {
 
 	for _, s := range s.File.Structures {
