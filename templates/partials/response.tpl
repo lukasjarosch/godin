@@ -1,4 +1,4 @@
-{{ block "response" . }}
+{{ define "response" }}
 {{ .Name }}Response struct {
     {{ range .Returns }}
     {{- if eq .Type "error" }}

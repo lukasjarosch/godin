@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"strings"
@@ -62,6 +63,23 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Infof("updated implementation: %s", implementationFile)
 	}
 
+	// request_response.go
+	reqRes:= template.NewGenerator(template.RequestResponseOptions(tplContext))
+	if err := reqRes.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate request_response.go: %s", err.Error()))
+	} else {
+		logrus.Info("generated internal/service/endpoint/request_response.go")
+	}
+
+	// middleware.go
+	middleware := template.NewGenerator(template.MiddlewareOptions())
+	if err := middleware.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate middleware.go: %s", err.Error()))
+	} else {
+		logrus.Info("generated internal/service/middleware/middleware.go")
+	}
+
+	// logging middleware
 	if config.GetBool("service.middleware.logging") {
 		loggingFile := filepath.Join("internal", "service", "middleware", "logging.go")
 		loggingGen := generate.NewLoggingMiddleware(TemplateFilesystem, loggingFile, service.Interface)

@@ -12,10 +12,22 @@ var fileOptions = map[string]GenerateOptions{
 		Overwrite:  true,
 	},
 	"logging_middleware": {
-		Template: "logging_middleware",
+		Template:   "logging_middleware",
 		IsGoSource: true,
 		TargetFile: "internal/service/middleware/logging.go",
-		Overwrite: true,
+		Overwrite:  true,
+	},
+	"middleware": {
+		Template:   "middleware",
+		IsGoSource: true,
+		TargetFile: "internal/service/middleware/middleware.go",
+		Overwrite:  true,
+	},
+	"request_response": {
+		Template:   "request_response",
+		IsGoSource: true,
+		TargetFile: "internal/service/endpoint/request_response.go",
+		Overwrite:  true,
 	},
 	"dockerfile": {
 		Template:   "Dockerfile",
@@ -50,6 +62,27 @@ func ImplementationFileOptions(tplContext Context, targetPath string) GenerateOp
 	ctx.Context = tplContext
 
 	return ctx
+}
+
+func MiddlewareOptions() GenerateOptions {
+	ctx := Context{
+		Service: Service{
+			Name:   config.GetString("service.name"),
+			Module: config.GetString("service.module"),
+		},
+	}
+
+	opts := fileOptions["middleware"]
+	opts.Context = ctx
+
+	return opts
+}
+
+func RequestResponseOptions(ctx Context) GenerateOptions {
+	opts := fileOptions["request_response"]
+	opts.Context = ctx
+
+	return opts
 }
 
 func DockerfileOptions() GenerateOptions {

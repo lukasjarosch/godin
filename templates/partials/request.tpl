@@ -1,7 +1,9 @@
-{{ block "request" . }}
+{{ define "request" }}
 {{ .Name }}Request struct {
     {{ range .Params }}
-    {{ title .Name }} {{ .Type }} `json:"{{ .Name }}"`
+        {{- if ne .Name "ctx" }}
+        {{ title .Name }} {{ .Type }} `json:"{{ .Name }}"`
+        {{- end }}
     {{- end }}
 }
 {{ end }}

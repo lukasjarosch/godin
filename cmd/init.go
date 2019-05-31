@@ -48,6 +48,14 @@ func initCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated internal/service/service.go")
 	}
 
+	// middleware.go
+	middleware := template.NewGenerator(template.MiddlewareOptions())
+	if err := middleware.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate middleware.go: %s", err.Error()))
+	} else {
+		logrus.Info("generated internal/service/middleware/middleware.go")
+	}
+
 	// Dockerfile
 	dockerfile := template.NewGenerator(template.DockerfileOptions())
 	if err := dockerfile.GenerateFile(TemplateFilesystem); err != nil {
