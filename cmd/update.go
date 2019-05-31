@@ -61,4 +61,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	} else {
 		logrus.Infof("updated implementation: %s", implementationFile)
 	}
+
+	if config.GetBool("service.middleware.logging") {
+		loggingFile := filepath.Join("internal", "service", "middleware", "logging.go")
+		loggingGen := generate.NewLoggingMiddleware(TemplateFilesystem, loggingFile, service.Interface)
+		if err := loggingGen.Update(tplContext); err != nil {
+			logrus.Errorf("failed to update logging middleware: %s: %s", loggingFile, err.Error())
+		} else {
+			logrus.Infof("updated logging middleware: %s", loggingFile)
+		}
+	}
 }

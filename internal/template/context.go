@@ -8,7 +8,6 @@ import (
 	"github.com/lukasjarosch/godin/internal/parse"
 	config "github.com/spf13/viper"
 	"github.com/vetcher/go-astra/types"
-	"github.com/sirupsen/logrus"
 )
 
 type Context struct {
@@ -198,9 +197,9 @@ func MethodFromType(function *types.Function) Method {
 	}
 
 	return Method{
-		Name: function.Name,
-		Params: args,
-		Returns: returns,
+		Name:     function.Name,
+		Params:   args,
+		Returns:  returns,
 		Comments: function.Docs,
 	}
 }

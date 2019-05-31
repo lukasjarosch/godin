@@ -7,9 +7,15 @@ import (
 var fileOptions = map[string]GenerateOptions{
 	"service_stub": {
 		Template:   "service_stub",
-		IsGoSource: false,
+		IsGoSource: true,
 		TargetFile: "internal/service/service.go",
 		Overwrite:  true,
+	},
+	"logging_middleware": {
+		Template: "logging_middleware",
+		IsGoSource: true,
+		TargetFile: "internal/service/middleware/logging.go",
+		Overwrite: true,
 	},
 	"dockerfile": {
 		Template:   "Dockerfile",
@@ -28,6 +34,14 @@ var fileOptions = map[string]GenerateOptions{
 		IsGoSource: true,
 		Template:   "implementation",
 	},
+}
+
+func FileOptions(name string, tplContext Context, targetPath string) GenerateOptions {
+	ctx := fileOptions[name]
+	ctx.TargetFile = targetPath
+	ctx.Context = tplContext
+
+	return ctx
 }
 
 func ImplementationFileOptions(tplContext Context, targetPath string) GenerateOptions {

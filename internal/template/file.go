@@ -39,6 +39,7 @@ func NewFile(name string, isGoSource bool) *File {
 func (f *File) prepare(fs packr.Box) error {
 	f.templates = append(f.templates, f.TemplatePath())
 	f.templates = append(f.templates, "partials/service_method.tpl")
+	f.templates = append(f.templates, "partials/logging_method.tpl")
 
 	return nil
 }

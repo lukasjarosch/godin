@@ -47,3 +47,7 @@ func (s *serviceImplementation) Hello7(ctx context.Context, name *service.Greeti
 // Comment
 func (s *serviceImplementation) Hello8(ctx context.Context, name *[]service.Greeting) (greeting []string, err error) {
 }
+
+// Comment
+func (s *serviceImplementation) Hello9(ctx context.Context, name *[]service.Greeting, foo string, bar string) (greeting []string, err error) {
+}

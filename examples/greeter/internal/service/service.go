@@ -24,6 +24,8 @@ type Yyy interface {
 	Hello7(ctx context.Context, name *Greeting) (greeting []string, err error)
 	// Comment
 	Hello8(ctx context.Context, name *[]Greeting) (greeting []string, err error)
+	// Comment
+	Hello9(ctx context.Context, name *[]Greeting, foo string, bar string) (greeting []string, err error)
 }
 
 // Application errors
