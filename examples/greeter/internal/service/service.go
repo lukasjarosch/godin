@@ -8,10 +8,9 @@ import (
 // Yyy documentation is automatically
 // added to the README.
 type Yyy interface {
-	// Hello greets you. This comment is also automatically added to the README.
-	// Also make sure that all parameters are named, Godin requires this information in order to work.
+	// COMMENT
 	Hello(ctx context.Context, name string) (greeting *Greeting, err error)
-	// Comment
+	// Comment irgendwas
 	Hello2(ctx context.Context, name string) (greeting Greeting, err error)
 	// Comment
 	Hello3(ctx context.Context, name string) (greeting string, err error)
@@ -23,8 +22,8 @@ type Yyy interface {
 	Hello6(ctx context.Context, name []*Greeting) (greeting []*Greeting, err error)
 	// Comment
 	Hello7(ctx context.Context, name *Greeting) (greeting []string, err error)
-	// // Comment
-	// Hello8(ctx context.Context, name *[]Greeting) (greeting []string, err error)
+	// Comment
+	Hello8(ctx context.Context, name *[]Greeting) (greeting []string, err error)
 }
 
 // Application errors

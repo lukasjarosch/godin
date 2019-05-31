@@ -7,8 +7,8 @@ import (
 
 	"path/filepath"
 
+	"github.com/lukasjarosch/godin/internal/generate"
 	"github.com/lukasjarosch/godin/internal/godin"
-	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -34,6 +34,8 @@ var updateCommand = &cobra.Command{
 
 func updateCmd(cmd *cobra.Command, args []string) {
 
+	logrus.SetLevel(logrus.DebugLevel)
+
 	// project must be initialized
 	if _, err := os.Stat(godin.ConfigFilename()); err != nil {
 		logrus.Fatal("project not initialized")
@@ -51,51 +53,12 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	tplContext := template.NewContextFromConfig()
 	tplContext = template.PopulateFromService(tplContext, service)
 
+	// update internal/service/<serviceName>/implementation.go
 	implementationFile := filepath.Join("internal", "service", tplContext.Service.Name, "implementation.go")
-
-	if _, err := os.Stat(implementationFile); err != nil {
-		GenerateFullImplementation(tplContext, implementationFile)
+	implementationGen := generate.NewImplementation(TemplateFilesystem, implementationFile, service.Interface)
+	if err := implementationGen.Update(tplContext); err != nil {
+		logrus.Errorf("failed to update implementation: %s: %s", implementationFile, err.Error())
 	} else {
-		logrus.Info("implementation.go already exist, updating")
-
-		implementation := parse.NewImplementationParser(implementationFile, service.Interface)
-		if err := implementation.Parse(); err != nil {
-			logrus.Fatalf("unable to parse implementation.go: %s", err.Error())
-		}
-		logrus.Infof("parsed %s", implementationFile)
-
-		if len(implementation.MissingMethods) > 0 {
-			for _, meth := range implementation.MissingMethods {
-				logrus.Infof("missing method: %s", meth.String())
-
-				tpl := template.NewPartial("service_method", true)
-				data, err := tpl.Render(TemplateFilesystem, template.MethodFromType(meth))
-				if err != nil {
-					logrus.Fatalf("failed to render partial template: %s", err.Error())
-				}
-
-				writer := template.NewFileAppendWriter(implementationFile, data)
-				if err := writer.Write(); err != nil {
-					logrus.Fatalf("failed to write file: %s", implementationFile)
-				}
-				logrus.Info("updated implementation")
-			}
-		} else if len(implementation.File.Methods) > len(service.Interface.Methods) {
-			logrus.Info("there are too many methods, i cannot remove them, you need to to that!")
-			logrus.Info("only count exported methods and find which one needs to be removed by the developer")
-		} else {
-			logrus.Info("all methods of the interface are present")
-		}
+		logrus.Infof("updated implementation: %s", implementationFile)
 	}
-}
-
-func GenerateFullImplementation(tplContext template.Context, targetPath string) {
-	logrus.Info("implementation.go does not yet exist, creating")
-
-	implementation := template.NewGenerator(template.ImplementationFileOptions(tplContext, targetPath))
-	if err := implementation.GenerateFile(TemplateFilesystem); err != nil {
-		logrus.Fatalf("failed to generate implementation.go: %s", err.Error())
-	}
-
-	logrus.Infof("generated %s", targetPath)
 }

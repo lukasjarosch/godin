@@ -8,6 +8,7 @@ import (
 	"github.com/lukasjarosch/godin/internal/parse"
 	config "github.com/spf13/viper"
 	"github.com/vetcher/go-astra/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Context struct {
@@ -89,27 +90,32 @@ type Variable struct {
 	Type string
 }
 
+func (v Variable) resolveType(typ string, prefix string) (string, error) {
+	if strings.HasPrefix(typ, prefix) {
+		trimmed := strings.TrimLeft(v.Type, prefix)
+		if types.IsBuiltinTypeString(trimmed) {
+			return fmt.Sprintf("%s%s", prefix, trimmed), nil
+		}
+
+		return fmt.Sprintf("%s%s.%s", prefix, "service", trimmed), nil
+	}
+
+	return "", fmt.Errorf("type %s cannot be resolved with prefix %s", typ, prefix)
+}
+
 // ResolveType resolves the type to use inside a template. It covers different combinations which should suffice most cases.
 func (v Variable) ResolveType() string {
+	prefixes := []string{"[]*", "*[]", "[]", "*"}
 
 	if strings.Contains(v.Type, ".") {
 		return v.Type
 	}
 
-	if strings.HasPrefix(v.Type, "[]*") {
-		return fmt.Sprintf("[]*%s.%s", "service", strings.TrimLeft(v.Type, "[]*"))
-	}
-
-	if strings.HasPrefix(v.Type, "*[]") {
-		return fmt.Sprintf("*[]%s.%s", "service", strings.TrimLeft(v.Type, "[]*"))
-	}
-
-	if strings.HasPrefix(v.Type, "*") {
-		return fmt.Sprintf("*%s.%s", "service", strings.TrimLeft(v.Type, "*"))
-	}
-
-	if strings.HasPrefix(v.Type, "[]") {
-		return fmt.Sprintf("[]%s.%s", "service", strings.TrimLeft(v.Type, "[]"))
+	for _, prefix := range prefixes {
+		typ, err := v.resolveType(v.Type, prefix)
+		if err == nil {
+			return typ
+		}
 	}
 
 	return fmt.Sprintf("%s.%s", "service", v.Type)

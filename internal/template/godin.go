@@ -1,7 +1,6 @@
 package template
 
 import (
-	"github.com/sirupsen/logrus"
 	config "github.com/spf13/viper"
 )
 
