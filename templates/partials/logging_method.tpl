@@ -1,7 +1,8 @@
 {{ define "logging_method" }}
+// {{ .Name }} logs the request and response of the service.{{ .Name }} endpoint
+// The runtime will also be logged. Once a request enters this middleware, the timer is started.
+// Upon leaving this middleware (deferred function is called), the time-delta is calculated.
 func (l logMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
-
-    // log the request of {{ .Name }}
 	l.logger.Log(
 	    "endpoint", "{{ .Name }}",
 	    "request", endpoint.{{ .RequestName }}{
@@ -11,7 +12,6 @@ func (l logMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
 	    },
 	    )
 
-	// log the response of {{ .Name }}
 	defer func(begin time.Time) {
 	    resp := endpoint.{{ .ResponseName }}{
             {{- range .Returns }}
