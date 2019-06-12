@@ -22,7 +22,6 @@ var DefaultDirectoryList = []string{
 	"internal/service/endpoint",
 	"internal/service/middleware",
 	"pkg/grpc",
-	"strings",
 }
 
 type Project struct {
