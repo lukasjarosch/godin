@@ -71,12 +71,21 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated internal/service/endpoint/request_response.go")
 	}
 
+	// set.go
+	endpointSetFile := filepath.Join("internal", "service", "endpoint", "set.go")
+	endpointSet := generate.NewEndpointSet(TemplateFilesystem, endpointSetFile, service.Interface)
+	if err := endpointSet.Update(tplContext); err != nil {
+		logrus.Errorf("failed to update endpoint set: %s: %s", endpointSetFile, err)
+	} else {
+		logrus.Infof("updated endpoint set: %s", endpointSetFile)
+	}
+
 	// middleware.go
 	middleware := template.NewGenerator(template.MiddlewareOptions())
 	if err := middleware.GenerateFile(TemplateFilesystem); err != nil {
 		logrus.Error(fmt.Sprintf("failed to generate middleware.go: %s", err.Error()))
 	} else {
-		logrus.Info("generated internal/service/middleware/middleware.go")
+		logrus.Info("updated internal/service/middleware/middleware.go")
 	}
 
 	// logging middleware

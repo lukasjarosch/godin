@@ -2,6 +2,13 @@
 
 package endpoint
 
+import (
+	"context"
+	"github.com/go-kit/kit/endpoint"
+
+	service "yyy"
+)
+
 type (
 	HelloRequest struct {
 		Name string `json:"name"`

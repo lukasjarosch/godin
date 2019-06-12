@@ -29,6 +29,12 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: "internal/service/endpoint/request_response.go",
 		Overwrite:  true,
 	},
+	"endpoint_set": {
+		Template:   "endpoint_set",
+		IsGoSource: true,
+		TargetFile: "internal/service/endpoint/set.go",
+		Overwrite:  true,
+	},
 	"dockerfile": {
 		Template:   "Dockerfile",
 		IsGoSource: false,
