@@ -5,6 +5,26 @@
 # Godin - An opinionated toolkit for [go-kit](https://github.com/go-kit/kit) microservices
 > Work in progress
 
+## godin init
+````bash
+.
+├── cmd
+│   └── greeter
+├── Dockerfile
+├── godin.toml
+├── go.mod
+├── internal
+│   ├── grpc
+│   └── service
+│       ├── endpoint
+│       ├── greeter
+│       ├── middleware
+│       │   └── middleware.go
+│       └── service.go
+└── pkg
+    └── grpc
+````
+
 ## godin update
 | File                                             | Mode       |
 |--------------------------------------------------|------------|
