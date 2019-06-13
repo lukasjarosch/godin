@@ -6,12 +6,15 @@ import (
 
 	"strings"
 
+	"path"
+
 	"github.com/lukasjarosch/godin/internal/generate"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	config "github.com/spf13/viper"
+	"github.com/lukasjarosch/godin/internal/fs"
 )
 
 func init() {
@@ -92,5 +95,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		} else {
 			logrus.Infof("updated logging middleware: %s", logging.TargetPath())
 		}
+	}
+
+	// grpc/request_response.go
+	grpcRequestResponse := generate.NewGrpcRequestResponse(TemplateFilesystem, service.Interface, tplContext)
+	fs.MakeDirs([]string{path.Dir(grpcRequestResponse.TargetPath())}) // ignore errors, just ensure the path exists
+	if err := grpcRequestResponse.Update(); err != nil {
+		logrus.Errorf("failed to update grpc/request_response.go: %s", err)
+	} else {
+		logrus.Infof("updated %s", grpcRequestResponse.TargetPath())
 	}
 }

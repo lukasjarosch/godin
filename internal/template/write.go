@@ -23,8 +23,8 @@ type FileWriter struct {
 func NewFileWriter(path string, data []byte) *FileWriter {
 	return &FileWriter{
 		Writer{
-			Path:path,
-			data:data,
+			Path: path,
+			data: data,
 		},
 	}
 }
@@ -35,6 +35,10 @@ func (f *FileWriter) Write(overwrite bool) error {
 	if _, err := os.Stat(f.Path); err == nil {
 		if !overwrite {
 			return fmt.Errorf("%s file already exists, overwrite is disabled", f.Path)
+		}
+	} else {
+		if _, err := os.Create(f.Path); err != nil {
+			return fmt.Errorf("failed to create file %s: %s", f.Path, err)
 		}
 	}
 
@@ -50,10 +54,10 @@ type FileAppendWriter struct {
 
 // NewFileAppendWriter returns a new appending file-writer for Godin templates
 func NewFileAppendWriter(path string, data []byte) *FileAppendWriter {
-    return &FileAppendWriter{
-    	Writer{
-    		data:data,
-    		Path:path,
+	return &FileAppendWriter{
+		Writer{
+			data: data,
+			Path: path,
 		},
 	}
 }
@@ -64,11 +68,11 @@ func (f *FileAppendWriter) Write() error {
 	file, err := os.OpenFile(f.Path, os.O_APPEND|os.O_WRONLY, 0644)
 	defer file.Close()
 	if err != nil {
-	    return errors.Wrap(err, "file to append cannot be opened")
+		return errors.Wrap(err, "file to append cannot be opened")
 	}
 
 	if _, err := file.Write(f.data); err != nil {
 		return err
 	}
-	return nil	
+	return nil
 }
