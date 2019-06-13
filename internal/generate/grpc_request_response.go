@@ -1,8 +1,13 @@
 package generate
 
 import (
+	"fmt"
+	"regexp"
+
 	"github.com/gobuffalo/packr"
+	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/template"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/vetcher/go-astra/types"
 )
@@ -11,7 +16,14 @@ type GrpcRequestResponse struct {
 	BaseGenerator
 }
 
-func NewGrpcRequestResponse(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *RequestResponse {
+const (
+	EncodeRequestPartial  = "grpc_encode_request"
+	EncodeResponsePartial = "grpc_encode_response"
+	DecodeRequestPartial  = "grpc_decode_request"
+	DecodeResponsePartial = "grpc_decode_response"
+)
+
+func NewGrpcRequestResponse(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *GrpcRequestResponse {
 	defaults := &Options{
 		Context:    ctx,
 		Overwrite:  true,
@@ -24,7 +36,7 @@ func NewGrpcRequestResponse(box packr.Box, serviceInterface *types.Interface, ct
 		opt(defaults)
 	}
 
-	return &RequestResponse{
+	return &GrpcRequestResponse{
 		BaseGenerator{
 			box:   box,
 			iface: serviceInterface,
@@ -41,7 +53,62 @@ func (r *GrpcRequestResponse) Update() error {
 	return r.GenerateFull()
 }
 
+// GenerateMissing will generate all missing encode/decode functions and append them to the existing file
 func (r *GrpcRequestResponse) GenerateMissing() error {
-	logrus.Warn("not yet implemented")
+	implementation := parse.NewTransportRequestResponseParser(r.opts.TargetFile, r.iface)
+	if err := implementation.Parse(); err != nil {
+		return errors.Wrap(err, "Parse")
+	}
+
+	if len(implementation.MissingMethods) > 0 {
+		for _, missingMethod := range implementation.MissingMethods {
+			templateName, err := r.templateFromFunction(missingMethod)
+			if err != nil {
+				return errors.Wrap(err, "unable to find template")
+			}
+
+			ctx := struct {
+				Name string
+			}{
+				implementation.EndpointName(missingMethod),
+			}
+
+			tpl := template.NewPartial(templateName, true)
+			data, err := tpl.Render(r.box, ctx)
+			if err != nil {
+				return errors.Wrap(err, "failed to render partial")
+			}
+
+			writer := template.NewFileAppendWriter(r.opts.TargetFile, data)
+			if err := writer.Write(); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("failed to append-write to %s", r.TargetPath()))
+			}
+			logrus.Debugf("added missing function to %s: %s", r.opts.TargetFile, missingMethod)
+		}
+	}
+
 	return nil
+}
+
+// templateFromFunction extracts the partial templateName of a encode/decode function
+func (r *GrpcRequestResponse) templateFromFunction(name string) (templateName string, err error) {
+	encodeRequest := regexp.MustCompile(`(Encode)\w+(Request)`)
+	encodeResponse := regexp.MustCompile(`(Encode)\w+(Response)`)
+	decodeRequest := regexp.MustCompile(`(Decode)\w+(Request)`)
+	decodeResponse := regexp.MustCompile(`(Decode)\w+(Response)`)
+
+	if encodeRequest.MatchString(name) {
+		return EncodeRequestPartial, nil
+	}
+	if encodeResponse.MatchString(name) {
+		return EncodeResponsePartial, nil
+	}
+	if decodeRequest.MatchString(name) {
+		return DecodeRequestPartial, nil
+	}
+	if decodeResponse.MatchString(name) {
+		return DecodeResponsePartial, nil
+	}
+
+	return "", fmt.Errorf("function %s does not have a template associated", name)
 }

@@ -42,10 +42,10 @@ func (f *File) prepare(fs packr.Box) error {
 	f.templates = append(f.templates, "partials/logging_method.tpl")
 	f.templates = append(f.templates, "partials/request.tpl")
 	f.templates = append(f.templates, "partials/response.tpl")
-	f.templates = append(f.templates, "partials/grpc/encode_request.tpl")
-	f.templates = append(f.templates, "partials/grpc/decode_request.tpl")
-	f.templates = append(f.templates, "partials/grpc/encode_response.tpl")
-	f.templates = append(f.templates, "partials/grpc/decode_response.tpl")
+	f.templates = append(f.templates, "partials/grpc_encode_request.tpl")
+	f.templates = append(f.templates, "partials/grpc_decode_request.tpl")
+	f.templates = append(f.templates, "partials/grpc_encode_response.tpl")
+	f.templates = append(f.templates, "partials/grpc_decode_response.tpl")
 
 	return nil
 }
