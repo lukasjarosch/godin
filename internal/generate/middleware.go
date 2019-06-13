@@ -6,24 +6,24 @@ import (
 	"github.com/vetcher/go-astra/types"
 )
 
-type EndpointSet struct {
+type Middleware struct {
 	BaseGenerator
 }
 
-func NewEndpointSet(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *EndpointSet {
+func NewMiddleware(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *Middleware {
 	defaults := &Options{
 		Context:    ctx,
 		Overwrite:  true,
 		IsGoSource: true,
-		Template:   "endpoint_set",
-		TargetFile: "internal/service/endpoint/set.go",
+		Template:   "middleware",
+		TargetFile: "internal/service/middleware/middleware.go",
 	}
 
 	for _, opt := range options {
 		opt(defaults)
 	}
 
-	return &EndpointSet{
+	return &Middleware{
 		BaseGenerator{
 			box:   box,
 			iface: serviceInterface,
@@ -32,8 +32,6 @@ func NewEndpointSet(box packr.Box, serviceInterface *types.Interface, ctx templa
 	}
 }
 
-// Update will call GenerateFull. The endpointSet cannot be updated.
-func (s *EndpointSet) Update() error {
-	return s.GenerateFull()
+func (m *Middleware) Update() error {
+	return m.GenerateFull()
 }
-

@@ -74,6 +74,8 @@ func (p *Project) SetupDirectories() error {
 	return nil
 }
 
+// ParseServiceFile will locate the 'service.go', parse it and validate the service interface
+// The parsed service is then returned.
 func ParseServiceFile(interfaceName string) *parse.Service {
 	wd, _ := os.Getwd()
 	filePath := filepath.Join("internal", "service", "service.go")
@@ -82,17 +84,17 @@ func ParseServiceFile(interfaceName string) *parse.Service {
 	if err := service.ParseFile(); err != nil {
 		logrus.Fatalf("failed to parse service.go: %s", err.Error())
 	}
-	logrus.Infof("parsed service file: %s", filePath)
+	logrus.Debugf("parsed service file: %s", filePath)
 
 	if err := service.FindInterface(interfaceName); err != nil {
 		logrus.Fatalf("unable to find service interface: %s", err.Error())
 	}
-	logrus.Infof("found service interface: %s", interfaceName)
+	logrus.Debugf("found service interface: %s", interfaceName)
 
 	if err := service.ValidateInterface(); err != nil {
 		logrus.Fatalf("service interface is invalid: %s", err.Error())
 	}
-	logrus.Info("service interface is valid")
+	logrus.Debugf("service interface is valid")
 
 	return service
 }

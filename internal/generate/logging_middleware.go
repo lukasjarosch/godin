@@ -1,8 +1,6 @@
 package generate
 
 import (
-	"os"
-
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/template"
@@ -12,38 +10,33 @@ import (
 )
 
 type LoggingMiddleware struct {
-	file       string
-	iface      *types.Interface
-	fileExists bool
-	box        packr.Box
+	BaseGenerator
 }
 
-func NewLoggingMiddleware(box packr.Box, file string, serviceInterface *types.Interface) *LoggingMiddleware {
-	var exists bool
-	if _, err := os.Stat(file); err != nil {
-		exists = false
-	} else {
-		exists = true
+func NewLoggingMiddleware(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *LoggingMiddleware {
+	defaults := &Options{
+		Context:    ctx,
+		Overwrite:  true,
+		IsGoSource: true,
+		Template:   "logging_middleware",
+		TargetFile: "internal/service/middleware/logging.go",
+	}
+
+	for _, opt := range options {
+		opt(defaults)
 	}
 
 	return &LoggingMiddleware{
-		box:        box,
-		file:       file,
-		iface:      serviceInterface,
-		fileExists: exists,
+		BaseGenerator{
+			box:   box,
+			iface: serviceInterface,
+			opts:  defaults,
+		},
 	}
 }
 
-func (i *LoggingMiddleware) GenerateFull(ctx template.Context) error {
-	impl := template.NewGenerator(template.FileOptions("logging_middleware", ctx, i.file))
-	if err := impl.GenerateFile(i.box); err != nil {
-		return errors.Wrap(err, "GenerateFull")
-	}
-	return nil
-}
-
-func (i *LoggingMiddleware) GenerateMissing(ctx template.Context) error {
-	implementation := parse.NewImplementationParser(i.file, i.iface)
+func (i *LoggingMiddleware) GenerateMissing() error {
+	implementation := parse.NewImplementationParser(i.opts.TargetFile, i.iface)
 	if err := implementation.Parse(); err != nil {
 		return errors.Wrap(err, "Parse")
 	}
@@ -56,20 +49,20 @@ func (i *LoggingMiddleware) GenerateMissing(ctx template.Context) error {
 				return errors.Wrap(err, "failed to render partial")
 			}
 
-			writer := template.NewFileAppendWriter(i.file, data)
+			writer := template.NewFileAppendWriter(i.opts.TargetFile, data)
 			if err := writer.Write(); err != nil {
 				return errors.Wrap(err, "failed to append-write to file")
 			}
-			logrus.Debugf("added missing method to %s: %s", i.file, meth.String())
+			logrus.Debugf("added missing method to %s: %s", i.opts.TargetFile, meth.String())
 		}
 	}
 
 	return nil
 }
 
-func (i *LoggingMiddleware) Update(ctx template.Context) error {
-	if i.fileExists {
-		return i.GenerateMissing(ctx)
+func (i *LoggingMiddleware) Update() error {
+	if i.TargetExists() {
+		return i.GenerateMissing()
 	}
-	return i.GenerateFull(ctx)
+	return i.GenerateFull()
 }

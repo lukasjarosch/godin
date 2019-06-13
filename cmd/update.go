@@ -6,8 +6,6 @@ import (
 
 	"strings"
 
-	"path/filepath"
-
 	"github.com/lukasjarosch/godin/internal/generate"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/template"
@@ -55,47 +53,44 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	tplContext = template.PopulateFromService(tplContext, service)
 
 	// update internal/service/<serviceName>/implementation.go
-	implementationFile := filepath.Join("internal", "service", tplContext.Service.Name, "implementation.go")
-	implementationGen := generate.NewImplementation(TemplateFilesystem, implementationFile, service.Interface)
-	if err := implementationGen.Update(tplContext); err != nil {
-		logrus.Errorf("failed to update implementation: %s: %s", implementationFile, err.Error())
+	implementationGen := generate.NewImplementation(TemplateFilesystem, service.Interface, tplContext)
+	if err := implementationGen.Update(); err != nil {
+		logrus.Errorf("failed to update implementation: %s: %s", implementationGen.TargetPath(), err.Error())
 	} else {
-		logrus.Infof("updated implementation: %s", implementationFile)
+		logrus.Infof("updated implementation: %s", implementationGen.TargetPath())
 	}
 
 	// request_response.go
-	reqRes:= template.NewGenerator(template.RequestResponseOptions(tplContext))
-	if err := reqRes.GenerateFile(TemplateFilesystem); err != nil {
+	reqRes := generate.NewRequestResponse(TemplateFilesystem, service.Interface, tplContext)
+	if err := reqRes.Update(); err != nil {
 		logrus.Error(fmt.Sprintf("failed to generate request_response.go: %s", err.Error()))
 	} else {
-		logrus.Info("generated internal/service/endpoint/request_response.go")
+		logrus.Infof("generated %s", reqRes.TargetPath())
 	}
 
 	// set.go
-	endpointSetFile := filepath.Join("internal", "service", "endpoint", "set.go")
-	endpointSet := generate.NewEndpointSet(TemplateFilesystem, endpointSetFile, service.Interface)
-	if err := endpointSet.Update(tplContext); err != nil {
-		logrus.Errorf("failed to update endpoint set: %s: %s", endpointSetFile, err)
+	endpointSet := generate.NewEndpointSet(TemplateFilesystem, service.Interface, tplContext)
+	if err := endpointSet.Update(); err != nil {
+		logrus.Errorf("failed to update endpoint set: %s: %s", endpointSet.TargetPath(), err)
 	} else {
-		logrus.Infof("updated endpoint set: %s", endpointSetFile)
+		logrus.Infof("updated endpoint set: %s", endpointSet.TargetPath())
 	}
 
 	// middleware.go
-	middleware := template.NewGenerator(template.MiddlewareOptions())
-	if err := middleware.GenerateFile(TemplateFilesystem); err != nil {
+	middleware := generate.NewMiddleware(TemplateFilesystem, service.Interface, tplContext)
+	if err := middleware.Update(); err != nil {
 		logrus.Error(fmt.Sprintf("failed to generate middleware.go: %s", err.Error()))
 	} else {
-		logrus.Info("updated internal/service/middleware/middleware.go")
+		logrus.Infof("generated %s", middleware.TargetPath())
 	}
 
 	// logging middleware
 	if config.GetBool("service.middleware.logging") {
-		loggingFile := filepath.Join("internal", "service", "middleware", "logging.go")
-		loggingGen := generate.NewLoggingMiddleware(TemplateFilesystem, loggingFile, service.Interface)
-		if err := loggingGen.Update(tplContext); err != nil {
-			logrus.Errorf("failed to update logging middleware: %s: %s", loggingFile, err.Error())
+		logging := generate.NewLoggingMiddleware(TemplateFilesystem, service.Interface, tplContext)
+		if err := logging.Update(); err != nil {
+			logrus.Errorf("failed to update logging middleware: %s: %s", logging.TargetPath(), err.Error())
 		} else {
-			logrus.Infof("updated logging middleware: %s", loggingFile)
+			logrus.Infof("updated logging middleware: %s", logging.TargetPath())
 		}
 	}
 }

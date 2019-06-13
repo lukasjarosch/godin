@@ -3,7 +3,6 @@ package generate
 import (
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/template"
-	"github.com/pkg/errors"
 	"github.com/vetcher/go-astra/types"
 )
 
@@ -11,24 +10,30 @@ type RequestResponse struct {
 	BaseGenerator
 }
 
-func NewRequestResponse(box packr.Box, file string, serviceInterface *types.Interface) *RequestResponse {
+func NewRequestResponse(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *RequestResponse {
+	defaults := &Options{
+		Context:    ctx,
+		Overwrite:  true,
+		IsGoSource: true,
+		Template:   "request_response",
+		TargetFile: "internal/service/endpoint/request_response.go",
+	}
+
+	for _, opt := range options {
+		opt(defaults)
+	}
+
 	return &RequestResponse{
 		BaseGenerator{
 			box:   box,
-			file:  file,
 			iface: serviceInterface,
+			opts:  defaults,
 		},
 	}
 }
 
-func (r *RequestResponse) Update(ctx template.Context) error {
-	return r.GenerateFull(ctx)
+// Update is disabled for this file, it will only proxy the call to GenerateFull()
+func (r *RequestResponse) Update() error {
+	return r.GenerateFull()
 }
 
-func (r *RequestResponse) GenerateFull(ctx template.Context) error {
-	impl := template.NewGenerator(template.FileOptions("request_response", ctx, r.file))
-	if err := impl.GenerateFile(r.box); err != nil {
-		return errors.Wrap(err, "GenerateFull")
-	}
-	return nil
-}

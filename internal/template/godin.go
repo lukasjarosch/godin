@@ -47,11 +47,6 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: ".gitignore",
 		Overwrite:  true,
 	},
-	"implementation": {
-		Overwrite:  true,
-		IsGoSource: true,
-		Template:   "implementation",
-	},
 }
 
 func FileOptions(name string, tplContext Context, targetPath string) GenerateOptions {
