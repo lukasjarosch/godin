@@ -97,6 +97,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
+
 	// grpc/request_response.go
 	grpcRequestResponse := generate.NewGrpcRequestResponse(TemplateFilesystem, service.Interface, tplContext)
 	fs.MakeDirs([]string{path.Dir(grpcRequestResponse.TargetPath())}) // ignore errors, just ensure the path exists
@@ -104,5 +105,13 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Errorf("failed to update grpc/request_response.go: %s", err)
 	} else {
 		logrus.Infof("updated %s", grpcRequestResponse.TargetPath())
+	}
+
+	// grpc/encode_decode.go
+	grpcEncodeDecode := generate.NewGrpcEncodeDecode(TemplateFilesystem, service.Interface, tplContext)
+	if err := grpcEncodeDecode.Update(); err != nil {
+		logrus.Errorf("failed to update grpc/encode_decode.go: %s", err)
+	} else {
+		logrus.Infof("updated %s", grpcEncodeDecode.TargetPath())
 	}
 }
