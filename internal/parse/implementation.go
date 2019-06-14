@@ -7,29 +7,29 @@ import (
 )
 
 type implementationParser struct {
-	File               *types.File
-	path               string
-	serviceInterface   *types.Interface
+	baseParser
 	ImplementedMethods []*types.Function
 	MissingMethods     []*types.Function
 }
 
 func NewImplementationParser(path string, serviceInterface *types.Interface) *implementationParser {
 	return &implementationParser{
-		serviceInterface: serviceInterface,
-		path:             path,
+		baseParser: baseParser{
+			Interface: serviceInterface,
+			Path:      path,
+		},
 	}
 }
 
 func (i *implementationParser) Parse() (err error) {
-	i.File, err = astra.ParseFile(i.path)
+	i.File, err = astra.ParseFile(i.Path)
 	if err != nil {
 		return errors.Wrap(err, "Parse")
 
 	}
 
 	// extract all implemented and missing methods (compared to service interface)
-	for _, ifaceMeth := range i.serviceInterface.Methods {
+	for _, ifaceMeth := range i.Interface.Methods {
 		if i.HasMethod(ifaceMeth.Name) {
 			i.ImplementedMethods = append(i.ImplementedMethods, ifaceMeth)
 			continue
@@ -40,11 +40,3 @@ func (i *implementationParser) Parse() (err error) {
 	return nil
 }
 
-func (i *implementationParser) HasMethod(name string) bool {
-	for _, meth := range i.File.Methods {
-		if meth.Name == name {
-			return true
-		}
-	}
-	return false
-}

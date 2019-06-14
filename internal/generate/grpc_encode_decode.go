@@ -11,7 +11,7 @@ type GrpcEncodeDecode struct {
 	BaseGenerator
 }
 
-func NewGrpcEncodeDecode(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *RequestResponse {
+func NewGrpcEncodeDecode(box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *GrpcEncodeDecode {
 	defaults := &Options{
 		Context:    ctx,
 		Overwrite:  true,
@@ -24,7 +24,7 @@ func NewGrpcEncodeDecode(box packr.Box, serviceInterface *types.Interface, ctx t
 		opt(defaults)
 	}
 
-	return &RequestResponse{
+	return &GrpcEncodeDecode{
 		BaseGenerator{
 			box:   box,
 			iface: serviceInterface,

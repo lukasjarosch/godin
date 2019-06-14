@@ -60,8 +60,8 @@ func (r *GrpcRequestResponse) GenerateMissing() error {
 		return errors.Wrap(err, "Parse")
 	}
 
-	if len(implementation.MissingMethods) > 0 {
-		for _, missingMethod := range implementation.MissingMethods {
+	if len(implementation.MissingFunctions) > 0 {
+		for _, missingMethod := range implementation.MissingFunctions {
 			templateName, err := r.templateFromFunction(missingMethod)
 			if err != nil {
 				return errors.Wrap(err, "unable to find template")

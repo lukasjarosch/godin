@@ -9,14 +9,14 @@ import (
 	"github.com/vetcher/go-astra/types"
 )
 
-type transportRequestResponseParser struct {
+type transportEncodeDecodeParser struct {
 	baseParser
-	ImplementedFunctions []string
-	MissingFunctions     []string
-	formatStrings        []string
+	ImplementedMethods []string
+	MissingMethods     []string
+	formatStrings      []string
 }
 
-func NewTransportRequestResponseParser(path string, serviceIface *types.Interface) *transportRequestResponseParser {
+func NewTransportEncodeDecodeParser(path string, serviceIface *types.Interface) *transportEncodeDecodeParser {
 	var formatStrings = []string{
 		"Encode%sRequest",
 		"Encode%sResponse",
@@ -24,7 +24,7 @@ func NewTransportRequestResponseParser(path string, serviceIface *types.Interfac
 		"Decode%sResponse",
 	}
 
-	return &transportRequestResponseParser{
+	return &transportEncodeDecodeParser{
 		baseParser: baseParser{
 			Interface: serviceIface,
 			Path:      path,
@@ -33,25 +33,25 @@ func NewTransportRequestResponseParser(path string, serviceIface *types.Interfac
 	}
 }
 
-func (p *transportRequestResponseParser) Parse() (err error) {
+func (p *transportEncodeDecodeParser) Parse() (err error) {
 	if err := p.ParseFile(); err != nil {
 		return errors.Wrap(err, "Parse")
 	}
 
-	// find all missing functions
-	for _, meth := range p.RequiredFunctions() {
-		if p.HasFunction(meth) {
-			p.ImplementedFunctions = append(p.ImplementedFunctions, meth)
+	// find all missing methods
+	for _, meth := range p.RequiredMethods() {
+		if p.HasMethod(meth) {
+			p.ImplementedMethods = append(p.ImplementedMethods, meth)
 			continue
 		}
-		p.MissingFunctions = append(p.MissingFunctions, meth)
+		p.MissingMethods = append(p.MissingMethods, meth)
 	}
 
 	return nil
 }
 
 // RequiredFunctions generates all required method names which need to exist in order for the file to be complete
-func (p *transportRequestResponseParser) RequiredFunctions() []string {
+func (p *transportEncodeDecodeParser) RequiredMethods() []string {
 	var requiredMethods []string
 
 	for _, meth := range p.Interface.Methods {
@@ -66,7 +66,7 @@ func (p *transportRequestResponseParser) RequiredFunctions() []string {
 
 // EndpointName will extract the endpoint name from a function.
 // For example: EncodeHelloRequest => Hello
-func (p *transportRequestResponseParser) EndpointName(functionName string) string {
+func (p *transportEncodeDecodeParser) EndpointName(functionName string) string {
 	name := strings.Replace(functionName, "Encode", "", 1)
 	name = strings.Replace(name, "Decode", "", 1)
 	name = strings.Replace(name, "Request", "", 1)
@@ -74,4 +74,3 @@ func (p *transportRequestResponseParser) EndpointName(functionName string) strin
 
 	return name
 }
-

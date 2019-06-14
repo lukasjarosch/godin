@@ -4,42 +4,19 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pkg/errors"
-	"github.com/vetcher/go-astra"
 	. "github.com/vetcher/go-astra/types"
 )
 
 type Service struct {
-	path      string
-	File      *File
-	Interface *Interface
+	baseParser
 }
 
 func NewServiceParser(path string) *Service {
 	return &Service{
-		path: path,
+		baseParser: baseParser{
+			Path: path,
+		},
 	}
-}
-
-// ParseFile will use go-astra to parse the service-File
-func (s *Service) ParseFile() (err error) {
-	s.File, err = astra.ParseFile(s.path)
-	if err != nil {
-		return errors.Wrap(err, "ParseFile")
-	}
-	return nil
-}
-
-// FindInterface searches for an interface with the given name. If the interface is found, it's set to the Interface field
-func (s *Service) FindInterface(interfaceName string) error {
-	for _, iface := range s.File.Interfaces {
-		if iface.Name == interfaceName {
-			s.Interface = &iface
-			return nil
-		}
-	}
-
-	return fmt.Errorf("no interface: %s ", interfaceName)
 }
 
 // ValidateInterface will check if the interface meets Godin's requirements:

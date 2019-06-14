@@ -87,9 +87,11 @@ func ParseServiceFile(interfaceName string) *parse.Service {
 	}
 	logrus.Debugf("parsed service file: %s", filePath)
 
-	if err := service.FindInterface(interfaceName); err != nil {
+	iface, err := service.FindInterface(interfaceName);
+	if err != nil {
 		logrus.Fatalf("unable to find service interface: %s", err.Error())
 	}
+	service.Interface = &iface
 	logrus.Debugf("found service interface: %s", interfaceName)
 
 	if err := service.ValidateInterface(); err != nil {
