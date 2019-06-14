@@ -2,21 +2,34 @@ package template
 
 import (
 	"bytes"
-	"path/filepath"
 	"text/template"
+
+	"fmt"
 
 	"github.com/Masterminds/sprig"
 	"github.com/gobuffalo/packr"
 	"github.com/pkg/errors"
-	"fmt"
 )
+
+var PartialTemplates = map[string]string{
+	"service_method":       "partials/service_method.tpl",
+	"logging_method":       "partials/logging_method.tpl",
+	"request":              "partials/request.tpl",
+	"response":             "partials/response.tpl",
+	"grpc_encode_request":  "partials/grpc/encode_request.tpl",
+	"grpc_encode_response": "partials/grpc/encode_response.tpl",
+	"grpc_decode_request":  "partials/grpc/decode_request.tpl",
+	"grpc_decode_response": "partials/grpc/decode_response.tpl",
+}
 
 type Partial struct {
 	BaseTemplate
-	tpl *template.Template
+	tpl       *template.Template
+	templates map[string]string
 }
 
 func NewPartial(name string, isGoSource bool) *Partial {
+
 	return &Partial{
 		BaseTemplate: BaseTemplate{
 			name:       name,
@@ -27,7 +40,12 @@ func NewPartial(name string, isGoSource bool) *Partial {
 
 func (p *Partial) Render(fs packr.Box, templateContext interface{}) (rendered []byte, err error) {
 
-	templateData, err := fs.FindString(filepath.Join("partials", p.Filename()))
+	templatePath, ok := p.templates[p.name]
+	if !ok {
+		return nil, fmt.Errorf("unknown partial template: %s", p.name)
+	}
+
+	templateData, err := fs.FindString(templatePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "FindString")
 	}

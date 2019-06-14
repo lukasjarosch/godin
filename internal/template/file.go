@@ -35,17 +35,13 @@ func NewFile(name string, isGoSource bool) *File {
 	}
 }
 
-// prepare the templates paths which might be included by the loaded template file
+// prepare loads all template paths, starting with the requested base-template
 func (f *File) prepare(fs packr.Box) error {
 	f.templates = append(f.templates, f.TemplatePath())
-	f.templates = append(f.templates, "partials/service_method.tpl")
-	f.templates = append(f.templates, "partials/logging_method.tpl")
-	f.templates = append(f.templates, "partials/request.tpl")
-	f.templates = append(f.templates, "partials/response.tpl")
-	f.templates = append(f.templates, "partials/grpc_encode_request.tpl")
-	f.templates = append(f.templates, "partials/grpc_decode_request.tpl")
-	f.templates = append(f.templates, "partials/grpc_encode_response.tpl")
-	f.templates = append(f.templates, "partials/grpc_decode_response.tpl")
+
+	for _, partial := range PartialTemplates {
+		f.templates = append(f.templates, partial)
+	}
 
 	return nil
 }
