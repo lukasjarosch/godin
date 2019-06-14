@@ -16,10 +16,14 @@ var PartialTemplates = map[string]string{
 	"logging_method":       "partials/logging_method.tpl",
 	"request":              "partials/request.tpl",
 	"response":             "partials/response.tpl",
-	"grpc_encode_request":  "partials/grpc/encode_request.tpl",
-	"grpc_encode_response": "partials/grpc/encode_response.tpl",
-	"grpc_decode_request":  "partials/grpc/decode_request.tpl",
-	"grpc_decode_response": "partials/grpc/decode_response.tpl",
+	"grpc_encode_request":  "partials/grpc/request_response/encode_request.tpl",
+	"grpc_encode_response": "partials/grpc/request_response/encode_response.tpl",
+	"grpc_decode_request":  "partials/grpc/request_response/decode_request.tpl",
+	"grpc_decode_response": "partials/grpc/request_response/decode_response.tpl",
+	"grpc_request_decoder": "partials/grpc/encode_decode/request_decoder.tpl",
+	"grpc_request_encoder": "partials/grpc/encode_decode/request_encoder.tpl",
+	"grpc_response_decoder": "partials/grpc/encode_decode/response_decoder.tpl",
+	"grpc_response_encoder": "partials/grpc/encode_decode/response_encoder.tpl",
 }
 
 type Partial struct {
