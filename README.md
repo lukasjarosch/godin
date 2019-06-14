@@ -34,7 +34,9 @@ A quick summary of what Godin can do:
 <!-- GETTING STARTED -->
 ## Getting Started
 ### Prerequisites
-Well, Go (1.12) must be installed, and `make`.
+* Go (1.12)
+* make
+* [packr v1](https://github.com/gobuffalo/packr)(!)
 
 ### Installation
 > There are no binary releases, yet :)
