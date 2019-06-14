@@ -36,8 +36,8 @@ func (p *baseParser) FindInterface(interfaceName string) (iface types.Interface,
 
 // HasFunction checks whether the file has a function with the given name
 func (p *baseParser) HasFunction(name string) bool {
-	for _, meth := range p.File.Functions {
-		if meth.Name == name {
+	for _, function := range p.File.Functions {
+		if function.Name == name {
 			return true
 		}
 	}
@@ -46,8 +46,8 @@ func (p *baseParser) HasFunction(name string) bool {
 
 // HasMethod checks whether the file has a method with the given name
 func (p *baseParser) HasMethod(name string) bool {
-	for _, meth := range p.File.Methods {
-		if meth.Name == name {
+	for _, method := range p.File.Methods {
+		if method.Name == name {
 			return true
 		}
 	}

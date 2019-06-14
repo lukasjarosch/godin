@@ -9,6 +9,7 @@ import (
 
     "{{ .Service.Module }}/endpoint"
     service "{{ .Service.Module }}"
+    pb "{{ .Protobuf.Package }}"
 )
 
 // ----------------[ ERRORS ]----------------
@@ -26,16 +27,10 @@ func EncodeError(err error) error {
 
 // TODO: this is a nice spot for convenience mapping functions :)
 
-// ----------------[ SERVER ]----------------
-
-{{ range .Service.Methods }}
-{{ template "grpc_request_decoder" . }}
-{{ template "grpc_response_encoder" . }}
-{{ end }}
-
-// ----------------[ CLIENT ]----------------
-
-{{ range .Service.Methods }}
-{{ template "grpc_request_encoder" . }}
-{{ template "grpc_response_decoder" . }}
-{{ end }}
+// ----------------[ ENCODER / DECODER ]----------------
+{{- range .Service.Methods }}
+{{- template "grpc_request_decoder" . }}
+{{- template "grpc_response_encoder" . }}
+{{- template "grpc_request_encoder" . }}
+{{- template "grpc_response_decoder" . }}
+{{- end }}

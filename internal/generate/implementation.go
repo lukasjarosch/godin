@@ -56,7 +56,7 @@ func (i *Implementation) GenerateMissing() error {
 			if err := writer.Write(); err != nil {
 				return errors.Wrap(err, "failed to append-write to file")
 			}
-			logrus.Debugf("added missing method to %s: %s", i.opts.TargetFile, meth.String())
+			logrus.Infof("added missing method to %s: %s", i.opts.TargetFile, meth.String())
 		}
 	}
 

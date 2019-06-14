@@ -39,12 +39,12 @@ func (p *transportRequestResponseParser) Parse() (err error) {
 	}
 
 	// find all missing functions
-	for _, meth := range p.RequiredFunctions() {
-		if p.HasFunction(meth) {
-			p.ImplementedFunctions = append(p.ImplementedFunctions, meth)
+	for _, function := range p.RequiredFunctions() {
+		if p.HasFunction(function) {
+			p.ImplementedFunctions = append(p.ImplementedFunctions, function)
 			continue
 		}
-		p.MissingFunctions = append(p.MissingFunctions, meth)
+		p.MissingFunctions = append(p.MissingFunctions, function)
 	}
 
 	return nil
@@ -52,16 +52,16 @@ func (p *transportRequestResponseParser) Parse() (err error) {
 
 // RequiredFunctions generates all required method names which need to exist in order for the file to be complete
 func (p *transportRequestResponseParser) RequiredFunctions() []string {
-	var requiredMethods []string
+	var requiredFunctions []string
 
-	for _, meth := range p.Interface.Methods {
+	for _, function := range p.Interface.Methods {
 		for n := 0; n <= len(p.formatStrings)-1; n++ {
-			method := fmt.Sprintf(p.formatStrings[n], meth.Name)
-			requiredMethods = append(requiredMethods, method)
+			method := fmt.Sprintf(p.formatStrings[n], function.Name)
+			requiredFunctions = append(requiredFunctions, method)
 		}
 	}
 
-	return requiredMethods
+	return requiredFunctions
 }
 
 // EndpointName will extract the endpoint name from a function.

@@ -13,6 +13,7 @@ import (
 type Context struct {
 	Service Service
 	Godin   Godin
+	Protobuf Protobuf
 }
 
 // NewContextFromConfig will initialize the context will all the data from the configuration
@@ -23,6 +24,10 @@ func NewContextFromConfig() Context {
 			Name:      config.GetString("service.name"),
 			Namespace: config.GetString("service.namespace"),
 			Module:    config.GetString("service.module"),
+		},
+		Protobuf: Protobuf{
+			Package: config.GetString("protobuf.package"),
+			Service: config.GetString("protobuf.service"),
 		},
 		Godin: Godin{
 			Version: internal.Version,
@@ -82,6 +87,11 @@ type Service struct {
 	Namespace string
 	Methods   []Method
 	Module    string
+}
+
+type Protobuf struct {
+	Package string
+	Service string
 }
 
 type Variable struct {

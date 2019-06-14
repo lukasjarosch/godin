@@ -11,17 +11,17 @@ import (
 
 type transportEncodeDecodeParser struct {
 	baseParser
-	ImplementedMethods []string
-	MissingMethods     []string
-	formatStrings      []string
+	ImplementedFunctions []string
+	MissingFunctions     []string
+	formatStrings        []string
 }
 
 func NewTransportEncodeDecodeParser(path string, serviceIface *types.Interface) *transportEncodeDecodeParser {
 	var formatStrings = []string{
-		"Encode%sRequest",
-		"Encode%sResponse",
-		"Decode%sRequest",
-		"Decode%sResponse",
+		"%sRequestEncoder",
+		"%sResponseEncoder",
+		"%sRequestDecoder",
+		"%sResponseDecoder",
 	}
 
 	return &transportEncodeDecodeParser{
@@ -38,39 +38,39 @@ func (p *transportEncodeDecodeParser) Parse() (err error) {
 		return errors.Wrap(err, "Parse")
 	}
 
-	// find all missing methods
-	for _, meth := range p.RequiredMethods() {
-		if p.HasMethod(meth) {
-			p.ImplementedMethods = append(p.ImplementedMethods, meth)
+	// find all missing functions
+	for _, function := range p.RequiredFunctions() {
+		if p.HasFunction(function) {
+			p.ImplementedFunctions = append(p.ImplementedFunctions, function)
 			continue
 		}
-		p.MissingMethods = append(p.MissingMethods, meth)
+		p.MissingFunctions = append(p.MissingFunctions, function)
 	}
 
 	return nil
 }
 
 // RequiredFunctions generates all required method names which need to exist in order for the file to be complete
-func (p *transportEncodeDecodeParser) RequiredMethods() []string {
-	var requiredMethods []string
+func (p *transportEncodeDecodeParser) RequiredFunctions() []string {
+	var requiredFunctions []string
 
-	for _, meth := range p.Interface.Methods {
+	for _, function := range p.Interface.Methods {
 		for n := 0; n <= len(p.formatStrings)-1; n++ {
-			method := fmt.Sprintf(p.formatStrings[n], meth.Name)
-			requiredMethods = append(requiredMethods, method)
+			method := fmt.Sprintf(p.formatStrings[n], function.Name)
+			requiredFunctions = append(requiredFunctions, method)
 		}
 	}
 
-	return requiredMethods
+	return requiredFunctions
 }
 
 // EndpointName will extract the endpoint name from a function.
-// For example: EncodeHelloRequest => Hello
+// For example: HelloRequestEncoder => Hello
 func (p *transportEncodeDecodeParser) EndpointName(functionName string) string {
-	name := strings.Replace(functionName, "Encode", "", 1)
-	name = strings.Replace(name, "Decode", "", 1)
-	name = strings.Replace(name, "Request", "", 1)
-	name = strings.Replace(name, "Response", "", 1)
+	name := strings.Replace(functionName, "RequestEncoder", "", 1)
+	name = strings.Replace(name, "RequestDecoder", "", 1)
+	name = strings.Replace(name, "ResponseEncoder", "", 1)
+	name = strings.Replace(name, "ResponseDecoder", "", 1)
 
 	return name
 }

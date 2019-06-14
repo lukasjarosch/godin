@@ -44,7 +44,7 @@ func NewPartial(name string, isGoSource bool) *Partial {
 
 func (p *Partial) Render(fs packr.Box, templateContext interface{}) (rendered []byte, err error) {
 
-	templatePath, ok := p.templates[p.name]
+	templatePath, ok := PartialTemplates[p.name]
 	if !ok {
 		return nil, fmt.Errorf("unknown partial template: %s", p.name)
 	}

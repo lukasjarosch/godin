@@ -83,7 +83,7 @@ func (r *GrpcRequestResponse) GenerateMissing() error {
 			if err := writer.Write(); err != nil {
 				return errors.Wrap(err, fmt.Sprintf("failed to append-write to %s", r.TargetPath()))
 			}
-			logrus.Debugf("added missing function to %s: %s", r.opts.TargetFile, missingMethod)
+			logrus.Infof("added missing function to %s: %s", r.opts.TargetFile, missingMethod)
 		}
 	}
 
