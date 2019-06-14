@@ -19,3 +19,6 @@
     caching = false
     logging = true
     recovery = true
+
+[grpc]
+  enabled = true

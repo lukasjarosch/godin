@@ -44,6 +44,7 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("service.middleware.recovery", true)
 	config.Set("service.middleware.authorization", false)
 	config.Set("service.middleware.caching", false)
+	config.Set("grpc.enabled", true)
 
 	// prompt for required data and save it to config
 	config.Set("service.name", prompt.ServiceName())
