@@ -151,9 +151,13 @@ func (l *Logger) mergeKeyValues(level severity, message string, keyvals []interf
 	levelData := []interface{}{
 		"level",
 		strings.ToLower(logLevelName[level]),
-		"message",
-		message,
 	}
+
+	if message != "" {
+		levelData = append(levelData, "message")
+		levelData = append(levelData, message)
+	}
+
 
 	list = append(list, levelData...)
 	list = append(list, keyvals...)
