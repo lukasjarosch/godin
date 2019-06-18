@@ -149,7 +149,7 @@ func (l *Logger) mergeKeyValues(level severity, message string, keyvals []interf
 	var list []interface{}
 
 	levelData := []interface{}{
-		"level",
+		"severity",
 		strings.ToLower(logLevelName[level]),
 	}
 
