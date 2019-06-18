@@ -72,7 +72,6 @@ type Logger struct {
 func New() Logger {
 	logger := kitlog.NewJSONLogger(kitlog.NewSyncWriter(os.Stdout))
 	logger = kitlog.With(logger, "timestamp", kitlog.DefaultTimestamp)
-	logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
 
 	return Logger{
 		KitLogger: logger,
