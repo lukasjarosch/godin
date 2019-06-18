@@ -79,6 +79,15 @@ func New() *Logger {
 	}
 }
 
+// Proxy Log calls or else everything which uses the go-kit logger will break.
+// By default all logs which use this method are logged in INFO
+func (l *Logger) Log(keyvals ...interface{}) error  {
+	if logLevel > INFO {
+		return nil
+	}
+	return l.kitlogger.Log(l.mergeKeyValues(INFO, "", keyvals)...)
+}
+
 func (l *Logger) Debug(message string, keyvals ...interface{}) error {
 	if logLevel > DEBUG {
 		return nil
