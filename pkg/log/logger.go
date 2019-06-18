@@ -66,7 +66,7 @@ func init() {
 }
 
 type Logger struct {
-	kitlogger kitlog.Logger
+	KitLogger kitlog.Logger
 }
 
 func New() *Logger {
@@ -75,7 +75,7 @@ func New() *Logger {
 	logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
 
 	return &Logger{
-		kitlogger: logger,
+		KitLogger: logger,
 	}
 }
 
@@ -85,63 +85,63 @@ func (l *Logger) Log(keyvals ...interface{}) error  {
 	if logLevel > INFO {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(INFO, "", keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(INFO, "", keyvals)...)
 }
 
 func (l *Logger) Debug(message string, keyvals ...interface{}) error {
 	if logLevel > DEBUG {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(DEBUG, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(DEBUG, message, keyvals)...)
 }
 
 func (l *Logger) Info(message string, keyvals ...interface{}) error {
 	if logLevel > INFO {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(INFO, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(INFO, message, keyvals)...)
 }
 
 func (l *Logger) Notice(message string, keyvals ...interface{}) error {
 	if logLevel > NOTICE {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(NOTICE, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(NOTICE, message, keyvals)...)
 }
 
 func (l *Logger) Warning(message string, keyvals ...interface{}) error {
 	if logLevel > WARNING {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(WARNING, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(WARNING, message, keyvals)...)
 }
 
 func (l *Logger) Error(message string, keyvals ...interface{}) error {
 	if logLevel > ERROR {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(ERROR, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(ERROR, message, keyvals)...)
 }
 
 func (l *Logger) Critical(message string, keyvals ...interface{}) error {
 	if logLevel > CRITICAL {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(CRITICAL, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(CRITICAL, message, keyvals)...)
 }
 
 func (l *Logger) Alert(message string, keyvals ...interface{}) error {
 	if logLevel > ALERT {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(ALERT, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(ALERT, message, keyvals)...)
 }
 
 func (l *Logger) Emergency(message string, keyvals ...interface{}) error {
 	if logLevel > EMERGENCY {
 		return nil
 	}
-	return l.kitlogger.Log(l.mergeKeyValues(EMERGENCY, message, keyvals)...)
+	return l.KitLogger.Log(l.mergeKeyValues(EMERGENCY, message, keyvals)...)
 }
 
 // mergeKeyValues will append the level and message field to already existing keyvals
