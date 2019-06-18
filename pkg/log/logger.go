@@ -119,7 +119,7 @@ func (l *Logger) mergeKeyValues(level severity, message string, keyvals ...inter
 		"message",
 		message,
 	}
-	keyvals = append(keyvals, levelData)
+	keyvals = append(keyvals, levelData...)
 
 	return keyvals
 }
