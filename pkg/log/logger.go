@@ -80,46 +80,50 @@ func New() *Logger {
 }
 
 func (l *Logger) Debug(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(DEBUG, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(DEBUG, message, keyvals)...)
 }
 
 func (l *Logger) Info(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(INFO, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(INFO, message, keyvals)...)
 }
 
 func (l *Logger) Notice(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(NOTICE, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(NOTICE, message, keyvals)...)
 }
 
 func (l *Logger) Warning(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(WARNING, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(WARNING, message, keyvals)...)
 }
 
 func (l *Logger) Error(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(ERROR, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(ERROR, message, keyvals)...)
 }
 
 func (l *Logger) Critical(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(CRITICAL, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(CRITICAL, message, keyvals)...)
 }
 
 func (l *Logger) Alert(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(ALERT, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(ALERT, message, keyvals)...)
 }
 
 func (l *Logger) Emergency(message string, keyvals ...interface{}) error {
-	return l.kitlogger.Log(l.mergeKeyValues(EMERGENCY, message, keyvals))
+	return l.kitlogger.Log(l.mergeKeyValues(EMERGENCY, message, keyvals)...)
 }
 
 // mergeKeyValues will append the level and message field to already existing keyvals
-func (l *Logger) mergeKeyValues(level severity, message string, keyvals ...interface{}) []interface{} {
+func (l *Logger) mergeKeyValues(level severity, message string, keyvals []interface{}) []interface{} {
+	var list []interface{}
+
 	levelData := []interface{}{
 		"level",
 		strings.ToLower(logLevelName[level]),
 		"message",
 		message,
 	}
-	keyvals = append(keyvals, levelData...)
 
-	return keyvals
+	list = append(list, levelData...)
+	list = append(list, keyvals...)
+
+	return list
 }
