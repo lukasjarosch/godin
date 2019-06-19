@@ -13,4 +13,7 @@ func main() {
 	logger.Alert("test", "foo", "bar")
 	logger.Critical("test", "foo", "bar")
 	logger.Emergency("test", "foo", "bar")
+
+	l := log.With(logger, "FOO", "BAR")
+	l.Error("OHAI")
 }

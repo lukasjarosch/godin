@@ -78,6 +78,13 @@ func New() Logger {
 	}
 }
 
+// With returns a new logger, proxied call to kitlog.With
+func With(logger Logger, keyvals ...interface{}) Logger {
+	return Logger{
+		kitlog.With(logger.KitLogger, keyvals...),
+	}
+}
+
 // Proxy Log calls or else everything which uses the go-kit logger will break.
 // By default all logs which use this method are logged in INFO
 func (l *Logger) Log(keyvals ...interface{}) error  {
