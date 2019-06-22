@@ -11,8 +11,8 @@ import (
 )
 
 type Context struct {
-	Service Service
-	Godin   Godin
+	Service  Service
+	Godin    Godin
 	Protobuf Protobuf
 }
 
@@ -65,12 +65,14 @@ func PopulateFromService(ctx Context, service *parse.Service) Context {
 		}
 
 		methods = append(methods, Method{
-			Name:        meth.Name,
-			Comments:    meth.Docs,
-			Params:      params,
-			Returns:     returns,
-			ServiceName: serviceName,
-			ProtobufRequest: config.GetString(fmt.Sprintf("service.endpoints.%s.protobuf.request", meth.Name)),
+			Name:             meth.Name,
+			Comments:         meth.Docs,
+			Params:           params,
+			Returns:          returns,
+			ServiceName:      serviceName,
+			Request:          fmt.Sprintf("%sRequest", meth.Name),
+			Response:         fmt.Sprintf("%sResponse", meth.Name),
+			ProtobufRequest:  config.GetString(fmt.Sprintf("service.endpoints.%s.protobuf.request", meth.Name)),
 			ProtobufResponse: config.GetString(fmt.Sprintf("service.endpoints.%s.protobuf.response", meth.Name)),
 		})
 	}
@@ -136,12 +138,14 @@ func (v Variable) ResolveType() string {
 
 type Method struct {
 	// required for partials which do not have access to the Service struct
-	ServiceName string
-	Comments    []string
-	Name        string
-	Params      []Variable
-	Returns     []Variable
-	ProtobufRequest string
+	ServiceName      string
+	Comments         []string
+	Name             string
+	Params           []Variable
+	Returns          []Variable
+	Request          string
+	Response         string
+	ProtobufRequest  string
 	ProtobufResponse string
 }
 

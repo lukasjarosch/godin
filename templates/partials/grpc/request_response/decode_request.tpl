@@ -1,10 +1,10 @@
 {{ define "grpc_decode_request" }}
-// Decode{{ .Name }}Request is used in the client and decodes a gRPC request into a domain-level request
-func Decode{{ .Name }}Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+// Decode{{ .Request }} is used in the client and decodes a gRPC request into a domain-level request
+func Decode{{ .Request }}(ctx context.Context, pbRequest *pb.{{ .ProtobufRequest }}) (request transport.{{ .Request }}, err error) {
     if pbRequest == nil {
-        return nil, errors.New("nil {{ .Name }}Request")
+        return nil, errors.New("nil {{ .Request }}")
     }
-    request, err := {{ .Name }}RequestDecoder(req)
+    request, err := {{ .Request }}Decoder(req)
     if err != nil {
         return nil, err
     }

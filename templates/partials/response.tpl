@@ -1,5 +1,5 @@
 {{ define "response" }}
-{{ .Name }}Response struct {
+{{ .Response }} struct {
     {{ range .Returns }}
     {{- if eq .Type "error" }}
         {{ title .Name }} {{ .Type }} `json:"-"`

@@ -59,7 +59,7 @@ func Hello2RequestDecoder(pbRequest *pb.Hello2Request) (request endpoint.Hello2R
 }
 
 // Hello2ResponseEncoder encodes the domain-level Hello2Response into a protobuf Hello2Response
-func Hello2ResponseEncoder(response endpoint.Hello2Response) (pbResponse *pb.Hello2Response, err error) {
+func Hello2ResponseEncoder(response endpoint.Hello2Response) (pbResponse *pb.Hello2ULTRAResponse, err error) {
 	// TODO: map 'response' to 'pbResponse' and return; adjust the protobuf types as required, they may not be correct
 	return pbResponse, err
 }
@@ -71,7 +71,7 @@ func Hello2RequestEncoder(request endpoint.Hello2Request) (pbRequest *pb.Hello2R
 }
 
 // Hello2ResponseDecoder maps the protobuf response of the gRPC transport layer onto the domain-level Hello2Response
-func Hello2ResponseDecoder(pbResponse *pb.Hello2Response) (response endpoint.Hello2Response, err error) {
+func Hello2ResponseDecoder(pbResponse *pb.Hello2ULTRAResponse) (response endpoint.Hello2Response, err error) {
 	// TODO: map 'pbResponse' to 'response' and return; adjust the protobuf types as required, they may not be correct
 	return response, err
 }

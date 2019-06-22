@@ -18,5 +18,5 @@ type (
 
 // Implement the Failer interface for all responses
 {{- range .Service.Methods }}
-func (resp {{ .Name }}Response) Failed() error { return r.Err }
+func (resp {{ .Response }}) Failed() error { return r.Err }
 {{- end }}

@@ -26,8 +26,8 @@ func NewServer(endpoints endpoint.Set, logger log.Logger) pb.{{ .Protobuf.Servic
     {{ range .Service.Methods }}
     {{ .Name }}Handler: kitGrpc.NewServer(
         endpoints.{{ .Name }}Endpoint,
-        Decode{{ .Name }}Request,
-        Encode{{ .Name }}Response,
+        Decode{{ .Request }},
+        Encode{{ .Response }},
         append(options)...,
     ),
     {{ end }}

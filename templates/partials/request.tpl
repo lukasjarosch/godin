@@ -1,5 +1,5 @@
 {{ define "request" }}
-{{ .Name }}Request struct {
+{{ .Request }} struct {
     {{ range .Params }}
         {{- if ne .Name "ctx" }}
         {{ title .Name }} {{ .Type }} `json:"{{ .Name }}"`

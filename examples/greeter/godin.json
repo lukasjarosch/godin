@@ -1,0 +1,84 @@
+{
+  "godin": {
+    "version": "0.1.1"
+  },
+  "project": {
+    "created": "Wed, 29 May 2019 20:22:14 CEST"
+  },
+  "protobuf": {
+    "package": "yyy/api",
+    "service": "yyy"
+  },
+  "service": {
+    "endpoints": {
+      "hello": {
+        "protobuf": {
+          "request": "HelloRequest",
+          "response": "HelloResponse"
+        }
+      },
+      "hello2": {
+        "protobuf": {
+          "request": "Hello2Request",
+          "response": "Hello2ULTRAResponse"
+        }
+      },
+      "hello3": {
+        "protobuf": {
+          "request": "Hello3Request",
+          "response": "Hello3Response"
+        }
+      },
+      "hello4": {
+        "protobuf": {
+          "request": "Hello4Request",
+          "response": "Hello4Response"
+        }
+      },
+      "hello5": {
+        "protobuf": {
+          "request": "Hello5Request",
+          "response": "Hello5Response"
+        }
+      },
+      "hello6": {
+        "protobuf": {
+          "request": "Hello6Request",
+          "response": "Hello6Response"
+        }
+      },
+      "hello7": {
+        "protobuf": {
+          "request": "Hello7Request",
+          "response": "Hello7Response"
+        }
+      },
+      "hello8": {
+        "protobuf": {
+          "request": "Hello8Request",
+          "response": "Hello8Response"
+        }
+      },
+      "hello9": {
+        "protobuf": {
+          "request": "Hello9Request",
+          "response": "Hello9Response"
+        }
+      }
+    },
+    "middleware": {
+      "authorization": false,
+      "caching": false,
+      "logging": true,
+      "recovery": true
+    },
+    "module": "yyy",
+    "name": "yyy",
+    "namespace": "yyy"
+  },
+  "transport": {
+    "grpc": {
+      "enabled": true
+    }
+  }
+}
