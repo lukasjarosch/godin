@@ -57,7 +57,7 @@ func (r *GrpcRequestResponse) Update() error {
 func (r *GrpcRequestResponse) GenerateMissing() error {
 	implementation := parse.NewTransportRequestResponseParser(r.opts.TargetFile, r.iface)
 	if err := implementation.Parse(); err != nil {
-		return errors.Wrap(err, "Parse")
+		return errors.Wrap(err, "RequestResponse.Parse")
 	}
 
 	if len(implementation.MissingFunctions) > 0 {

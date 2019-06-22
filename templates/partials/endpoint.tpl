@@ -1,7 +1,7 @@
-{{ block "endpoint" . }}
+{{ define "endpoint" }}
 // {{ .Name }}Endpoint provides service.{{ .Name }}() as general endpoint
 // which can be used with arbitrary transport layers.
-func {{ .Name }}Endpoint(service service.{{ .ServiceName }}) endpoint.Endpoint {
+func {{ .Name }}Endpoint(service service.{{ title .ServiceName }}) endpoint.Endpoint {
     return func (ctx context.Context, request interface{}) (response interface{}, err error) {
         req := request.({{ .RequestName }})
         {{ .ReturnVariableList }} := service.{{ .Name }}(

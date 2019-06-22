@@ -15,6 +15,7 @@ var PartialTemplates = map[string]string{
 	"service_method":       "partials/service_method.tpl",
 	"logging_method":       "partials/logging_method.tpl",
 	"request":              "partials/request.tpl",
+	"endpoint":              "partials/endpoint.tpl",
 	"response":             "partials/response.tpl",
 	"grpc_encode_request":  "partials/grpc/request_response/encode_request.tpl",
 	"grpc_encode_response": "partials/grpc/request_response/encode_response.tpl",

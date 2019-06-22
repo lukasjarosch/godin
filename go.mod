@@ -10,6 +10,7 @@ require (
 	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf // indirect
 	github.com/fatih/structtag v1.0.0 // indirect
 	github.com/go-kit/kit v0.8.0
+	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/gobuffalo/genny v0.0.0-20190403191548-3ca520ef0d9e // indirect
 	github.com/gobuffalo/packr v1.26.0
 	github.com/gobuffalo/packr/v2 v2.4.0

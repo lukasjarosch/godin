@@ -7,6 +7,7 @@ import (
     "github.com/go-kit/kit/log"
 
     "{{ .Service.Module }}/internal/service"
+    "{{ .Service.Module }}/internal/service/endpoint"
 )
 
 type loggingMiddleware struct {

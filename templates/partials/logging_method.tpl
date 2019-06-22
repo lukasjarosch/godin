@@ -2,13 +2,13 @@
 // {{ .Name }} logs the request and response of the service.{{ .Name }} endpoint
 // The runtime will also be logged. Once a request enters this middleware, the timer is started.
 // Upon leaving this middleware (deferred function is called), the time-delta is calculated.
-func (l logMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
+func (l loggingMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
 	l.logger.Log(
 	    "endpoint", "{{ .Name }}",
 	    "request", endpoint.{{ .RequestName }}{
 	    {{- range .Params }}
-	    {{- .Name }},
-	    {{- end }}
+	        {{- if ne .Name "ctx" }} {{ title .Name }}: {{ .Name }}, {{end}}
+        {{ end }}
 	    },
 	    )
 
@@ -16,21 +16,20 @@ func (l logMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
 	    resp := endpoint.{{ .ResponseName }}{
             {{- range .Returns }}
                 {{- if ne .Type "error" }}
-                    {{- .Name }},
+                    {{- title .Name }}: {{ .Name }},
                 {{- end }}
             {{- end }}
 	    }
-		if err != nil {
-		    resp.Err = err
-		}
 
-        i.logger.Log(
+        l.logger.Log(
             "endpoint", "{{ .Name }}",
             "response", resp,
+            "error", err,
+            "success", err == nil,
             "took", time.Since(begin),
         )
 	}(time.Now())
 
-	return i.next.{{ .Name }}({{ range .Params }}{{ .Name }}, {{ end }})
+	return l.next.{{ .Name }}({{ range .Params }}{{ .Name }}, {{ end }})
 }
 {{ end }}

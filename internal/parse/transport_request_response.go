@@ -50,7 +50,7 @@ func (p *transportRequestResponseParser) Parse() (err error) {
 	return nil
 }
 
-// RequiredFunctions generates all required method names which need to exist in order for the file to be complete
+// RequiredEndpoints generates all required method names which need to exist in order for the file to be complete
 func (p *transportRequestResponseParser) RequiredFunctions() []string {
 	var requiredFunctions []string
 

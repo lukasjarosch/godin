@@ -79,6 +79,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Infof("updated endpoint set: %s", endpointSet.TargetPath())
 	}
 
+	// endpoints.go
+	endpoints := generate.NewEndpoints(TemplateFilesystem, service.Interface, tplContext)
+	if err := endpoints.Update(); err != nil {
+		logrus.Errorf("failed to update endpoints %s: %s", endpoints.TargetPath(), err)
+	} else {
+		logrus.Infof("updated endpoints: %s", endpoints.TargetPath())
+	}
+
 	// middleware.go
 	middleware := generate.NewMiddleware(TemplateFilesystem, service.Interface, tplContext)
 	if err := middleware.Update(); err != nil {
