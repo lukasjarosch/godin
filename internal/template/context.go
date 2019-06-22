@@ -46,6 +46,8 @@ func PopulateFromService(ctx Context, service *parse.Service) Context {
 	// map go-astra/types Method to our Method struct
 	var methods []Method
 	for _, meth := range service.Interface.Methods {
+
+		// methods
 		var params []Variable
 		for _, arg := range meth.Args {
 			params = append(params, Variable{
@@ -68,6 +70,8 @@ func PopulateFromService(ctx Context, service *parse.Service) Context {
 			Params:      params,
 			Returns:     returns,
 			ServiceName: serviceName,
+			ProtobufRequest: config.GetString(fmt.Sprintf("service.endpoints.%s.protobuf.request", meth.Name)),
+			ProtobufResponse: config.GetString(fmt.Sprintf("service.endpoints.%s.protobuf.response", meth.Name)),
 		})
 	}
 
@@ -137,6 +141,8 @@ type Method struct {
 	Name        string
 	Params      []Variable
 	Returns     []Variable
+	ProtobufRequest string
+	ProtobufResponse string
 }
 
 func (m Method) RequestName() string {

@@ -58,14 +58,14 @@ A quick summary of what Godin can do:
 ### godin init
 Calling `godin init` will generate the following project structure in the CWD. First you need to answer
 a few prompts to configure the project. You only have to do this once, after that the configuration is stored
-in `godin.toml`
+in `godin.json`
 
 ````bash
 .
 ├── cmd
 │   └── greeter
 ├── Dockerfile
-├── godin.toml
+├── godin.json
 ├── go.mod
 ├── internal
 │   ├── grpc
@@ -82,7 +82,7 @@ in `godin.toml`
 ### godin update
 After writing out the service interface in `internal/service/service.go`, calling `godin update` will
 generate everything required to serve a gRPC server. Middleware will automatically be added based on the project configuration 
-in `godin.toml`.
+in `godin.json`.
 
 This is the structure `godin update` currently creates
 ```bash
@@ -90,7 +90,7 @@ This is the structure `godin update` currently creates
 ├── cmd
 │   └── greeter
 ├── Dockerfile
-├── godin.toml
+├── godin.json
 ├── go.mod
 ├── go.sum
 ├── internal
@@ -126,10 +126,10 @@ files you'd better not edit :sweat_smile:.
 
 
 ### configuration
-After `godin init` is called, everything is based off your service definition plus the `godin.toml`. 
+After `godin init` is called, everything is based off your service definition plus the `godin.json`. 
 An example of such a config file is listed below.
 
-```toml
+```json
 [godin]
   version = "0.3.0"
 

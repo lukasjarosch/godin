@@ -14,6 +14,10 @@
   name = "yyy"
   namespace = "yyy"
 
+  [endpoints.Hello]
+    protoRequest = "HelloRequest"
+    protoResponse = "HelloResponse"
+
   [service.middleware]
     authorization = false
     caching = false

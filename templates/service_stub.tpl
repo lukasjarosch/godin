@@ -2,6 +2,7 @@ package service
 
 import (
     "errors"
+    "context"
 )
 
 // {{ title .Service.Name }} documentation is automatically

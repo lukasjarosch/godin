@@ -8,13 +8,13 @@ import (
 
 	"path"
 
+	"github.com/lukasjarosch/godin/internal/fs"
 	"github.com/lukasjarosch/godin/internal/generate"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	config "github.com/spf13/viper"
-	"github.com/lukasjarosch/godin/internal/fs"
 )
 
 func init() {
@@ -54,6 +54,22 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	// prepare template context for rendering
 	tplContext := template.NewContextFromConfig()
 	tplContext = template.PopulateFromService(tplContext, service)
+
+	// check if endpoint data is in godin.json and populate if not
+	for _, meth := range service.Interface.Methods {
+		protoRequestKey := fmt.Sprintf("service.endpoints.%s.protobuf.request", meth.Name)
+		protoRequestValue := fmt.Sprintf("%sRequest", meth.Name)
+		protoResponseKey := fmt.Sprintf("service.endpoints.%s.protobuf.response", meth.Name)
+		protoResponseValue := fmt.Sprintf("%sResponse", meth.Name)
+
+		if !config.IsSet(protoRequestKey) {
+			config.Set(protoRequestKey, protoRequestValue)
+		}
+		if !config.IsSet(protoResponseKey) {
+			config.Set(protoResponseKey, protoResponseValue)
+		}
+	}
+	godin.SaveConfiguration()
 
 	// update internal/service/<serviceName>/implementation.go
 	implementationGen := generate.NewImplementation(TemplateFilesystem, service.Interface, tplContext)
@@ -105,7 +121,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if config.GetBool("grpc.enabled") {
+	if config.GetBool("transport.grpc.enabled") {
 		// grpc/request_response.go
 		grpcRequestResponse := generate.NewGrpcRequestResponse(TemplateFilesystem, service.Interface, tplContext)
 		fs.MakeDirs([]string{path.Dir(grpcRequestResponse.TargetPath())}) // ignore errors, just ensure the path exists

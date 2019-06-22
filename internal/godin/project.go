@@ -31,7 +31,7 @@ func NewProject() *Project {
 	return &Project{}
 }
 
-// InitializeConfiguration will setup 'godin.toml' with the default data.
+// InitializeConfiguration will setup 'godin.json' with the default data.
 // Then the user will be prompted for additional configuration data.
 // At last, the config-file is saved to disk
 func (p *Project) InitializeConfiguration() {
@@ -44,7 +44,7 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("service.middleware.recovery", true)
 	config.Set("service.middleware.authorization", false)
 	config.Set("service.middleware.caching", false)
-	config.Set("grpc.enabled", true)
+	config.Set("transport.grpc.enabled", true)
 
 	// prompt for required data and save it to config
 	config.Set("service.name", prompt.ServiceName())

@@ -9,7 +9,7 @@ import (
 )
 
 const FileName = "godin"
-const FileType = "toml"
+const FileType = "json"
 
 // LoadConfiguration initializes viper and tries to read
 // the config from the current working directory.
