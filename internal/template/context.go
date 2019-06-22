@@ -21,9 +21,10 @@ type Context struct {
 func NewContextFromConfig() Context {
 	ctx := Context{
 		Service: Service{
-			Name:      config.GetString("service.name"),
-			Namespace: config.GetString("service.namespace"),
-			Module:    config.GetString("service.module"),
+			Name:              config.GetString("service.name"),
+			Namespace:         config.GetString("service.namespace"),
+			Module:            config.GetString("service.module"),
+			LoggingMiddleware: config.GetBool("service.middleware.logging"),
 		},
 		Protobuf: Protobuf{
 			Package: config.GetString("protobuf.package"),
@@ -89,10 +90,11 @@ type Godin struct {
 }
 
 type Service struct {
-	Name      string
-	Namespace string
-	Methods   []Method
-	Module    string
+	Name              string
+	Namespace         string
+	Methods           []Method
+	Module            string
+	LoggingMiddleware bool
 }
 
 type Protobuf struct {

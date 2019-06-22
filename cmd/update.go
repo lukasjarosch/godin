@@ -51,10 +51,6 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	interfaceName := strings.Title(config.GetString("service.name"))
 	service := godin.ParseServiceFile(interfaceName)
 
-	// prepare template context for rendering
-	tplContext := template.NewContextFromConfig()
-	tplContext = template.PopulateFromService(tplContext, service)
-
 	// check if endpoint data is in godin.json and populate if not
 	for _, meth := range service.Interface.Methods {
 		protoRequestKey := fmt.Sprintf("service.endpoints.%s.protobuf.request", meth.Name)
@@ -70,6 +66,18 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 	godin.SaveConfiguration()
+
+	// prepare template context for rendering
+	tplContext := template.NewContextFromConfig()
+	tplContext = template.PopulateFromService(tplContext, service)
+
+	// update cmd/<service>/main.go
+	cmdMain := generate.NewCmdMain(TemplateFilesystem, service.Interface, tplContext)
+	if err := cmdMain.Update(); err != nil {
+		logrus.Errorf("failed to update main.go: %s: %s", cmdMain.TargetPath(), err.Error())
+	} else {
+		logrus.Infof("updated main.go: %s", cmdMain.TargetPath())
+	}
 
 	// update internal/service/<serviceName>/implementation.go
 	implementationGen := generate.NewImplementation(TemplateFilesystem, service.Interface, tplContext)
@@ -121,6 +129,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	// GRPC TRANSPORT LAYER
 	if config.GetBool("transport.grpc.enabled") {
 		// grpc/request_response.go
 		grpcRequestResponse := generate.NewGrpcRequestResponse(TemplateFilesystem, service.Interface, tplContext)

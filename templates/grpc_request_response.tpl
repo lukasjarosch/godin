@@ -7,6 +7,7 @@ import (
     "errors"
 
     service "{{ .Service.Module }}"
+    "{{ .Service.Module }}/internal/service/endpoint"
 )
 
 {{ range .Service.Methods }}

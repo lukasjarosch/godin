@@ -1,6 +1,6 @@
 {{ define "grpc_encode_request" }}
 // Encode{{ .Request }} is used in the server and encodes a domain-level request into a gRPC request
-func Encode{{ .Request }}(ctx context.Context, request transport.{{ .Request }}) (pbRequest *pb.{{ .ProtobufRequest }}, err error) {
+func Encode{{ .Request }}(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
     if request == nil {
         return nil, errors.New("nil {{ .Request }}")
     }

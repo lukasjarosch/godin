@@ -2,7 +2,7 @@ package {{ .Service.Name }}
 
 import (
     "context"
-    "github.com/go-kit/kit/log"
+    "github.com/lukasjarosch/godin/pkg/log"
     "{{ .Service.Module }}/internal/service"
 )
 

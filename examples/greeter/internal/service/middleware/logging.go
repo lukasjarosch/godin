@@ -15,6 +15,12 @@ type loggingMiddleware struct {
 	next   service.Yyy
 }
 
+func LoggingMiddleware(logger log.Logger) Middleware {
+	return func(next service.Yyy) service.Yyy {
+		return &loggingMiddleware{next, logger}
+	}
+}
+
 // Hello logs the request and response of the service.Hello endpoint
 // The runtime will also be logged. Once a request enters this middleware, the timer is started.
 // Upon leaving this middleware (deferred function is called), the time-delta is calculated.

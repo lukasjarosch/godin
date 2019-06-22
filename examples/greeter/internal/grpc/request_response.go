@@ -10,7 +10,7 @@ import (
 )
 
 // EncodeHelloRequest is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHelloRequest(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHelloRequest(ctx context.Context, request endpoint.HelloRequest) (pbRequest *pb.HelloRequest, err error) {
 	if request == nil {
 		return nil, errors.New("nil HelloRequest")
 	}
@@ -23,7 +23,7 @@ func EncodeHelloRequest(ctx context.Context, request interface{}) (pbRequest int
 }
 
 // DecodeHelloResponse is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHelloResponse(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHelloResponse(ctx context.Context, pbResponse *pb.HelloResponse) (response endpoint.HelloResponse, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil HelloResponse")
 	}
@@ -35,7 +35,7 @@ func DecodeHelloResponse(ctx context.Context, pbResponse interface{}) (pbRespons
 }
 
 // EncodeHelloResponse is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHelloResponse(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHelloResponse(ctx context.Context, response endpoint.HelloResponse) (pbResponse *pb.HelloResponse, err error) {
 	if response == nil {
 		return nil, errors.New("nil HelloResponse")
 	}
@@ -48,7 +48,7 @@ func EncodeHelloResponse(ctx context.Context, response interface{}) (pbResponse 
 }
 
 // DecodeHelloRequest is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHelloRequest(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHelloRequest(ctx context.Context, pbRequest *pb.HelloRequest) (request endpoint.HelloRequest, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil HelloRequest")
 	}
@@ -60,7 +60,7 @@ func DecodeHelloRequest(ctx context.Context, pbRequest interface{}) (request int
 }
 
 // EncodeHello2Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello2Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello2Request(ctx context.Context, request endpoint.Hello2Request) (pbRequest *pb.Hello2Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello2Request")
 	}
@@ -73,7 +73,7 @@ func EncodeHello2Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello2Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello2Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello2Response(ctx context.Context, pbResponse *pb.Hello2ULTRAResponse) (response endpoint.Hello2Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello2Response")
 	}
@@ -85,7 +85,7 @@ func DecodeHello2Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello2Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello2Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello2Response(ctx context.Context, response endpoint.Hello2Response) (pbResponse *pb.Hello2ULTRAResponse, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello2Response")
 	}
@@ -98,7 +98,7 @@ func EncodeHello2Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello2Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello2Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello2Request(ctx context.Context, pbRequest *pb.Hello2Request) (request endpoint.Hello2Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello2Request")
 	}
@@ -110,7 +110,7 @@ func DecodeHello2Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello3Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello3Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello3Request(ctx context.Context, request endpoint.Hello3Request) (pbRequest *pb.Hello3Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello3Request")
 	}
@@ -123,7 +123,7 @@ func EncodeHello3Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello3Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello3Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello3Response(ctx context.Context, pbResponse *pb.Hello3Response) (response endpoint.Hello3Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello3Response")
 	}
@@ -135,7 +135,7 @@ func DecodeHello3Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello3Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello3Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello3Response(ctx context.Context, response endpoint.Hello3Response) (pbResponse *pb.Hello3Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello3Response")
 	}
@@ -148,7 +148,7 @@ func EncodeHello3Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello3Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello3Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello3Request(ctx context.Context, pbRequest *pb.Hello3Request) (request endpoint.Hello3Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello3Request")
 	}
@@ -160,7 +160,7 @@ func DecodeHello3Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello4Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello4Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello4Request(ctx context.Context, request endpoint.Hello4Request) (pbRequest *pb.Hello4Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello4Request")
 	}
@@ -173,7 +173,7 @@ func EncodeHello4Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello4Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello4Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello4Response(ctx context.Context, pbResponse *pb.Hello4Response) (response endpoint.Hello4Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello4Response")
 	}
@@ -185,7 +185,7 @@ func DecodeHello4Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello4Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello4Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello4Response(ctx context.Context, response endpoint.Hello4Response) (pbResponse *pb.Hello4Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello4Response")
 	}
@@ -198,7 +198,7 @@ func EncodeHello4Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello4Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello4Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello4Request(ctx context.Context, pbRequest *pb.Hello4Request) (request endpoint.Hello4Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello4Request")
 	}
@@ -210,7 +210,7 @@ func DecodeHello4Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello5Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello5Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello5Request(ctx context.Context, request endpoint.Hello5Request) (pbRequest *pb.Hello5Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello5Request")
 	}
@@ -223,7 +223,7 @@ func EncodeHello5Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello5Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello5Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello5Response(ctx context.Context, pbResponse *pb.Hello5Response) (response endpoint.Hello5Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello5Response")
 	}
@@ -235,7 +235,7 @@ func DecodeHello5Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello5Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello5Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello5Response(ctx context.Context, response endpoint.Hello5Response) (pbResponse *pb.Hello5Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello5Response")
 	}
@@ -248,7 +248,7 @@ func EncodeHello5Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello5Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello5Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello5Request(ctx context.Context, pbRequest *pb.Hello5Request) (request endpoint.Hello5Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello5Request")
 	}
@@ -260,7 +260,7 @@ func DecodeHello5Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello6Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello6Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello6Request(ctx context.Context, request endpoint.Hello6Request) (pbRequest *pb.Hello6Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello6Request")
 	}
@@ -273,7 +273,7 @@ func EncodeHello6Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello6Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello6Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello6Response(ctx context.Context, pbResponse *pb.Hello6Response) (response endpoint.Hello6Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello6Response")
 	}
@@ -285,7 +285,7 @@ func DecodeHello6Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello6Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello6Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello6Response(ctx context.Context, response endpoint.Hello6Response) (pbResponse *pb.Hello6Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello6Response")
 	}
@@ -298,7 +298,7 @@ func EncodeHello6Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello6Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello6Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello6Request(ctx context.Context, pbRequest *pb.Hello6Request) (request endpoint.Hello6Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello6Request")
 	}
@@ -310,7 +310,7 @@ func DecodeHello6Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello7Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello7Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello7Request(ctx context.Context, request endpoint.Hello7Request) (pbRequest *pb.Hello7Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello7Request")
 	}
@@ -323,7 +323,7 @@ func EncodeHello7Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello7Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello7Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello7Response(ctx context.Context, pbResponse *pb.Hello7Response) (response endpoint.Hello7Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello7Response")
 	}
@@ -335,7 +335,7 @@ func DecodeHello7Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello7Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello7Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello7Response(ctx context.Context, response endpoint.Hello7Response) (pbResponse *pb.Hello7Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello7Response")
 	}
@@ -348,7 +348,7 @@ func EncodeHello7Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello7Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello7Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello7Request(ctx context.Context, pbRequest *pb.Hello7Request) (request endpoint.Hello7Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello7Request")
 	}
@@ -360,7 +360,7 @@ func DecodeHello7Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello8Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello8Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello8Request(ctx context.Context, request endpoint.Hello8Request) (pbRequest *pb.Hello8Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello8Request")
 	}
@@ -373,7 +373,7 @@ func EncodeHello8Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello8Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello8Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello8Response(ctx context.Context, pbResponse *pb.Hello8Response) (response endpoint.Hello8Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello8Response")
 	}
@@ -385,7 +385,7 @@ func DecodeHello8Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello8Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello8Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello8Response(ctx context.Context, response endpoint.Hello8Response) (pbResponse *pb.Hello8Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello8Response")
 	}
@@ -398,7 +398,7 @@ func EncodeHello8Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello8Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello8Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello8Request(ctx context.Context, pbRequest *pb.Hello8Request) (request endpoint.Hello8Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello8Request")
 	}
@@ -410,7 +410,7 @@ func DecodeHello8Request(ctx context.Context, pbRequest interface{}) (request in
 }
 
 // EncodeHello9Request is used in the server and encodes a domain-level request into a gRPC request
-func EncodeHello9Request(ctx context.Context, request interface{}) (pbRequest interface{}, err error) {
+func EncodeHello9Request(ctx context.Context, request endpoint.Hello9Request) (pbRequest *pb.Hello9Request, err error) {
 	if request == nil {
 		return nil, errors.New("nil Hello9Request")
 	}
@@ -423,7 +423,7 @@ func EncodeHello9Request(ctx context.Context, request interface{}) (pbRequest in
 }
 
 // DecodeHello9Response is used in the server and decodes a gRPC response into a domain-level response
-func DecodeHello9Response(ctx context.Context, pbResponse interface{}) (pbResponse interface{}, err error) {
+func DecodeHello9Response(ctx context.Context, pbResponse *pb.Hello9Response) (response endpoint.Hello9Response, err error) {
 	if pbResponse == nil {
 		return nil, errors.New("nil Hello9Response")
 	}
@@ -435,7 +435,7 @@ func DecodeHello9Response(ctx context.Context, pbResponse interface{}) (pbRespon
 }
 
 // EncodeHello9Response is used in the client and encodes a domain-level response into a gRPC response
-func EncodeHello9Response(ctx context.Context, response interface{}) (pbResponse interface{}, err error) {
+func EncodeHello9Response(ctx context.Context, response endpoint.Hello9Response) (pbResponse *pb.Hello9Response, err error) {
 	if response == nil {
 		return nil, errors.New("nil Hello9Response")
 	}
@@ -448,7 +448,7 @@ func EncodeHello9Response(ctx context.Context, response interface{}) (pbResponse
 }
 
 // DecodeHello9Request is used in the client and decodes a gRPC request into a domain-level request
-func DecodeHello9Request(ctx context.Context, pbRequest interface{}) (request interface{}, err error) {
+func DecodeHello9Request(ctx context.Context, pbRequest *pb.Hello9Request) (request endpoint.Hello9Request, err error) {
 	if pbRequest == nil {
 		return nil, errors.New("nil Hello9Request")
 	}
