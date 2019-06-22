@@ -14,7 +14,7 @@ import (
 
 type grpcServer struct {
 {{ range .Service.Methods }}
-    {{ .Name }}Handler kitGrpc.Handler
+    {{- .Name }}Handler kitGrpc.Handler
 {{ end }}
 }
 
@@ -24,7 +24,7 @@ func NewServer(endpoints endpoint.Set, logger log.Logger) pb.{{ .Protobuf.Servic
 
     return &grpcServer{
     {{ range .Service.Methods }}
-    {{ .Name }}Handler: kitGrpc.NewServer(
+    {{- .Name }}Handler: kitGrpc.NewServer(
         endpoints.{{ .Name }}Endpoint,
         Decode{{ .Request }},
         Encode{{ .Response }},
@@ -35,6 +35,11 @@ func NewServer(endpoints endpoint.Set, logger log.Logger) pb.{{ .Protobuf.Servic
 }
 
 {{ range .Service.Methods }}
-func (s *grpcServer) {{ .Name }}(
+func (s *grpcServer) {{ .Name }}(ctx context.Context, req *pb.{{ .ProtobufRequest }}) (*pb.{{ .ProtobufResponse }}, error) {
     _, resp, err := s.{{ .Name }}Handler.ServeGRPC(ctx, req)
+    if err != nil {
+        return nil, EncodeError(err)
+    }
+    return resp.(*pb.{{ .ProtobufResponse }}), nil
+}
 {{ end }}

@@ -138,5 +138,13 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		} else {
 			logrus.Infof("updated %s", grpcEncodeDecode.TargetPath())
 		}
+
+		// grpc/server.go
+		grpcServer := generate.NewGrpcServer(TemplateFilesystem, service.Interface, tplContext)
+		if err := grpcServer.Update(); err != nil {
+			logrus.Errorf("failed to update grpc/server.go: %s", err)
+		} else {
+			logrus.Infof("updated %s", grpcServer.TargetPath())
+		}
 	}
 }
