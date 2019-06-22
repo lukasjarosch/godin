@@ -12,11 +12,12 @@ func {{ .Name }}Endpoint(service service.{{ title .ServiceName }}) endpoint.Endp
                     req.{{ title .Name }},
                 {{- end }}
             {{- end }})
+
         return {{ .ResponseName }}{
-            {{- range .Returns -}}
-            {{- .Name }},
+            {{- range .Returns }}
+            {{ title .Name }}: {{ .Name }},
             {{- end }}
-            }
+        }, err
     }
 }
 {{ end }}
