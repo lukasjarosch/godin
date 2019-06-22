@@ -5,7 +5,7 @@ package endpoint
 import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
-	godinMiddleware "github.com/lukasjarosch/godin/pkg/middleware"
+	godin "github.com/lukasjarosch/godin/pkg/middleware"
 	service "yyy"
 )
 
@@ -26,56 +26,56 @@ func Endpoints(service service.yyy, duration metrics.Histogram, frequency metric
 	var hello endpoint.Endpoint
 	{
 		hello = HelloEndpoint(service)
-		hello = godinMiddleware.LatencyMiddleware(duration, "Hello")(hello)
-		hello = godinMiddleware.RequestFrequency(frequency, "Hello")(hello)
+		hello = godin.LatencyMiddleware(duration, "Hello")(hello)
+		hello = godin.RequestFrequency(frequency, "Hello")(hello)
 	}
 	var hello2 endpoint.Endpoint
 	{
 		hello2 = Hello2Endpoint(service)
-		hello2 = godinMiddleware.LatencyMiddleware(duration, "Hello2")(hello2)
-		hello2 = godinMiddleware.RequestFrequency(frequency, "Hello2")(hello2)
+		hello2 = godin.LatencyMiddleware(duration, "Hello2")(hello2)
+		hello2 = godin.RequestFrequency(frequency, "Hello2")(hello2)
 	}
 	var hello3 endpoint.Endpoint
 	{
 		hello3 = Hello3Endpoint(service)
-		hello3 = godinMiddleware.LatencyMiddleware(duration, "Hello3")(hello3)
-		hello3 = godinMiddleware.RequestFrequency(frequency, "Hello3")(hello3)
+		hello3 = godin.LatencyMiddleware(duration, "Hello3")(hello3)
+		hello3 = godin.RequestFrequency(frequency, "Hello3")(hello3)
 	}
 	var hello4 endpoint.Endpoint
 	{
 		hello4 = Hello4Endpoint(service)
-		hello4 = godinMiddleware.LatencyMiddleware(duration, "Hello4")(hello4)
-		hello4 = godinMiddleware.RequestFrequency(frequency, "Hello4")(hello4)
+		hello4 = godin.LatencyMiddleware(duration, "Hello4")(hello4)
+		hello4 = godin.RequestFrequency(frequency, "Hello4")(hello4)
 	}
 	var hello5 endpoint.Endpoint
 	{
 		hello5 = Hello5Endpoint(service)
-		hello5 = godinMiddleware.LatencyMiddleware(duration, "Hello5")(hello5)
-		hello5 = godinMiddleware.RequestFrequency(frequency, "Hello5")(hello5)
+		hello5 = godin.LatencyMiddleware(duration, "Hello5")(hello5)
+		hello5 = godin.RequestFrequency(frequency, "Hello5")(hello5)
 	}
 	var hello6 endpoint.Endpoint
 	{
 		hello6 = Hello6Endpoint(service)
-		hello6 = godinMiddleware.LatencyMiddleware(duration, "Hello6")(hello6)
-		hello6 = godinMiddleware.RequestFrequency(frequency, "Hello6")(hello6)
+		hello6 = godin.LatencyMiddleware(duration, "Hello6")(hello6)
+		hello6 = godin.RequestFrequency(frequency, "Hello6")(hello6)
 	}
 	var hello7 endpoint.Endpoint
 	{
 		hello7 = Hello7Endpoint(service)
-		hello7 = godinMiddleware.LatencyMiddleware(duration, "Hello7")(hello7)
-		hello7 = godinMiddleware.RequestFrequency(frequency, "Hello7")(hello7)
+		hello7 = godin.LatencyMiddleware(duration, "Hello7")(hello7)
+		hello7 = godin.RequestFrequency(frequency, "Hello7")(hello7)
 	}
 	var hello8 endpoint.Endpoint
 	{
 		hello8 = Hello8Endpoint(service)
-		hello8 = godinMiddleware.LatencyMiddleware(duration, "Hello8")(hello8)
-		hello8 = godinMiddleware.RequestFrequency(frequency, "Hello8")(hello8)
+		hello8 = godin.LatencyMiddleware(duration, "Hello8")(hello8)
+		hello8 = godin.RequestFrequency(frequency, "Hello8")(hello8)
 	}
 	var hello9 endpoint.Endpoint
 	{
 		hello9 = Hello9Endpoint(service)
-		hello9 = godinMiddleware.LatencyMiddleware(duration, "Hello9")(hello9)
-		hello9 = godinMiddleware.RequestFrequency(frequency, "Hello9")(hello9)
+		hello9 = godin.LatencyMiddleware(duration, "Hello9")(hello9)
+		hello9 = godin.RequestFrequency(frequency, "Hello9")(hello9)
 	}
 
 	return Set{

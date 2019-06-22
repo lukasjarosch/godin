@@ -5,7 +5,7 @@ package endpoint
 import (
     "context"
     "github.com/go-kit/kit/endpoint"
-    godinMiddleware "github.com/lukasjarosch/godin/pkg/middleware"
+    godin "github.com/lukasjarosch/godin/pkg/middleware"
     service "{{ .Service.Module }}"
 )
 
@@ -20,8 +20,8 @@ func Endpoints(service service.{{ .Service.Name }}, duration metrics.Histogram, 
     var {{ untitle .Name }} endpoint.Endpoint
     {
         {{ untitle .Name }} = {{ .Name }}Endpoint(service)
-        {{ untitle .Name }} = godinMiddleware.LatencyMiddleware(duration, "{{ .Name }}")({{ untitle .Name }})
-        {{ untitle .Name }} = godinMiddleware.RequestFrequency(frequency, "{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = godin.LatencyMiddleware(duration, "{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = godin.RequestFrequency(frequency, "{{ .Name }}")({{ untitle .Name }})
     }
     {{- end }}
 
