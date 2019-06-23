@@ -39,7 +39,7 @@ func ServiceNamespace() string {
 func ServiceModule() string {
 	prompt := NewPrompt(
 		"Enter the Go module name",
-		"",
+		"github.com/username/service",
 		Validate(
 			MinLengthThree(),
 		),
@@ -68,8 +68,8 @@ func ProtoServiceName() string {
 
 func ProtoPackage() string {
 	prompt := NewPrompt(
-		"Enter the protobuf package of the service",
-		"",
+		"Enter the importable go-package of the protobuf service stubs (protoc go_out)",
+		"github.com/username/protobuf-go",
 		Validate(
 			MinLengthThree(),
 		),

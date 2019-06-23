@@ -15,6 +15,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	config "github.com/spf13/viper"
+	"time"
+	"github.com/lukasjarosch/godin/internal"
 )
 
 func init() {
@@ -156,4 +158,9 @@ func updateCmd(cmd *cobra.Command, args []string) {
 			logrus.Infof("updated %s", grpcServer.TargetPath())
 		}
 	}
+
+	// update config metadata
+	config.Set("godin.version", internal.Version)
+	config.Set("project.updated", time.Now().Format(time.RFC1123))
+	godin.SaveConfiguration()
 }
