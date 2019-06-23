@@ -138,6 +138,28 @@ func (v Variable) ResolveType() string {
 	return fmt.Sprintf("%s.%s", "service", v.Type)
 }
 
+// NilValue returns the appropriate nil value for the variable
+func (v Variable) NilValue() string {
+	switch v.Type {
+	case "error":
+		return "nil"
+	case "string":
+		return ""
+	case "boolean":
+		return "false"
+	case "int",
+		"int16",
+		"int32",
+		"int64",
+		"float32",
+		"float64":
+		return "0"
+	default:
+		return "nil"
+	}
+}
+
+
 type Method struct {
 	// required for partials which do not have access to the Service struct
 	ServiceName      string
@@ -183,6 +205,22 @@ func (m Method) ReturnList() string {
 			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.ResolveType()))
 		} else {
 			list = append(list, fmt.Sprintf("%s %s", arg.Name, arg.Type))
+		}
+	}
+
+	return strings.Join(list, ", ")
+}
+
+// ReturnImplementationMissing will produce a list of
+// nil returns and an error. For example, the return params are (name string, err error)
+// the method will return "nil, fmt.Errorf("NOT IMPLEMENTED")"
+func (m Method) ReturnImplementationMissing() string {
+	var list []string
+	for _, ret := range m.Returns {
+		if ret.Type == "error" {
+			list = append(list, "fmt.Errorf(\"NOT_IMPLEMENTED\")")
+		} else {
+			list = append(list, ret.NilValue())
 		}
 	}
 

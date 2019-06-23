@@ -1,7 +1,9 @@
 package {{ .Service.Name }}
 
 import (
+    "fmt"
     "context"
+
     "github.com/lukasjarosch/godin/pkg/log"
     "{{ .Service.Module }}/internal/service"
 )
