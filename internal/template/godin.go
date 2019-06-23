@@ -47,6 +47,18 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: ".gitignore",
 		Overwrite:  true,
 	},
+	"k8s_service": {
+		Template:   "k8s_service",
+		IsGoSource: false,
+		TargetFile: "k8s/service.yaml",
+		Overwrite:  true,
+	},
+	"k8s_deployment": {
+		Template:   "k8s_deployment",
+		IsGoSource: false,
+		TargetFile: "k8s/deployment.yaml",
+		Overwrite:  true,
+	},
 }
 
 func FileOptions(name string, tplContext Context, targetPath string) GenerateOptions {
@@ -57,12 +69,33 @@ func FileOptions(name string, tplContext Context, targetPath string) GenerateOpt
 	return ctx
 }
 
-func ImplementationFileOptions(tplContext Context, targetPath string) GenerateOptions {
-	ctx := fileOptions["implementation"]
-	ctx.TargetFile = targetPath
-	ctx.Context = tplContext
+func K8sDeploymentOptions() GenerateOptions {
+	ctx := Context{
+		Service: Service{
+			Name:      config.GetString("service.name"),
+			Namespace: config.GetString("service.namespace"),
+		},
+		Docker: Docker{
+			Registry: config.GetString("docker.registry"),
+		},
+	}
+	opts := fileOptions["k8s_deployment"]
+	opts.Context = ctx
 
-	return ctx
+	return opts
+}
+
+func K8sServiceOptions() GenerateOptions {
+	ctx := Context{
+		Service: Service{
+			Name:      config.GetString("service.name"),
+			Namespace: config.GetString("service.namespace"),
+		},
+	}
+	opts := fileOptions["k8s_service"]
+	opts.Context = ctx
+
+	return opts
 }
 
 func MiddlewareOptions() GenerateOptions {

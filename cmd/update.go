@@ -159,6 +159,22 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	// k8s/service.yaml
+	k8sService := template.NewGenerator(template.K8sServiceOptions())
+	if err := k8sService.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate k8s/service.yaml: %s", err.Error()))
+	} else {
+		logrus.Info("generated k8s/service.yaml")
+	}
+
+	// k8s/deployment.yaml
+	k8sDeployment := template.NewGenerator(template.K8sDeploymentOptions())
+	if err := k8sDeployment.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate k8s/deployment.yaml: %s", err.Error()))
+	} else {
+		logrus.Info("generated k8s/deployment.yaml")
+	}
+
 	// update config metadata
 	config.Set("godin.version", internal.Version)
 	config.Set("project.updated", time.Now().Format(time.RFC1123))

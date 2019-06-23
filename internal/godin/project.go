@@ -22,6 +22,7 @@ var DefaultDirectoryList = []string{
 	"internal/service/endpoint",
 	"internal/service/middleware",
 	"pkg/grpc",
+	"k8s",
 }
 
 type Project struct {
@@ -52,6 +53,7 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("service.module", prompt.ServiceModule())
 	config.Set("protobuf.service", prompt.ProtoServiceName())
 	config.Set("protobuf.package", prompt.ProtoPackage())
+	config.Set("docker.registry", prompt.DockerRegistry())
 
 	SaveConfiguration()
 }
@@ -87,7 +89,7 @@ func ParseServiceFile(interfaceName string) *parse.Service {
 	}
 	logrus.Debugf("parsed service file: %s", filePath)
 
-	iface, err := service.FindInterface(interfaceName);
+	iface, err := service.FindInterface(interfaceName)
 	if err != nil {
 		logrus.Fatalf("unable to find service interface: %s", err.Error())
 	}

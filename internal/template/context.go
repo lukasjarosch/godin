@@ -14,6 +14,7 @@ type Context struct {
 	Service  Service
 	Godin    Godin
 	Protobuf Protobuf
+	Docker Docker
 }
 
 // NewContextFromConfig will initialize the context will all the data from the configuration
@@ -34,6 +35,9 @@ func NewContextFromConfig() Context {
 			Version: internal.Version,
 			Build:   internal.Build,
 			Commit:  internal.Commit,
+		},
+		Docker: Docker {
+			Registry: config.GetString("docker.registry"),
 		},
 	}
 
@@ -105,6 +109,10 @@ type Protobuf struct {
 type Variable struct {
 	Name string
 	Type string
+}
+
+type Docker struct {
+	Registry string
 }
 
 func (v Variable) resolveType(typ string, prefix string) (string, error) {

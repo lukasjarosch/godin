@@ -81,4 +81,17 @@ func ProtoPackage() string {
 	return protoPackage
 }
 
-
+func DockerRegistry() string {
+	prompt := NewPrompt(
+		"Enter your docker registry",
+		"registry.hub.docker.com",
+		Validate(
+			MinLengthThree(),
+		),
+	)
+	registry, err := prompt.Run()
+	if err != nil {
+		os.Exit(1)
+	}
+	return registry
+}
