@@ -9,12 +9,10 @@ import (
     "os/signal"
     "syscall"
 
-	"github.com/go-kit/kit/metrics"
-	"github.com/go-kit/kit/metrics/prometheus"
 	"github.com/oklog/oklog/pkg/group"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	googleGrpc "google.golang.org/grpc"
-	stdprometheus "github.com/prometheus/client_golang/prometheus"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 
     pb "{{ .Protobuf.Package }}"
     svcGrpc "{{ .Service.Module }}/internal/grpc"
@@ -44,29 +42,29 @@ func main() {
 	//TODO: svc = middleware.AuthorizationMiddleware(logger)(svc)
 	//TODO: svc = middleware.RecoveringMiddleware(logger)(svc)
 
-	// initialize prometheus
-	requestDuration, requestFrequency := initMetrics()
-	http.DefaultServeMux.Handle("/metrics", promhttp.Handler())
-
 	// initialize endpoint and transport layers
 	var (
-		endpoints   = endpoint.Endpoints(svc, requestDuration, requestFrequency)
+		endpoints   = endpoint.Endpoints(svc)
 		grpcHandler = svcGrpc.NewServer(endpoints, logger)
 	)
 
+	// serve gRPC server
+	grpcServer := googleGrpc.NewServer(
+	    googleGrpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
+	)
+	g.Add(initGrpc(grpcServer, grpcHandler, logger), func(error) {
+		grpcServer.GracefulStop()
+	})
+	grpc_prometheus.Register(grpcServer)
+
 	// serve debug http server (prometheus)
+	http.DefaultServeMux.Handle("/metrics", promhttp.Handler())
 	debugListener := initDebugHttp(logger)
 	g.Add(func() error {
 		logger.Log("transport", "debug/HTTP", "addr", DebugAddr)
 		return http.Serve(debugListener, http.DefaultServeMux)
 	}, func(error) {
 		debugListener.Close()
-	})
-
-	// serve gRPC server
-	grpcServer := googleGrpc.NewServer()
-	g.Add(initGrpc(grpcServer, grpcHandler, logger), func(error) {
-		grpcServer.GracefulStop()
 	})
 
 	// Wait for SIGINT or SIGTERM and stop gracefully
@@ -129,27 +127,3 @@ func initDebugHttp(logger log.Logger) net.Listener {
 	return debugListener
 }
 
-// initMetrics initializes all prometheus metrics for the transport layer
-//
-// contact_request_duration_seconds Summary/Histogram
-// contact_request_count_total Counter
-func initMetrics() (duration metrics.Histogram, frequency metrics.Counter) {
-	{
-		duration = prometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-			Namespace: "{{ .Service.Namespace }}",
-			Subsystem: "{{ .Service.Namespace }}",
-			Name:      "request_duration_seconds",
-			Help:      "Request duration in seconds.",
-		}, []string{"method", "success"})
-	}
-	{
-		frequency = prometheus.NewCounterFrom(stdprometheus.CounterOpts{
-			Namespace: "{{ .Service.Namespace }}",
-			Subsystem: "{{ .Service.Namespace }}",
-			Name:      "request_count_total",
-			Help:      "the total amount of requests served",
-		}, []string{"method", "success"})
-	}
-
-	return duration, frequency
-}

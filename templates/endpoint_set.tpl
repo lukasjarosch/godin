@@ -4,9 +4,8 @@ package endpoint
 
 import (
     "github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/metrics"
 
-    godin "github.com/lukasjarosch/godin/pkg/middleware"
+    godinMiddleware "github.com/lukasjarosch/godin/pkg/middleware"
     "{{ .Service.Module }}/internal/service"
 )
 
@@ -16,13 +15,12 @@ type Set struct {
      {{- end }}
 }
 
-func Endpoints(service service.{{ title .Service.Name }}, duration metrics.Histogram, frequency metrics.Counter) Set {
+func Endpoints(service service.{{ title .Service.Name }}) Set {
     {{ range .Service.Methods }}
     var {{ untitle .Name }} endpoint.Endpoint
     {
         {{ untitle .Name }} = {{ .Name }}Endpoint(service)
-        {{ untitle .Name }} = godin.LatencyMiddleware(duration, "{{ .Name }}")({{ untitle .Name }})
-        {{ untitle .Name }} = godin.RequestFrequency(frequency, "{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = godinMiddleware.Prometheus("{{ .Name }}")({{ untitle .Name }})
     }
     {{- end }}
 
