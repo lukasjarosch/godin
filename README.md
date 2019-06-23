@@ -44,6 +44,9 @@ A quick summary of what Godin can do:
 2. install using `make install`
 3. Done
 
+### Examples
+Examples are now hosted in a separate repository: [godin-examples](https://github.com/lukasjarosch/godin-examples)
+
 ## Usage
 
 ### Available commands
