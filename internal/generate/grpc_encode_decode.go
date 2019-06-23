@@ -3,13 +3,14 @@ package generate
 import (
 	"fmt"
 
+	"strings"
+
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/template"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/vetcher/go-astra/types"
-	"strings"
 )
 
 type GrpcEncodeDecode struct {
@@ -66,10 +67,13 @@ func (r *GrpcEncodeDecode) GenerateMissing() error {
 				return errors.Wrap(err, "unable to find template")
 			}
 
-			ctx := struct {
-				Name string
-			}{
-				implementation.EndpointName(missingFunction),
+			// extract the required method from the large templateContext
+			// we only need the method as context in this case
+			var ctx template.Method
+			for _, methCtx := range r.opts.Context.Service.Methods {
+				if strings.Contains(missingFunction, methCtx.Name) {
+					ctx = methCtx
+				}
 			}
 
 			tpl := template.NewPartial(templateName, true)

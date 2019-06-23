@@ -3,6 +3,7 @@ package generate
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/parse"
@@ -67,10 +68,13 @@ func (r *GrpcRequestResponse) GenerateMissing() error {
 				return errors.Wrap(err, "unable to find template")
 			}
 
-			ctx := struct {
-				Name string
-			}{
-				implementation.EndpointName(missingMethod),
+			// extract the required method from the large templateContext
+			// we only need the method as context in this case
+			var ctx template.Method
+			for _, methCtx := range r.opts.Context.Service.Methods {
+				if strings.Contains(missingMethod, methCtx.Name) {
+					ctx = methCtx
+				}
 			}
 
 			tpl := template.NewPartial(templateName, true)
