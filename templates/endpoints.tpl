@@ -10,6 +10,6 @@ import (
     "{{ .Service.Module }}/internal/service"
 )
 
-{{ range .Service.Methods }}
-{{ template "endpoint" . }}
-{{ end }}
+{{- range .Service.Methods -}}
+{{- template "endpoint" . -}}
+{{- end -}}
