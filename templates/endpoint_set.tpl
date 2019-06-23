@@ -7,6 +7,7 @@ import (
 
     godinMiddleware "github.com/lukasjarosch/godin/pkg/middleware"
     "{{ .Service.Module }}/internal/service"
+	"github.com/lukasjarosch/godin/pkg/log"
 )
 
 type Set struct {
@@ -15,12 +16,13 @@ type Set struct {
      {{- end }}
 }
 
-func Endpoints(service service.{{ title .Service.Name }}) Set {
+func Endpoints(service service.{{ title .Service.Name }}, logger log.Logger) Set {
     {{ range .Service.Methods }}
     var {{ untitle .Name }} endpoint.Endpoint
     {
         {{ untitle .Name }} = {{ .Name }}Endpoint(service)
         {{ untitle .Name }} = godinMiddleware.Prometheus("{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = godinMiddleware.Logging(logger, "{{ .Name }}")({{ untitle .Name }})
     }
     {{- end }}
 

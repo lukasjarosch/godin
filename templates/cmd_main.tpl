@@ -44,7 +44,7 @@ func main() {
 
 	// initialize endpoint and transport layers
 	var (
-		endpoints   = endpoint.Endpoints(svc)
+		endpoints   = endpoint.Endpoints(svc, logger)
 		grpcHandler = svcGrpc.NewServer(endpoints, logger)
 	)
 
