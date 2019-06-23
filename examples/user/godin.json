@@ -1,0 +1,36 @@
+{
+  "godin": {
+    "version": "0.3.0"
+  },
+  "project": {
+    "created": "Sun, 23 Jun 2019 09:57:57 CEST"
+  },
+  "protobuf": {
+    "package": "github.com/lukasjarosch/godin/examples/user/api",
+    "service": "UserService"
+  },
+  "service": {
+    "endpoints": {
+      "create": {
+        "protobuf": {
+          "request": "CreateRequest",
+          "response": "CreateResponse"
+        }
+      }
+    },
+    "middleware": {
+      "authorization": false,
+      "caching": false,
+      "logging": true,
+      "recovery": true
+    },
+    "module": "github.com/lukasjarosch/godin/examples/user",
+    "name": "user",
+    "namespace": "godin"
+  },
+  "transport": {
+    "grpc": {
+      "enabled": true
+    }
+  }
+}
