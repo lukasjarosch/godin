@@ -1,14 +1,10 @@
 package grpc
 
 import (
-    "context"
-    "errors"
-
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/status"
 
-    "{{ .Service.Module }}/endpoint"
-    service "{{ .Service.Module }}"
+    "{{ .Service.Module }}/internal/service/endpoint"
     pb "{{ .Protobuf.Package }}"
 )
 

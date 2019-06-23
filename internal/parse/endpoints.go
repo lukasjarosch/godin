@@ -5,7 +5,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/vetcher/go-astra/types"
-	"github.com/sirupsen/logrus"
 )
 
 type endpointsParser struct {
@@ -35,7 +34,6 @@ func (p *endpointsParser) Parse() (err error) {
 			continue
 		}
 		p.MissingEndpoints = append(p.MissingEndpoints, endpoint)
-		logrus.Warn(endpoint)
 	}
 
 	return nil

@@ -7,7 +7,7 @@ import (
     "context"
     "github.com/go-kit/kit/endpoint"
 
-    service "{{ .Service.Module }}"
+    "{{ .Service.Module }}/internal/service"
 )
 
 {{ range .Service.Methods }}

@@ -3,10 +3,7 @@
 package endpoint
 
 import (
-    "context"
-    "github.com/go-kit/kit/endpoint"
-
-    service "{{ .Service.Module }}"
+    "{{ .Service.Module }}/internal/service"
 )
 
 type (
@@ -18,5 +15,5 @@ type (
 
 // Implement the Failer interface for all responses
 {{- range .Service.Methods }}
-func (resp {{ .Response }}) Failed() error { return r.Err }
+func (resp {{ .Response }}) Failed() error { return resp.Err }
 {{- end }}

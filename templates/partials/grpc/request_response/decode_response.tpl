@@ -4,7 +4,8 @@ func Decode{{ .Response }}(ctx context.Context, pbResponse interface{}) (respons
     if pbResponse == nil {
         return nil, errors.New("nil {{ .Response }}")
     }
-    response, err := {{ .Response }}Decoder(res)
+    res := pbResponse.(*pb.{{ .ProtobufResponse }})
+    response, err = {{ .Response }}Decoder(res)
     if err != nil {
         return nil, err
     }

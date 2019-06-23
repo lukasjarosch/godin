@@ -21,10 +21,11 @@ func LoggingMiddleware(logger log.Logger) Middleware {
 	}
 }
 
+
 // Create logs the request and response of the service.Create endpoint
 // The runtime will also be logged. Once a request enters this middleware, the timer is started.
 // Upon leaving this middleware (deferred function is called), the time-delta is calculated.
-func (l loggingMiddleware) Create(ctx context.Context, username string, email string) (user *service.User, err error) {
+func (l loggingMiddleware) Create(ctx context.Context, username string, email string) (user *service.UserEntity, err error) {
 	l.logger.Log(
 		"endpoint", "Create",
 		"request", endpoint.CreateRequest{

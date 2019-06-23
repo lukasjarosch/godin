@@ -3,10 +3,11 @@
 package endpoint
 
 import (
-    "context"
     "github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/metrics"
+
     godin "github.com/lukasjarosch/godin/pkg/middleware"
-    service "{{ .Service.Module }}"
+    "{{ .Service.Module }}/internal/service"
 )
 
 type Set struct {
@@ -15,7 +16,7 @@ type Set struct {
      {{- end }}
 }
 
-func Endpoints(service service.{{ .Service.Name }}, duration metrics.Histogram, frequency metrics.Counter) Set {
+func Endpoints(service service.{{ title .Service.Name }}, duration metrics.Histogram, frequency metrics.Counter) Set {
     {{ range .Service.Methods }}
     var {{ untitle .Name }} endpoint.Endpoint
     {
@@ -27,7 +28,7 @@ func Endpoints(service service.{{ .Service.Name }}, duration metrics.Histogram, 
 
     return Set{
         {{- range .Service.Methods }}
-            {{ .Name }}Endpoint: {{ untitle .Name}}Endpoint,
+            {{ .Name }}Endpoint: {{ untitle .Name}},
         {{- end }}
     }
 }

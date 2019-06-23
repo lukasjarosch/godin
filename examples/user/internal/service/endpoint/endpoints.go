@@ -7,22 +7,20 @@ import (
     "context"
     "github.com/go-kit/kit/endpoint"
 
-    service "github.com/lukasjarosch/godin/examples/user"
+    "github.com/lukasjarosch/godin/examples/user/internal/service"
 )
-
 
 
 // CreateEndpoint provides service.Create() as general endpoint
 // which can be used with arbitrary transport layers.
 func CreateEndpoint(service service.User) endpoint.Endpoint {
-    return func (ctx context.Context, request interface{}) (response interface{}, err error) {
-        req := request.(CreateRequest)
-        user,err := service.Create(ctx,req.Username,req.Email,)
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(CreateRequest)
+		user, err := service.Create(ctx, req.Username, req.Email)
 
-        return CreateResponse{
-            User: user,
-            Err: err,
-        }, err
-    }
+		return CreateResponse{
+			User: user,
+			Err:  err,
+		}, err
+	}
 }
-

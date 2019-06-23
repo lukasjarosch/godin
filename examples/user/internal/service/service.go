@@ -9,7 +9,7 @@ import (
 // added to the README.
 type User interface {
 	// Create will create a new user and return it.
-	Create(ctx context.Context, username string, email string) (user *User, err error)
+	Create(ctx context.Context, username string, email string) (user *UserEntity, err error)
 }
 
 // Application errors
@@ -18,7 +18,7 @@ var (
 	ErrNotImplemented = errors.New("endpoint not implemented")
 )
 
-type User struct {
+type UserEntity struct {
 	ID    string
 	Name  string
 	Email string

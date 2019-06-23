@@ -5,7 +5,7 @@ func Encode{{ .Response }}(ctx context.Context, response interface{}) (pbRespons
         return nil, errors.New("nil {{ .Response }}")
     }
     res := response.(endpoint.{{ .Response }})
-    pbResponse, err := {{ .Response }}Encoder(res)
+    pbResponse, err = {{ .Response }}Encoder(res)
     if err != nil {
         return nil, err
     }

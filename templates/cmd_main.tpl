@@ -18,6 +18,7 @@ import (
 
     pb "{{ .Protobuf.Package }}"
     svcGrpc "{{ .Service.Module }}/internal/grpc"
+    "{{ .Service.Module }}/internal/service"
     "{{ .Service.Module }}/internal/service/{{ .Service.Name }}"
     "{{ .Service.Module }}/internal/service/middleware"
     "{{ .Service.Module }}/internal/service/endpoint"

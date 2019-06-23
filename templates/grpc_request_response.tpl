@@ -6,8 +6,8 @@ import (
     "context"
     "errors"
 
-    service "{{ .Service.Module }}"
     "{{ .Service.Module }}/internal/service/endpoint"
+    pb "{{ .Protobuf.Package }}"
 )
 
 {{ range .Service.Methods }}

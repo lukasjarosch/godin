@@ -6,7 +6,7 @@ func {{ .Name }}Endpoint(service service.{{ title .ServiceName }}) endpoint.Endp
         req := request.({{ .RequestName }})
         {{ .ReturnVariableList }} := service.{{ .Name }}(
             {{- range .Params }}
-                {{- if eq .Type "context.Context" }}
+                {{- if eq .Name "ctx" }}
                     {{- .Name }},
                 {{- else -}}
                     req.{{ title .Name }},

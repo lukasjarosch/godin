@@ -16,6 +16,8 @@ func NewServiceImplementation(logger log.Logger) *serviceImplementation {
 	}
 }
 
+
 // Create will create a new user and return it.
-func (s *serviceImplementation) Create(ctx context.Context, username string, email string) (user *service.User, err error) {
+func (s *serviceImplementation) Create(ctx context.Context, username string, email string) (user *service.UserEntity, err error) {
+	return nil, nil
 }

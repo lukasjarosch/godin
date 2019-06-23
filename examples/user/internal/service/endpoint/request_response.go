@@ -16,8 +16,8 @@ type (
 	}
 
 	CreateResponse struct {
-		User *User `json:"user"`
-		Err  error `json:"-"`
+		User *UserEntity `json:"user"`
+		Err  error       `json:"-"`
 	}
 )
 

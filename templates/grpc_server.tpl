@@ -4,11 +4,11 @@ package grpc
 
 import (
     "context"
-    "errors"
 
 	kitGrpc "github.com/go-kit/kit/transport/grpc"
 
-    service "{{ .Service.Module }}"
+    "github.com/lukasjarosch/godin/pkg/log"
+    "{{ .Service.Module }}/internal/service/endpoint"
     pb "{{ .Protobuf.Package }}"
 )
 
