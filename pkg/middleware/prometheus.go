@@ -11,18 +11,18 @@ import (
 )
 
 var requestDuration = prometheus.NewHistogramFrom(stdprometheus.HistogramOpts{
-	Name:    "grpc_request_duration_ms",
+	Name:    "endpoint_request_duration_ms",
 	Help:    "Request duration in milliseconds",
 	Buckets: []float64{50, 100, 250, 500, 1000},
 }, []string{"method"})
 
 var requestsCurrent = prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
-	Name: "grpc_requests_current",
+	Name: "endpoint_requests_current",
 	Help: "The current numer of gRPC requests by endpoint",
 }, []string{"method"})
 
 var requestStatus = prometheus.NewCounterFrom(stdprometheus.CounterOpts{
-	Name: "grpc_requests_total",
+	Name: "endpoint_requests_total",
 	Help: "The total number of gRPC requests and whether the business failed or not",
 }, []string{"method", "success"})
 
