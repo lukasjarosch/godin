@@ -88,7 +88,8 @@ This is the structure `godin update` currently creates
 ```bash
 .
 ├── cmd
-│   └── greeter
+│   └── user
+│       └── main.go
 ├── Dockerfile
 ├── godin.json
 ├── go.mod
@@ -96,16 +97,18 @@ This is the structure `godin update` currently creates
 ├── internal
 │   ├── grpc
 │   │   ├── encode_decode.go
-│   │   └── request_response.go
+│   │   ├── request_response.go
+│   │   └── server.go
 │   └── service
 │       ├── endpoint
+│       │   ├── endpoints.go
 │       │   ├── request_response.go
 │       │   └── set.go
 │       ├── middleware
 │       │   ├── logging.go
 │       │   └── middleware.go
 │       ├── service.go
-│       └── greeter
+│       └── user
 │           └── implementation.go
 └── pkg
     └── grpc
@@ -116,12 +119,14 @@ files you'd better not edit :sweat_smile:.
 
 | File                                             | Mode       |
 |--------------------------------------------------|------------|
-| `internal/service/endpoint/request_response.go`    | full |
-| `internal/service/endpoint/set.go`                 | full |
 | `internal/service/middleware/middleware.go`        | full |
 | `internal/service/middleware/logging.go`           | update     |
+| `internal/service/endpoint/endpoints.go`           | update     |
+| `internal/service/endpoint/request_response.go`           | full     |
+| `internal/service/endpoint/set.go`           | full     |
 | `internal/service/<serviceName>/implementation.go`  | update     |
 | `internal/grpc/request_response.go` | full |
+| `internal/grpc/server.go` | full |
 | `internal/grpc/encode_decode.go` | update |
 
 
@@ -130,30 +135,70 @@ After `godin init` is called, everything is based off your service definition pl
 An example of such a config file is listed below.
 
 ```json
-[godin]
-  version = "0.3.0"
-
-[project]
-  created = "Wed, 12 Jun 2019 19:13:15 CEST"
-
-[protobuf]
-  package = "godin.greeter"
-  service = "GreeterService"
-
-[service]
-  module = "github.com/lukasjarosch/greeter"
-  name = "greeter"
-  namespace = "godin"
-
-  [service.middleware]
-    authorization = false
-    caching = false
-    logging = true
-    recovery = true
-    
-[grpc]
-  enabled = true
+{
+  "godin": {
+    "version": "0.3.0"
+  },
+  "project": {
+    "created": "Sun, 23 Jun 2019 10:15:02 CEST",
+    "updated": "Sun, 23 Jun 2019 12:14:26 CEST"
+  },
+  "protobuf": {
+    "package": "github.com/lukasjarosch/godin-examples/user/api",
+    "service": "UserService"
+  },
+  "service": {
+    "endpoints": {
+      "create": {
+        "protobuf": {
+          "request": "CreateRequest",
+          "response": "CreateResponse"
+        }
+      },
+      "delete": {
+        "protobuf": {
+          "request": "DeleteRequest",
+          "response": "DeleteResponse"
+        }
+      },
+      "get": {
+        "protobuf": {
+          "request": "GetRequest",
+          "response": "GetResponse"
+        }
+      },
+      "list": {
+        "protobuf": {
+          "request": "ListRequest",
+          "response": "ListResponse"
+        }
+      }
+    },
+    "middleware": {
+      "authorization": false,
+      "caching": false,
+      "logging": true,
+      "recovery": true
+    },
+    "module": "github.com/lukasjarosch/godin-examples/user",
+    "name": "user",
+    "namespace": "godin"
+  },
+  "transport": {
+    "grpc": {
+      "enabled": true
+    }
+  }
+}
 ```
+
+#### Rename protobuf request/responses
+By default, Godin will construct Protobuf requests and responses like this: `<EndpointName>Request` and `<EndpointName>Response`.
+This might not always be correct as Godin does not parse the protobuf definition.
+If you need to change the name of a request/response, proceed as follows:
+* call `godin update` to generate the default names and also to ensure that the endpoint exists in `godin.json`
+* refactor the app (search and replace) to use the new request for example. Search for: `*pb.<Endpoint>Request` and replace with your actual name. Then also replace the name in `godin.json`
+* calling `godin update` will now work as expected again, but using your custom type name
 
 <!-- LICENSE -->
 ## License
