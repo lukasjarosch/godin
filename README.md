@@ -2,7 +2,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/lukasjarosch/godin">
+  <a href="https://raw.githubusercontent.com/lukasjarosch/godin/develop/gopher.png">
     <img src="gopher.png" alt="Logo" width="250" height="250">
   </a>
 
@@ -194,6 +194,49 @@ An example of such a config file is listed below.
   }
 }
 ```
+
+### Middleware
+There are three middleware levels: **service**, **endpoint** and **transport**
+
+#### Service middleware
+It's implementation specific and allows to define a middleware on domain-level.
+Here you have full access to request and response data of the business logic (implementation.go).
+By default, Godin will generate and maintain a logging middleware which logs the request and
+response data, errors and the execution time of your business logic.
+
+Other use-cases of service middlewares are: 
+ * caching
+ * authentication
+ * monitoring of business metrics (users_logged_in, queue_size, ...)
+ 
+#### Endpoint middleware
+It's only provided by godin and is applicable to every endpoint.
+The middleware does only have `interface{}` access to the request and response data. 
+This makes the endpoint middleware a great place to put all the annoying stuff which most of 
+the developers should not have to deal with, like:
+
+* Endpoint instrumentation (prometheus)
+* Circuit breaking
+* Distributed tracing
+* Rate limiting
+* General logging (endpoint request duration)
+
+Currently, Godin does not provide all of those middlewares. The following are implemented:
+* [x] Prometheus endpoint instrumentation (exposed via `0.0.0.0:3000/metrics`). 
+  - **endpoint_request_duration_ms**
+  - **endpoint_requests_current**
+  - **endpoint_requests_total**
+* [x] General logging to capture endpoint request duration
+* [ ] Circuit breaking
+* [ ] Rate limiting
+* [ ] Distributed tracing
+
+#### Transport middleware
+It's (obviously) transport specific. Godin is currently only providing a gRPC server
+as that's it's main use-case. In the future, HTTP might follow.
+
+Godin automatically registers the [go-grpc-prometheus](https://github.com/grpc-ecosystem/go-grpc-prometheus) interceptors.
+Thus these metrics are also registered and available via `/metrics`.
 
 #### Rename protobuf request/responses
 By default, Godin will construct Protobuf requests and responses like this: `<EndpointName>Request` and `<EndpointName>Response`.
