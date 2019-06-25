@@ -238,6 +238,7 @@ as that's it's main use-case. In the future, HTTP might follow.
 Godin automatically registers the [go-grpc-prometheus](https://github.com/grpc-ecosystem/go-grpc-prometheus) interceptors.
 Thus these metrics are also registered and available via `/metrics`.
 
+### Tips and tricks
 #### Rename protobuf request/responses
 By default, Godin will construct Protobuf requests and responses like this: `<EndpointName>Request` and `<EndpointName>Response`.
 This might not always be correct as Godin does not parse the protobuf definition.
