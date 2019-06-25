@@ -37,7 +37,6 @@ var updateCommand = &cobra.Command{
 }
 
 func updateCmd(cmd *cobra.Command, args []string) {
-
 	logrus.SetLevel(logrus.DebugLevel)
 
 	// project must be initialized

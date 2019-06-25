@@ -52,6 +52,7 @@ Examples are now hosted in a separate repository: [godin-examples](https://githu
 |------|------|
 | **init** | initialize a new godin project in the current directory |
 | **update** | update the project in the current directory and regenerate necessary stuff |
+| **add** | add bundles to an existing project |
 | **version** | print godin version |
 | **help** | Help about any command |
 
