@@ -39,10 +39,8 @@ A quick summary of what Godin can do:
 * [packr v1](https://github.com/gobuffalo/packr)(!)
 
 ### Installation
-> There are no binary releases, yet :)
-1. clone the repo and `cd` into it
-2. install using `make install`
-3. Done
+Head over to the **Releases** page and download the appropriate archive. 
+Simply unpack, put the binary in your `$PATH` and you're ready to roll.
 
 ### Examples
 Examples are now hosted in a separate repository: [godin-examples](https://github.com/lukasjarosch/godin-examples)
