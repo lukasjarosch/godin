@@ -6,7 +6,7 @@ import (
 
 	"strings"
 
-	"github.com/lukasjarosch/godin/internal/bundle"
+	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -60,7 +60,7 @@ func addCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("sorry, this bundle type is not yet implemented :(")
 	case "subscriber":
 
-		_, err := bundle.InitializeAMQPTransport()
+		_, err := transport.InitializeAMQP()
 		if err != nil {
 			logrus.Errorf("failed to initialize AMQP transport: %s", err)
 		}
