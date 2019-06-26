@@ -7,9 +7,10 @@ import (
 type SubscriberHandler func(delivery amqp.Delivery)
 
 type Subscription struct {
-	Topic          string `json:"topic"`
-	Exchange       string `json:"exchange"`
-	Queue          string `json:"queue"`
+	Topic        string `json:"topic"`
+	Exchange     string `json:"exchange"`
+	ExchangeType string `json:"exchange_type"`
+	Queue        string `json:"queue"`
 }
 
 type handler struct {

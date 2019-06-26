@@ -1,9 +1,16 @@
 package bundle
 
 import (
+	"fmt"
+
+	"github.com/iancoleman/strcase"
+	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/lukasjarosch/godin/pkg/amqp"
+	config "github.com/spf13/viper"
 )
+
+const SubscriberKey = "transport.amqp.subscriber"
 
 type subscriber struct {
 	Subscription amqp.Subscription
@@ -12,10 +19,21 @@ type subscriber struct {
 
 func InitializeSubscriber() (*subscriber, error) {
 	sub := amqp.Subscription{}
-	handlerName, err := promptValues(sub)
+	handlerName, err := promptValues(&sub)
 	if err != nil {
 		return nil, err
 	}
+
+	handlerName = strcase.ToSnake(handlerName)
+	sub.ExchangeType = "durable" // currently not configurable
+
+	confSub := config.GetStringMap(SubscriberKey)
+	if _, ok := confSub[handlerName]; ok == true {
+		return nil, fmt.Errorf("subscriber '%s' is already registered", handlerName)
+	}
+	confSub[handlerName] = sub
+	config.Set(SubscriberKey, confSub)
+	godin.SaveConfiguration()
 
 	return &subscriber{
 		Subscription: sub,
@@ -23,7 +41,7 @@ func InitializeSubscriber() (*subscriber, error) {
 	}, nil
 }
 
-func promptValues(sub amqp.Subscription) (handlerName string, err error) {
+func promptValues(sub *amqp.Subscription) (handlerName string, err error) {
 	// Topic
 	p := prompt.NewPrompt(
 		"AMQP subscription Topic",
@@ -39,7 +57,7 @@ func promptValues(sub amqp.Subscription) (handlerName string, err error) {
 	// Exchange
 	p = prompt.NewPrompt(
 		"AMQP Exchange name",
-		"user-Exchange",
+		"user-exchange",
 		prompt.Validate(),
 	)
 	exchange, err := p.Run()
@@ -51,7 +69,7 @@ func promptValues(sub amqp.Subscription) (handlerName string, err error) {
 	// Queue
 	p = prompt.NewPrompt(
 		"AMQP Queue name which is bound to the Exchange",
-		"user-created-Queue",
+		"user-created-queue",
 		prompt.Validate(),
 	)
 	queue, err := p.Run()
@@ -62,9 +80,11 @@ func promptValues(sub amqp.Subscription) (handlerName string, err error) {
 
 	// HandlerName
 	p = prompt.NewPrompt(
-		"Name of the handler for this subscription",
-		"UserCreatedHandler",
-		prompt.Validate(),
+		"Name of the handler for this subscription (CamelCase)",
+		"UserCreatedSubscriber",
+		prompt.Validate(
+			prompt.CamelCase(),
+		),
 	)
 	handler, err := p.Run()
 	if err != nil {

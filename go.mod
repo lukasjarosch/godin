@@ -16,6 +16,7 @@ require (
 	github.com/gobuffalo/packr/v2 v2.4.0
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/huandu/xstrings v1.2.0 // indirect
+	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/manifoldco/promptui v0.3.2
 	github.com/pelletier/go-toml v1.3.0 // indirect

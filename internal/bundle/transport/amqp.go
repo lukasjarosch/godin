@@ -23,7 +23,7 @@ type amqpTransport struct {
 // The loaded or entered data is then saved to the config before returning.
 func InitializeAMQP() (transport *amqpTransport, err error) {
 	// Load AMQP from config, if that fails create it and prompt the user for the values
-	transport, err = AmqpFromConfig()
+	transport, err = AMQPFromConfig()
 	if err != nil {
 		transport = &amqpTransport{}
 		if err := promptAmqpTransportValues(transport); err != nil {
@@ -41,7 +41,7 @@ func InitializeAMQP() (transport *amqpTransport, err error) {
 // Returns an error if the config key "transport.amqp" does not exist.
 // If any sub-key is not set properly, it will not be checked as it's still the
 // developers responsibility to provide sane values.
-func AmqpFromConfig() (*amqpTransport, error) {
+func AMQPFromConfig() (*amqpTransport, error) {
 	if config.IsSet(AMQPTransportKey) {
 		defaultAddress := config.GetString(AMQPDefaultAddressKey)
 		logrus.Debug("AMQP transport is already configured, loading from config")

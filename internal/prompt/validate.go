@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"github.com/manifoldco/promptui"
+	"regexp"
 )
 
 func Validate(validators ...promptui.ValidateFunc) promptui.ValidateFunc {
@@ -44,3 +45,12 @@ func GoSuffix() promptui.ValidateFunc {
 	}
 }
 
+func CamelCase() promptui.ValidateFunc {
+	return func(s string) error {
+		ok, _ := regexp.Match(`([A-Z][a-z0-9]+)+`, []byte(s))
+		if !ok {
+			return fmt.Errorf("string is not CamelCase")
+		}
+		return nil
+	}
+}

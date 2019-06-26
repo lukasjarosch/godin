@@ -10,6 +10,7 @@ import (
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/lukasjarosch/godin/internal/bundle"
 )
 
 func init() {
@@ -59,28 +60,16 @@ func addCmd(cmd *cobra.Command, args []string) {
 		"transport":
 		logrus.Info("sorry, this bundle type is not yet implemented :(")
 	case "subscriber":
-
 		_, err := transport.InitializeAMQP()
 		if err != nil {
 			logrus.Errorf("failed to initialize AMQP transport: %s", err)
 		}
 
-		/*
-			sub, err := bundle.InitializeSubscriber()
-			if err != nil {
-				logrus.Errorf("failed to initialize subscriber: %s", err)
-				os.Exit(1)
-			}
-
-			// add to config
-			subscriptions := make(map[string]interface{})
-			if config.IsSet("transport.amqp.subscriptions") {
-				subscriptions = config.GetStringMap("transport.amqp.subscriptions")
-			}
-			subscriptions[sub.HandlerName] = sub.Subscription
-			config.Set("transport.amqp.subscriptions", subscriptions)
-			godin.SaveConfiguration()
-		*/
+		_, err = bundle.InitializeSubscriber()
+		if err != nil {
+			logrus.Errorf("failed to initialize subscriber: %s", err)
+			os.Exit(1)
+		}
 	}
 }
 
