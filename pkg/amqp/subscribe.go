@@ -1,10 +1,11 @@
 package amqp
 
 import (
-	"github.com/streadway/amqp"
-	"strings"
 	"fmt"
+	"strings"
+
 	"github.com/google/uuid"
+	"github.com/streadway/amqp"
 )
 
 type SubscriberHandler func(delivery amqp.Delivery)
@@ -21,11 +22,11 @@ type Subscription struct {
 
 // SubscriptionQueue configures the queue on which the subscription runs.
 type SubscriptionQueue struct {
-	Name       string
-	Durable    bool
-	AutoDelete bool
-	Exclusive  bool
-	NoWait     bool
+	Name       string `json:"name"`
+	Durable    bool   `json:"durable"`
+	AutoDelete bool   `json:"auto_delete"`
+	Exclusive  bool   `json:"exclusive"`
+	NoWait     bool   `json:"no_wait"`
 }
 
 type handler struct {
