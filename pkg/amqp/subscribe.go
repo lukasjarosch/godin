@@ -8,16 +8,16 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type SubscriberHandler func(delivery amqp.Delivery)
+type SubscriptionHandler func(delivery amqp.Delivery)
 
 // Subscription defines all data required to setup an AMQP subscription
 // All values, except the ctag are provided by the configuration or inferred by Godin.
 type Subscription struct {
 	Topic    string            `json:"topic"`
 	Exchange string            `json:"exchange"`
-	Queue    SubscriptionQueue `json:"queue"`
 	AutoAck  bool              `json:"auto_ack"`
 	ctag     string            `json:"-"` // generated
+	Queue    SubscriptionQueue `json:"queue"`
 }
 
 // SubscriptionQueue configures the queue on which the subscription runs.
@@ -30,7 +30,7 @@ type SubscriptionQueue struct {
 }
 
 type handler struct {
-	implementation SubscriberHandler
+	implementation SubscriptionHandler
 	done           chan error
 	ctag           string
 	routingKey     string
@@ -59,7 +59,7 @@ func NewSubscriber(channel *amqp.Channel, subscription *Subscription) Subscriber
 
 // Subscribe will declare the queue defined in the Subscription, bind it to the exchange and start consuming
 // by calling the handler in a goroutine.
-func (c *Subscriber) Subscribe(handler SubscriberHandler) error {
+func (c *Subscriber) Subscribe(handler SubscriptionHandler) error {
 	queue, err := c.channel.QueueDeclare(
 		c.subscription.Queue.Name,
 		c.subscription.Queue.Durable,
@@ -101,8 +101,8 @@ func (c *Subscriber) Subscribe(handler SubscriberHandler) error {
 	return nil
 }
 
-// setHandler installs a SubscriberHandler to use for this subscription.
-func (c *Subscriber) setHandler(handlerImpl SubscriberHandler) handler {
+// setHandler installs a SubscriptionHandler to use for this subscription.
+func (c *Subscriber) setHandler(handlerImpl SubscriptionHandler) handler {
 	h := handler{
 		routingKey:     c.subscription.Topic,
 		ctag:           c.subscription.ctag,

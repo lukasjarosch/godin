@@ -14,7 +14,7 @@ require (
 	github.com/gobuffalo/genny v0.0.0-20190403191548-3ca520ef0d9e // indirect
 	github.com/gobuffalo/packr v1.26.0
 	github.com/gobuffalo/packr/v2 v2.4.0
-	github.com/google/uuid v1.1.1 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/imdario/mergo v0.3.7 // indirect

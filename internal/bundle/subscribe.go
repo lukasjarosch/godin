@@ -2,8 +2,8 @@ package bundle
 
 import (
 	"fmt"
+	"strings"
 
-	"github.com/iancoleman/strcase"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/lukasjarosch/godin/pkg/amqp"
@@ -19,13 +19,20 @@ type subscriber struct {
 
 func InitializeSubscriber() (*subscriber, error) {
 	sub := amqp.Subscription{}
-	handlerName, err := promptValues(&sub)
+	err := promptValues(&sub)
 	if err != nil {
 		return nil, err
 	}
 
-	handlerName = strcase.ToSnake(handlerName)
-	sub.ExchangeType = "durable" // currently not configurable
+	handlerName := strings.Replace(sub.Topic, ".", "_", -1)
+	handlerName = strings.ToLower(handlerName)
+
+	// defaults
+	sub.AutoAck = false
+	sub.Queue.Durable = true
+	sub.Queue.NoWait = false
+	sub.Queue.Exclusive = false
+	sub.Queue.AutoDelete = false
 
 	confSub := config.GetStringMap(SubscriberKey)
 	if _, ok := confSub[handlerName]; ok == true {
@@ -41,7 +48,7 @@ func InitializeSubscriber() (*subscriber, error) {
 	}, nil
 }
 
-func promptValues(sub *amqp.Subscription) (handlerName string, err error) {
+func promptValues(sub *amqp.Subscription) (err error) {
 	// Topic
 	p := prompt.NewPrompt(
 		"AMQP subscription Topic",
@@ -50,7 +57,7 @@ func promptValues(sub *amqp.Subscription) (handlerName string, err error) {
 	)
 	topic, err := p.Run()
 	if err != nil {
-		return "", err
+		return err
 	}
 	sub.Topic = topic
 
@@ -62,7 +69,7 @@ func promptValues(sub *amqp.Subscription) (handlerName string, err error) {
 	)
 	exchange, err := p.Run()
 	if err != nil {
-		return "", err
+		return err
 	}
 	sub.Exchange = exchange
 
@@ -74,21 +81,9 @@ func promptValues(sub *amqp.Subscription) (handlerName string, err error) {
 	)
 	queue, err := p.Run()
 	if err != nil {
-		return "", err
+		return err
 	}
-	sub.Queue = queue
+	sub.Queue.Name = queue
 
-	// HandlerName
-	p = prompt.NewPrompt(
-		"Name of the handler for this subscription (CamelCase)",
-		"UserCreatedSubscriber",
-		prompt.Validate(
-			prompt.CamelCase(),
-		),
-	)
-	handler, err := p.Run()
-	if err != nil {
-		return "", err
-	}
-	return handler, nil
+	return  nil
 }

@@ -6,11 +6,12 @@ import (
 
 	"strings"
 
+	"github.com/lukasjarosch/godin/internal/bundle"
 	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"github.com/lukasjarosch/godin/internal/godin"
+	"github.com/lukasjarosch/godin/internal/prompt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/lukasjarosch/godin/internal/bundle"
 )
 
 func init() {
@@ -56,9 +57,27 @@ func addCmd(cmd *cobra.Command, args []string) {
 
 	switch bundleType {
 	case "middleware",
-		"datastore",
-		"transport":
+		"datastore":
 		logrus.Info("sorry, this bundle type is not yet implemented :(")
+	case "transport":
+		selected, err := prompt.NewSelect("Which transport layer do you want to add?", []string{"amqp", "grpc", "http"})
+		if err != nil {
+			logrus.Errorf("select cancelled: %s", err)
+			os.Exit(1)
+		}
+		switch selected {
+		case "amqp":
+			_, err := transport.InitializeAMQP()
+			if err != nil {
+				logrus.Errorf("failed to initialize AMQP transport: %s", err)
+			}
+			// TODO: generate
+
+		case "grpc",
+			"http":
+			logrus.Info("not yet implemented")
+			os.Exit(1)
+		}
 	case "subscriber":
 		_, err := transport.InitializeAMQP()
 		if err != nil {
@@ -70,6 +89,8 @@ func addCmd(cmd *cobra.Command, args []string) {
 			logrus.Errorf("failed to initialize subscriber: %s", err)
 			os.Exit(1)
 		}
+
+		// TODO: godin.json is NOT a service configuration, thus the 'topic', 'queue' and 'exchange' values must be configurable with ENV variables
 	}
 }
 
