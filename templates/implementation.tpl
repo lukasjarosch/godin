@@ -5,7 +5,7 @@ import (
     "context"
 
     "github.com/lukasjarosch/godin/pkg/log"
-    "{{ .Service.Module }}/internal/service"
+    _ "{{ .Service.Module }}/internal/service"
 )
 
 type serviceImplementation struct {
@@ -18,8 +18,8 @@ func NewServiceImplementation(logger log.Logger) *serviceImplementation {
     }
 }
 
-{{ range .Service.Methods }}
-{{ template "service_method" . }}
-{{ end }}
+{{- range .Service.Methods }}
+{{- template "service_method" . }}
+{{- end }}
 
 

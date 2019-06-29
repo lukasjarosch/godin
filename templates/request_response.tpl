@@ -3,7 +3,7 @@
 package endpoint
 
 import (
-    "{{ .Service.Module }}/internal/service"
+    _ "{{ .Service.Module }}/internal/service"
 )
 
 type (
