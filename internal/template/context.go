@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/lukasjarosch/godin/internal/bundle"
+	"github.com/lukasjarosch/godin/pkg/amqp"
+
 	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/parse"
 	config "github.com/spf13/viper"
@@ -14,18 +17,33 @@ type Context struct {
 	Service  Service
 	Godin    Godin
 	Protobuf Protobuf
-	Docker Docker
+	Docker   Docker
 }
 
 // NewContextFromConfig will initialize the context will all the data from the configuration
 // The context is not fully populated after this call, but all configuration values are accessible.
 func NewContextFromConfig() Context {
+	var subscribers []Subscriber
+
+	// amqp subscribers
+	sub := config.GetStringMap(bundle.SubscriberKey)
+	if len(sub) > 0 {
+		for _, subscriber := range sub {
+			sub := subscriber.(amqp.Subscription)
+			subscribers = append(subscribers, Subscriber{
+				Subscription: sub,
+				Handler:      bundle.HandlerName(sub.Topic),
+			})
+		}
+	}
+
 	ctx := Context{
 		Service: Service{
 			Name:              config.GetString("service.name"),
 			Namespace:         config.GetString("service.namespace"),
 			Module:            config.GetString("service.module"),
 			LoggingMiddleware: config.GetBool("service.middleware.logging"),
+			Subscriber:        subscribers,
 		},
 		Protobuf: Protobuf{
 			Package: config.GetString("protobuf.package"),
@@ -36,7 +54,7 @@ func NewContextFromConfig() Context {
 			Build:   internal.Build,
 			Commit:  internal.Commit,
 		},
-		Docker: Docker {
+		Docker: Docker{
 			Registry: config.GetString("docker.registry"),
 		},
 	}
@@ -99,6 +117,7 @@ type Service struct {
 	Methods           []Method
 	Module            string
 	LoggingMiddleware bool
+	Subscriber        []Subscriber
 }
 
 type Protobuf struct {
@@ -106,13 +125,18 @@ type Protobuf struct {
 	Service string
 }
 
+type Docker struct {
+	Registry string
+}
+
+type Subscriber struct {
+	Handler      string
+	Subscription amqp.Subscription
+}
+
 type Variable struct {
 	Name string
 	Type string
-}
-
-type Docker struct {
-	Registry string
 }
 
 func (v Variable) resolveType(typ string, prefix string) (string, error) {
@@ -131,6 +155,10 @@ func (v Variable) resolveType(typ string, prefix string) (string, error) {
 // ResolveType resolves the type to use inside a template. It covers different combinations which should suffice most cases.
 func (v Variable) ResolveType() string {
 	prefixes := []string{"[]*", "*[]", "[]", "*"}
+
+	if types.IsBuiltinTypeString(v.Type) {
+		return v.Type
+	}
 
 	if strings.Contains(v.Type, ".") {
 		return v.Type
@@ -152,7 +180,7 @@ func (v Variable) NilValue() string {
 	case "error":
 		return "nil"
 	case "string":
-		return ""
+		return "\"\""
 	case "boolean":
 		return "false"
 	case "int",
@@ -166,7 +194,6 @@ func (v Variable) NilValue() string {
 		return "nil"
 	}
 }
-
 
 type Method struct {
 	// required for partials which do not have access to the Service struct
