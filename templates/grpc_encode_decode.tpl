@@ -5,6 +5,7 @@ import (
     "google.golang.org/grpc/status"
 
     "{{ .Service.Module }}/internal/service/endpoint"
+	"{{ .Service.Module }}/internal/service/domain"
     pb "{{ .Protobuf.Package }}"
 )
 
@@ -13,6 +14,8 @@ import (
 // EncodeError encodes domain-level errors into gRPC transport-level errors
 func EncodeError(err error) error {
     switch err {
+	case domain.ErrNotImplemented:
+		return status.Error(codes.Unimplemented, err.Error())
     default:
         return status.Error(codes.Unknown, err.Error())
     }

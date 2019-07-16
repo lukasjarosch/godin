@@ -4,7 +4,7 @@ import (
     "context"
     "time"
 
-    "github.com/lukasjarosch/godin/pkg/log"
+    "github.com/go-godin/log"
 
     "{{ .Service.Module }}/internal/service"
     "{{ .Service.Module }}/internal/service/endpoint"

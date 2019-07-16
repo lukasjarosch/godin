@@ -17,11 +17,11 @@ import (
     pb "{{ .Protobuf.Package }}"
     svcGrpc "{{ .Service.Module }}/internal/grpc"
     "{{ .Service.Module }}/internal/service"
-    "{{ .Service.Module }}/internal/service/{{ .Service.Name }}"
+    "{{ .Service.Module }}/internal/service/usecase"
     "{{ .Service.Module }}/internal/service/middleware"
     "{{ .Service.Module }}/internal/service/endpoint"
 
-	"github.com/lukasjarosch/godin/pkg/log"
+	"github.com/go-godin/log"
 )
 
 var DebugAddr = getEnv("DEBUG_ADDRESS", "0.0.0.0:3000")
@@ -31,11 +31,11 @@ var GrpcAddr = getEnv("GRPC_ADDRESS", "0.0.0.0:50051")
 var g group.Group
 
 func main() {
-    logger := log.New()
+    logger := log.NewLoggerFromEnv()
 
 	// initialize service layer
 	var svc service.{{ title .Service.Name }}
-	svc = {{ .Service.Name }}.NewServiceImplementation(logger)
+	svc = usecase.NewServiceImplementation(logger)
 	{{- if .Service.LoggingMiddleware }}
 	svc = middleware.LoggingMiddleware(logger)(svc)
 	{{- end }}

@@ -48,6 +48,14 @@ func initCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated internal/service/service.go")
 	}
 
+	// domain/errors.go
+	errors := template.NewGenerator(template.DomainErrorsOptions())
+	if err := errors.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate domain errors stub: %s", err.Error()))
+	} else {
+		logrus.Info("generated internal/domain/errors.go")
+	}
+
 	// middleware.go
 	middleware := template.NewGenerator(template.MiddlewareOptions())
 	if err := middleware.GenerateFile(TemplateFilesystem); err != nil {

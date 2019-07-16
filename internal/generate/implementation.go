@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"fmt"
 	"github.com/gobuffalo/packr"
 	"github.com/lukasjarosch/godin/internal/parse"
 	"github.com/lukasjarosch/godin/internal/template"
@@ -21,7 +22,7 @@ func NewImplementation(box packr.Box, serviceInterface *types.Interface, ctx tem
 		Overwrite:true,
 		IsGoSource:true,
 		Template:"implementation",
-		TargetFile: filepath.Join("internal", "service", config.GetString("service.name"), "implementation.go"),
+		TargetFile: filepath.Join("internal", "service", "usecase", fmt.Sprintf("%s.go", config.GetString("service.name"))),
 	}
 
 	for _, opt := range options {

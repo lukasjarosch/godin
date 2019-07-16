@@ -2,6 +2,7 @@ package bundle
 
 import (
 	"fmt"
+	"github.com/iancoleman/strcase"
 	"strings"
 
 	"github.com/lukasjarosch/godin/internal/godin"
@@ -24,8 +25,8 @@ func InitializeSubscriber() (*subscriber, error) {
 		return nil, err
 	}
 
-	handlerName := strings.Replace(sub.Topic, ".", "_", -1)
-	handlerName = strings.ToLower(handlerName)
+	subscriberKey := strings.Replace(sub.Topic, ".", "_", -1)
+	subscriberKey = strings.ToLower(subscriberKey)
 
 	// defaults
 	sub.AutoAck = false
@@ -35,17 +36,35 @@ func InitializeSubscriber() (*subscriber, error) {
 	sub.Queue.AutoDelete = false
 
 	confSub := config.GetStringMap(SubscriberKey)
-	if _, ok := confSub[handlerName]; ok == true {
-		return nil, fmt.Errorf("subscriber '%s' is already registered", handlerName)
+	if _, ok := confSub[subscriberKey]; ok == true {
+		return nil, fmt.Errorf("subscriber '%s' is already registered", subscriberKey)
 	}
-	confSub[handlerName] = sub
+	confSub[subscriberKey] = sub
 	config.Set(SubscriberKey, confSub)
 	godin.SaveConfiguration()
 
 	return &subscriber{
 		Subscription: sub,
-		HandlerName:  handlerName,
+		HandlerName:  subscriberKey,
 	}, nil
+}
+
+// SubscriberHandlerName returns the handler name of the subscriber based on the subscription topic
+// The topic 'user.created' will be handled by the 'UserCreatedSubscriber'
+func SubscriberHandlerName(topic string) string {
+	name := strings.ToLower(topic)
+	name = strings.Replace(name, ".", "_", -1)
+	name += "_subscriber"
+	name = strcase.ToCamel(name)
+
+	return name
+}
+
+// SubscriberFileName assembles the target .go file into which the handler is going to be generated.
+func SubscriberFileName(topic string) string {
+	name := strings.ToLower(topic)
+	name = strings.Replace(name, ".", "_", -1)
+	return fmt.Sprintf("%s.go", name)
 }
 
 func promptValues(sub *amqp.Subscription) (err error) {

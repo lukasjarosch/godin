@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/lukasjarosch/godin/internal/bundle"
+
 	"strings"
 
 	"path"
 
+	"time"
+
+	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/fs"
 	"github.com/lukasjarosch/godin/internal/generate"
 	"github.com/lukasjarosch/godin/internal/godin"
@@ -15,8 +20,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	config "github.com/spf13/viper"
-	"time"
-	"github.com/lukasjarosch/godin/internal"
 )
 
 func init() {
@@ -80,7 +83,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Infof("updated main.go: %s", cmdMain.TargetPath())
 	}
 
-	// update internal/service/<serviceName>/implementation.go
+	// update internal/service/usecase/<serviceName>.go
 	implementationGen := generate.NewImplementation(TemplateFilesystem, service.Interface, tplContext)
 	if err := implementationGen.Update(); err != nil {
 		logrus.Errorf("failed to update implementation: %s: %s", implementationGen.TargetPath(), err.Error())
@@ -155,6 +158,29 @@ func updateCmd(cmd *cobra.Command, args []string) {
 			logrus.Errorf("failed to update grpc/server.go: %s", err)
 		} else {
 			logrus.Infof("updated %s", grpcServer.TargetPath())
+		}
+	}
+
+	// AMQP SUBSCRIBER BUNDLE
+	if config.IsSet(bundle.SubscriberKey) {
+
+		// subscriber/initialize.go
+		amqpSubscriberInit := generate.NewAMQPSubscriber(TemplateFilesystem, service.Interface, tplContext)
+		fs.MakeDirs([]string{path.Dir(amqpSubscriberInit.TargetPath())}) // ignore errors, just ensure the path exists
+		if err := amqpSubscriberInit.Update(); err != nil {
+			logrus.Errorf("failed to update internal/service/subscriber/initialize.go: %s", err)
+		} else {
+			logrus.Infof("updated %s", amqpSubscriberInit.TargetPath())
+		}
+
+		for _, subscriber := range tplContext.Service.Subscriber {
+			fileName := bundle.SubscriberFileName(subscriber.Subscription.Topic)
+			impl := generate.NewAMQPSubscriberHandler(subscriber, TemplateFilesystem, service.Interface, tplContext)
+			if err := impl.Update(); err != nil {
+				logrus.Errorf("failed to update internal/service/subscriber/%s: %s", fileName, err)
+			} else {
+				logrus.Infof("updated %s", impl.TargetPath())
+			}
 		}
 	}
 

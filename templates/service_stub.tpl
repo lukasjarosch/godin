@@ -1,7 +1,6 @@
 package service
 
 import (
-    "errors"
     "context"
 )
 
@@ -13,8 +12,3 @@ type {{ title .Service.Name }} interface {
     Hello(ctx context.Context, name string) (greeting string, err error)
 }
 
-// Application errors
-// These can then be remaped to transport-specific errors in the transport layer (gRPC, HTTP, AMQP ...)
-var (
-    ErrNotImplemented = errors.New("endpoint not implemented")
-)

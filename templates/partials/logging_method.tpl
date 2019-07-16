@@ -5,7 +5,8 @@
 func (l loggingMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
 	l.logger.Log(
 	    "endpoint", "{{ .Name }}",
-	    "request", endpoint.{{ .RequestName }}{
+		"request.id", grpc_metadata.GetRequestID(ctx),
+	    "request.data", endpoint.{{ .RequestName }}{
 	    {{- range .Params }}
 	        {{- if ne .Name "ctx" }} {{ title .Name }}: {{ .Name }}, {{end}}
         {{ end }}
@@ -23,7 +24,8 @@ func (l loggingMiddleware) {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }}) {
 
         l.logger.Log(
             "endpoint", "{{ .Name }}",
-            "response", resp,
+		    "request.id", grpc_metadata.GetRequestID(ctx),
+            "response.data", resp,
             "error", err,
             "success", err == nil,
             "took", time.Since(begin),

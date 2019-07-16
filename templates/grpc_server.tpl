@@ -7,7 +7,7 @@ import (
 
 	kitGrpc "github.com/go-kit/kit/transport/grpc"
 
-    "github.com/lukasjarosch/godin/pkg/log"
+    "github.com/go-godin/log"
     "{{ .Service.Module }}/internal/service/endpoint"
     pb "{{ .Protobuf.Package }}"
 )

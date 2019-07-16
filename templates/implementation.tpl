@@ -1,11 +1,11 @@
-package {{ .Service.Name }}
+package usecase
 
 import (
-    "fmt"
     "context"
 
-    "github.com/lukasjarosch/godin/pkg/log"
+    "github.com/go-godin/log"
     _ "{{ .Service.Module }}/internal/service"
+	"{{ .Service.Module }}/internal/service/domain"
 )
 
 type serviceImplementation struct {

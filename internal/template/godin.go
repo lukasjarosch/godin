@@ -59,6 +59,12 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: "k8s/deployment.yaml",
 		Overwrite:  true,
 	},
+	"errors": {
+		Template:   "domain_errors",
+		IsGoSource: true,
+		TargetFile: "internal/service/domain/errors.go",
+		Overwrite:  false,
+	},
 }
 
 func FileOptions(name string, tplContext Context, targetPath string) GenerateOptions {
@@ -149,6 +155,15 @@ func GitignoreOptions() GenerateOptions {
 	ctx := Context{}
 
 	opts := fileOptions["gitignore"]
+	opts.Context = ctx
+
+	return opts
+}
+
+func DomainErrorsOptions() GenerateOptions {
+	ctx := Context{}
+
+	opts := fileOptions["errors"]
 	opts.Context = ctx
 
 	return opts

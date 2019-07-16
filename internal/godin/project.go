@@ -21,6 +21,8 @@ var DefaultDirectoryList = []string{
 	"internal/service",
 	"internal/service/endpoint",
 	"internal/service/middleware",
+	"internal/service/usecase",
+	"internal/service/domain",
 	"pkg/grpc",
 	"k8s",
 }
@@ -64,11 +66,9 @@ func (p *Project) SetupDirectories() error {
 
 	// add service-specific folders
 	serviceCmdDir := filepath.Join("cmd", config.GetString("service.name"))
-	serviceDir := filepath.Join("internal", "service", config.GetString("service.name"))
 
 	dirs := DefaultDirectoryList
 	dirs = append(dirs, serviceCmdDir)
-	dirs = append(dirs, serviceDir)
 
 	if err := fs.MakeDirs(dirs); err != nil {
 		return errors.Wrap(err, "SetupDirectories")

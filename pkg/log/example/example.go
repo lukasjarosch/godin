@@ -1,6 +1,6 @@
 package main
 
-import "github.com/lukasjarosch/godin/pkg/log"
+import "github.com/go-godin/log"
 
 func main() {
 

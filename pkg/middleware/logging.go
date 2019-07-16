@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/lukasjarosch/godin/pkg/log"
+	"github.com/go-godin/log"
 	"github.com/go-kit/kit/endpoint"
 	"context"
 	"time"

@@ -5,9 +5,9 @@ package endpoint
 import (
     "github.com/go-kit/kit/endpoint"
 
-    godinMiddleware "github.com/lukasjarosch/godin/pkg/middleware"
+    "github.com/go-godin/middleware"
     "{{ .Service.Module }}/internal/service"
-	"github.com/lukasjarosch/godin/pkg/log"
+	"github.com/go-godin/log"
 )
 
 type Set struct {
@@ -21,8 +21,9 @@ func Endpoints(service service.{{ title .Service.Name }}, logger log.Logger) Set
     var {{ untitle .Name }} endpoint.Endpoint
     {
         {{ untitle .Name }} = {{ .Name }}Endpoint(service)
-        {{ untitle .Name }} = godinMiddleware.Prometheus("{{ .Name }}")({{ untitle .Name }})
-        {{ untitle .Name }} = godinMiddleware.Logging(logger, "{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = middleware.Prometheus("{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = middleware.Logging(logger, "{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = middleware.RequestID()({{ untitle .Name }})
     }
     {{- end }}
 

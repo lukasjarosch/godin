@@ -7,6 +7,7 @@ import (
     "time"
 
     "github.com/go-kit/kit/log"
+	grpc_metadata "github.com/go-godin/grpc-metadata"
 
     service "{{ .Service.ImportPath }}"
 )

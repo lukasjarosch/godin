@@ -6,6 +6,7 @@ import (
 
 	"github.com/lukasjarosch/godin/internal/bundle"
 	"github.com/lukasjarosch/godin/pkg/amqp"
+	"github.com/mitchellh/mapstructure"
 
 	"github.com/lukasjarosch/godin/internal"
 	"github.com/lukasjarosch/godin/internal/parse"
@@ -28,11 +29,12 @@ func NewContextFromConfig() Context {
 	// amqp subscribers
 	sub := config.GetStringMap(bundle.SubscriberKey)
 	if len(sub) > 0 {
-		for _, subscriber := range sub {
-			sub := subscriber.(amqp.Subscription)
+		for x := range sub {
+			s := &amqp.Subscription{}
+			mapstructure.Decode(sub[x], s)
 			subscribers = append(subscribers, Subscriber{
-				Subscription: sub,
-				Handler:      bundle.HandlerName(sub.Topic),
+				Subscription: *s,
+				Handler:      bundle.SubscriberHandlerName(s.Topic),
 			})
 		}
 	}
@@ -253,7 +255,7 @@ func (m Method) ReturnImplementationMissing() string {
 	var list []string
 	for _, ret := range m.Returns {
 		if ret.Type == "error" {
-			list = append(list, "fmt.Errorf(\"NOT_IMPLEMENTED\")")
+			list = append(list, "domain.ErrNotImplemented")
 		} else {
 			list = append(list, ret.NilValue())
 		}
