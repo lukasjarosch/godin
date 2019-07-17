@@ -16,7 +16,7 @@ import (
 type SubscriberSet struct {
     {{- range .Service.Subscriber }}
     {{ untitle .Handler }} rabbitmq.Subscriber
-	{{ end -}}
+	{{- end }}
 }
 
 // Subscriptions will initialize all AMQP subscriptions
@@ -42,6 +42,10 @@ func Subscriptions(channel *amqp.Channel) SubscriberSet {
 {{- $serviceName := title .Service.Name -}}
 
 {{- range .Service.Subscriber }}
+// {{ .Handler }} sets up the subscription to the '{{ .Subscription.Topic }}' topic. All middleware is automatically registered
+// and called in the following order: RequestID => PrometheusInstrumentation => Logging => subscriber.{{ .Handler }}
+// The RequestID middlware will extract the requestId from the delivery header or generate a new one. The requestId is
+// then mad available through the context.
 func (ss SubscriberSet) {{ .Handler }}(logger log.Logger, usecase service.{{ $serviceName }}) error {
 	handler := subscriber.{{ .Handler }}(logger, usecase)
 	handler = middleware.Logging(logger, "{{ .Subscription.Topic }}", handler)
@@ -66,7 +70,9 @@ func (ss SubscriberSet) {{ .Handler }}(logger log.Logger, usecase service.{{ $se
 
 // Shutdown will call Shutdown() on all registered subscriptions
 func (ss SubscriberSet) Shutdown() (err error) {
-	err = ss.userCreatedSubscriber.Shutdown()
+	{{- range .Service.Subscriber }}
+	err = ss.{{ untitle .Handler }}.Shutdown()
+	{{- end }}
 
 	return err
 }
