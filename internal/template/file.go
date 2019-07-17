@@ -11,6 +11,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/gobuffalo/packr"
 	"github.com/pkg/errors"
+	config "github.com/spf13/viper"
 )
 
 // file template rendering
@@ -57,7 +58,22 @@ func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, e
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[0]))
 	}
-	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Parse(tmp)
+	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Funcs(map[string]interface{}{
+		"ReadmeOptionCheckbox": func(option string) string {
+			if !config.IsSet(option) {
+				img := "![disabled](https://img.icons8.com/color/24/000000/close-window.png)"
+				return img
+			}
+
+			if config.GetBool(option) {
+				img := "![enabled](https://img.icons8.com/color/24/000000/checked.png)"
+				return img
+			}
+			img := "![disabled](https://img.icons8.com/color/24/000000/close-window.png)"
+			return img
+
+		},
+	}).Parse(tmp)
 	if err != nil {
 		return nil, errors.Wrap(err, "Parse")
 	}

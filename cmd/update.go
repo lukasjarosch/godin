@@ -201,6 +201,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated k8s/deployment.yaml")
 	}
 
+	// README.md
+	readme := generate.NewReadme(TemplateFilesystem, service.Interface, tplContext)
+	if err := readme.Update(); err != nil {
+		logrus.Errorf("failed to generate README.md: %s", err.Error())
+	} else {
+		logrus.Info("generated README.md")
+	}
+
 	// update config metadata
 	config.Set("godin.version", internal.Version)
 	config.Set("project.updated", time.Now().Format(time.RFC1123))

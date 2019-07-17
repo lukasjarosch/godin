@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"strings"
+	"time"
 
 	"github.com/go-godin/rabbitmq"
 	"github.com/lukasjarosch/godin/internal/bundle"
@@ -20,6 +21,7 @@ type Context struct {
 	Godin    Godin
 	Protobuf Protobuf
 	Docker   Docker
+	Project Project
 }
 
 // NewContextFromConfig will initialize the context will all the data from the configuration
@@ -55,6 +57,10 @@ func NewContextFromConfig() Context {
 		Protobuf: Protobuf{
 			Package: config.GetString("protobuf.package"),
 			Service: config.GetString("protobuf.service"),
+		},
+		Project:Project{
+			Created: config.GetTime("project.created"),
+			Updated: config.GetTime("project.updated"),
 		},
 		Godin: Godin{
 			Version: internal.Version,
@@ -116,6 +122,11 @@ type Godin struct {
 	Version string
 	Commit  string
 	Build   string
+}
+
+type Project struct {
+	Created time.Time
+	Updated time.Time
 }
 
 type Service struct {

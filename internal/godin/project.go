@@ -44,9 +44,10 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("project.created", time.Now().Format(time.RFC1123))
 
 	config.Set("service.middleware.logging", true)
-	config.Set("service.middleware.recovery", true)
+	config.Set("service.middleware.recovery", false)
 	config.Set("service.middleware.authorization", false)
 	config.Set("service.middleware.caching", false)
+	config.Set("service.middleware.monitoring", false)
 	config.Set("transport.grpc.enabled", true)
 
 	// prompt for required data and save it to config
