@@ -12,7 +12,7 @@ import (
 	"github.com/oklog/oklog/pkg/group"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	googleGrpc "google.golang.org/grpc"
-	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/go-godin/grpc-interceptor"
 	"github.com/go-godin/rabbitmq"
 
     pb "{{ .Protobuf.Package }}"
@@ -64,12 +64,11 @@ func main() {
 
 	// serve gRPC server
 	grpcServer := googleGrpc.NewServer(
-	    googleGrpc.UnaryInterceptor(grpcPrometheus.UnaryServerInterceptor),
+	    googleGrpc.UnaryInterceptor(grpc_interceptor.UnaryInterceptor),
 	)
 	g.Add(initGrpc(grpcServer, grpcHandler, logger), func(error) {
 		grpcServer.GracefulStop()
 	})
-	grpcPrometheus.Register(grpcServer)
 
 	// serve debug http server (prometheus)
 	http.DefaultServeMux.Handle("/metrics", promhttp.Handler())
