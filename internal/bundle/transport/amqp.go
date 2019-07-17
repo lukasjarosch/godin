@@ -10,6 +10,7 @@ import (
 )
 
 const AMQPTransportKey = "transport.amqp"
+const AMQPTransportEnabledKey = "transport.amqp.enabled"
 const AMQPDefaultAddressKey = "transport.amqp.default_address"
 
 type amqpTransport struct {
@@ -32,6 +33,7 @@ func InitializeAMQP() (transport *amqpTransport, err error) {
 	}
 
 	config.Set(AMQPDefaultAddressKey, transport.DefaultAddress)
+	config.Set(AMQPTransportEnabledKey, true)
 	godin.SaveConfiguration()
 
 	return transport, nil

@@ -2,10 +2,11 @@ package template
 
 import (
 	"fmt"
+	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"strings"
 
+	"github.com/go-godin/rabbitmq"
 	"github.com/lukasjarosch/godin/internal/bundle"
-	"github.com/lukasjarosch/godin/pkg/amqp"
 	"github.com/mitchellh/mapstructure"
 
 	"github.com/lukasjarosch/godin/internal"
@@ -30,7 +31,7 @@ func NewContextFromConfig() Context {
 	sub := config.GetStringMap(bundle.SubscriberKey)
 	if len(sub) > 0 {
 		for x := range sub {
-			s := &amqp.Subscription{}
+			s := &rabbitmq.Subscription{}
 			mapstructure.Decode(sub[x], s)
 			subscribers = append(subscribers, Subscriber{
 				Subscription: *s,
@@ -46,6 +47,10 @@ func NewContextFromConfig() Context {
 			Module:            config.GetString("service.module"),
 			LoggingMiddleware: config.GetBool("service.middleware.logging"),
 			Subscriber:        subscribers,
+			Transport:Transport{
+				GRPC: config.GetBool("transport.grpc.enabled"),
+				AMQP: config.GetBool(transport.AMQPTransportEnabledKey),
+			},
 		},
 		Protobuf: Protobuf{
 			Package: config.GetString("protobuf.package"),
@@ -120,11 +125,17 @@ type Service struct {
 	Module            string
 	LoggingMiddleware bool
 	Subscriber        []Subscriber
+	Transport         Transport
 }
 
 type Protobuf struct {
 	Package string
 	Service string
+}
+
+type Transport struct {
+	GRPC bool
+	AMQP bool
 }
 
 type Docker struct {
@@ -133,7 +144,7 @@ type Docker struct {
 
 type Subscriber struct {
 	Handler      string
-	Subscription amqp.Subscription
+	Subscription rabbitmq.Subscription
 }
 
 type Variable struct {

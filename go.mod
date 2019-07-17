@@ -9,6 +9,7 @@ require (
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
 	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf // indirect
 	github.com/fatih/structtag v1.0.0 // indirect
+	github.com/go-godin/rabbitmq v0.0.0-20190716163246-e909e622b8c7
 	github.com/go-kit/kit v0.8.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/gobuffalo/genny v0.0.0-20190403191548-3ca520ef0d9e // indirect

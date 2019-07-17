@@ -164,7 +164,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	// AMQP SUBSCRIBER BUNDLE
 	if config.IsSet(bundle.SubscriberKey) {
 
-		// subscriber/initialize.go
+		// amqp/subscriptions.go
 		amqpSubscriberInit := generate.NewAMQPSubscriber(TemplateFilesystem, service.Interface, tplContext)
 		fs.MakeDirs([]string{path.Dir(amqpSubscriberInit.TargetPath())}) // ignore errors, just ensure the path exists
 		if err := amqpSubscriberInit.Update(); err != nil {
@@ -176,6 +176,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		for _, subscriber := range tplContext.Service.Subscriber {
 			fileName := bundle.SubscriberFileName(subscriber.Subscription.Topic)
 			impl := generate.NewAMQPSubscriberHandler(subscriber, TemplateFilesystem, service.Interface, tplContext)
+			fs.MakeDirs([]string{path.Dir(impl.TargetPath())}) // ignore errors, just ensure the path exists
 			if err := impl.Update(); err != nil {
 				logrus.Errorf("failed to update internal/service/subscriber/%s: %s", fileName, err)
 			} else {

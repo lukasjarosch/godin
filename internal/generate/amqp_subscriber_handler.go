@@ -10,6 +10,7 @@ import (
 
 type AmqpSubscriberHandler struct {
 	BaseGenerator
+	subscriber template.Subscriber
 }
 
 func NewAMQPSubscriberHandler(sub template.Subscriber, box packr.Box, serviceInterface *types.Interface, ctx template.Context, options ...Option) *AmqpSubscriberHandler {
@@ -31,10 +32,15 @@ func NewAMQPSubscriberHandler(sub template.Subscriber, box packr.Box, serviceInt
 			iface: serviceInterface,
 			opts:  defaults,
 		},
+		sub,
 	}
 }
 
 func (s *AmqpSubscriberHandler) Update() error {
+
+	// overwrite the contet subscribers with the - to be generated - subscriber.
+	s.opts.Context.Service.Subscriber = []template.Subscriber{s.subscriber}
+
 	if s.TargetExists() {
 		return nil
 	}

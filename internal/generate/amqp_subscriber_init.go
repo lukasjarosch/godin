@@ -16,7 +16,7 @@ func NewAMQPSubscriber(box packr.Box, serviceInterface *types.Interface, ctx tem
 		Overwrite:  true,
 		IsGoSource: true,
 		Template:   "amqp_subscriber_init",
-		TargetFile: "internal/service/subscriber/initialize.go",
+		TargetFile: "internal/amqp/subscriptions.go",
 	}
 
 	for _, opt := range options {
@@ -32,7 +32,7 @@ func NewAMQPSubscriber(box packr.Box, serviceInterface *types.Interface, ctx tem
 	}
 }
 
-// Update will call GenerateFull. The cmd/main.go cannot be updated.
+// Update will call GenerateFull
 func (s *AmqpSubscriber) Update() error {
 	return s.GenerateFull()
 }

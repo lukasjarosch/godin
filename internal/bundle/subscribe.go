@@ -2,24 +2,25 @@ package bundle
 
 import (
 	"fmt"
-	"github.com/iancoleman/strcase"
 	"strings"
 
+	"github.com/iancoleman/strcase"
+
+	"github.com/go-godin/rabbitmq"
 	"github.com/lukasjarosch/godin/internal/godin"
 	"github.com/lukasjarosch/godin/internal/prompt"
-	"github.com/lukasjarosch/godin/pkg/amqp"
 	config "github.com/spf13/viper"
 )
 
 const SubscriberKey = "transport.amqp.subscriber"
 
 type subscriber struct {
-	Subscription amqp.Subscription
+	Subscription rabbitmq.Subscription
 	HandlerName  string `json:"handler_name"`
 }
 
 func InitializeSubscriber() (*subscriber, error) {
-	sub := amqp.Subscription{}
+	sub := rabbitmq.Subscription{}
 	err := promptValues(&sub)
 	if err != nil {
 		return nil, err
@@ -67,7 +68,7 @@ func SubscriberFileName(topic string) string {
 	return fmt.Sprintf("%s.go", name)
 }
 
-func promptValues(sub *amqp.Subscription) (err error) {
+func promptValues(sub *rabbitmq.Subscription) (err error) {
 	// Topic
 	p := prompt.NewPrompt(
 		"AMQP subscription Topic",
@@ -104,5 +105,5 @@ func promptValues(sub *amqp.Subscription) (err error) {
 	}
 	sub.Queue.Name = queue
 
-	return  nil
+	return nil
 }

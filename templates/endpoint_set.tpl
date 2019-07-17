@@ -21,7 +21,7 @@ func Endpoints(service service.{{ title .Service.Name }}, logger log.Logger) Set
     var {{ untitle .Name }} endpoint.Endpoint
     {
         {{ untitle .Name }} = {{ .Name }}Endpoint(service)
-        {{ untitle .Name }} = middleware.Prometheus("{{ .Name }}")({{ untitle .Name }})
+        {{ untitle .Name }} = middleware.InstrumentGRPC("{{ .Name }}")({{ untitle .Name }})
         {{ untitle .Name }} = middleware.Logging(logger, "{{ .Name }}")({{ untitle .Name }})
         {{ untitle .Name }} = middleware.RequestID()({{ untitle .Name }})
     }

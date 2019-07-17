@@ -5,6 +5,7 @@ import (
     "time"
 
     "github.com/go-godin/log"
+	grpc_metadata "github.com/go-godin/grpc-metadata"
 
     "{{ .Service.Module }}/internal/service"
     "{{ .Service.Module }}/internal/service/endpoint"
