@@ -32,15 +32,15 @@ Each handler has it's own file, named after the subscription topic.
 | **Option**      | **Enabled**                                                                          |
 |--------------|----------------------------------------------------------------------------------|
 | gRPC Transport layer | {{ ReadmeOptionCheckbox "transport.grpc.enabled" }} |
-| gRPC Server | {{ ReadmeOptionCheckbox "transport.grpc.server" }} |
-| gRPC Client | {{ ReadmeOptionCheckbox "transport.grpc.client" }} |
+| gRPC Server | {{ ReadmeOptionCheckbox "transport.grpc.server.enabled" }} |
+| gRPC Client | {{ ReadmeOptionCheckbox "transport.grpc.client.enabled" }} |
 | AMQP Transport | {{ ReadmeOptionCheckbox "transport.amqp.enabled" }} |
 | AMQP Subscriber | {{ ReadmeOptionCheckbox "transport.amqp.subscriber" }} |
 | AMQP Publisher | {{ ReadmeOptionCheckbox "transport.amqp.publisher" }} |
 
 ## Endpoint middleware
 
-Subscription middleware is automatically injected by Godin. It is provided by: [go-godin/middleware](github.com/go-godin/middleware)
+Endpoint middleware is automatically injected by Godin. It is provided by: [go-godin/middleware](github.com/go-godin/middleware)
 
 | **Middleware**      | **Enabled**                                                               |
 |--------------|----------------------------------------------------------------------------------|

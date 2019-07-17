@@ -49,6 +49,8 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("service.middleware.caching", false)
 	config.Set("service.middleware.monitoring", false)
 	config.Set("transport.grpc.enabled", true)
+	config.Set("transport.grpc.server.enabled", true)
+	config.Set("transport.grpc.client.enabled", false)
 
 	// prompt for required data and save it to config
 	config.Set("service.name", prompt.ServiceName())
