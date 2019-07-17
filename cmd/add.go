@@ -92,6 +92,8 @@ func addCmd(cmd *cobra.Command, args []string) {
 
 		// TODO: godin.json is NOT a service configuration, thus the 'topic', 'queue' and 'exchange' values must be configurable with ENV variables
 	}
+
+	logrus.Info("The next time you run 'godin update', the new bundles are generated into your service.")
 }
 
 func validateBundleType(givenType string) (bundleType string, err error) {
