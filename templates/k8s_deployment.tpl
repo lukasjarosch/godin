@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ .Service.Name }}
     platform: go
-    framework: go-kit
+    framework: gokit
     generator: godin
     version: {{ .Service.Namespace }}-{{ .Service.Name }}-version
   name: {{ .Service.Name }}
@@ -30,26 +30,44 @@ spec:
       labels:
         app: {{ .Service.Name }}
         platform: go
-        framework: go-kit
+        framework: gokit
         generator: godin
         version: {{ .Service.Namespace }}-{{ .Service.Name }}-version
     spec:
       containers:
         - env:
-            - name: GRPC_PORT
-              value: "50051"
+            - name: TZ
+              value: Europe/Zurich
+            - name: GRPC_ADDRESS
+              value: "0.0.0.0:50051"
+            - name: DEBUG_ADDRESS
+              value: "0.0.0.0:3000"
             - name: LOG_LEVEL
               value: "info"
+            {{- if .Service.Transport.AMQP }}
+            - name: AMQP_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  key: MESSAGE_BROKER_URL
+                  name: rabbitmq
+                  optional: false
+            {{- end }}
           image: {{ .Docker.Registry }}/{{ .Service.Namespace }}-{{ .Service.Name }}:{{ .Service.Namespace }}-{{ .Service.Name }}-version
           imagePullPolicy: IfNotPresent
-          name: contact
-          resources: {}
+          name: {{ .Service.Name }}
+          resources:
+          	requests:
+          	  cpu: 1m
+              memory: 80Mi
           securityContext:
             allowPrivilegeEscalation: false
-            capabilities: {}
             privileged: false
-            readOnlyRootFilesystem: false
-            runAsNonRoot: false
+            capabilities:
+              drop:
+                - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
           stdin: true
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
