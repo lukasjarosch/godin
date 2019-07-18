@@ -25,6 +25,7 @@ var PartialTemplates = map[string]string{
 	"grpc_request_encoder": "partials/grpc/encode_decode/request_encoder.tpl",
 	"grpc_response_decoder": "partials/grpc/encode_decode/response_decoder.tpl",
 	"grpc_response_encoder": "partials/grpc/encode_decode/response_encoder.tpl",
+	"amqp_publish_encode": "partials/amqp/encode_decode/publish_encode.tpl",
 }
 
 type Partial struct {

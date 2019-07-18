@@ -2,9 +2,10 @@ package template
 
 import (
 	"fmt"
-	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"strings"
 	"time"
+
+	"github.com/lukasjarosch/godin/internal/bundle/transport"
 
 	"github.com/go-godin/rabbitmq"
 	"github.com/lukasjarosch/godin/internal/bundle"
@@ -21,13 +22,14 @@ type Context struct {
 	Godin    Godin
 	Protobuf Protobuf
 	Docker   Docker
-	Project Project
+	Project  Project
 }
 
 // NewContextFromConfig will initialize the context will all the data from the configuration
 // The context is not fully populated after this call, but all configuration values are accessible.
 func NewContextFromConfig() Context {
 	var subscribers []Subscriber
+	var publishers []Publisher
 
 	// amqp subscribers
 	sub := config.GetStringMap(bundle.SubscriberKey)
@@ -42,6 +44,20 @@ func NewContextFromConfig() Context {
 		}
 	}
 
+	// amqp publishers
+	pub := config.GetStringMap(bundle.PublisherKey)
+	if len(pub) > 0 {
+		for x := range pub {
+			p := &rabbitmq.Publishing{}
+			mapstructure.Decode(pub[x], p)
+			publishers = append(publishers, Publisher{
+				Publishing:      *p,
+				Name:            bundle.PublisherName(p.Topic),
+				ProtobufMessage: p.ProtobufMessage,
+			})
+		}
+	}
+
 	ctx := Context{
 		Service: Service{
 			Name:              config.GetString("service.name"),
@@ -49,7 +65,8 @@ func NewContextFromConfig() Context {
 			Module:            config.GetString("service.module"),
 			LoggingMiddleware: config.GetBool("service.middleware.logging"),
 			Subscriber:        subscribers,
-			Transport:Transport{
+			Publisher:         publishers,
+			Transport: Transport{
 				GRPC: config.GetBool("transport.grpc.enabled"),
 				AMQP: config.GetBool(transport.AMQPTransportEnabledKey),
 			},
@@ -58,7 +75,7 @@ func NewContextFromConfig() Context {
 			Package: config.GetString("protobuf.package"),
 			Service: config.GetString("protobuf.service"),
 		},
-		Project:Project{
+		Project: Project{
 			Created: config.GetTime("project.created"),
 			Updated: config.GetTime("project.updated"),
 		},
@@ -136,6 +153,7 @@ type Service struct {
 	Module            string
 	LoggingMiddleware bool
 	Subscriber        []Subscriber
+	Publisher         []Publisher
 	Transport         Transport
 }
 
@@ -156,6 +174,12 @@ type Docker struct {
 type Subscriber struct {
 	Handler      string
 	Subscription rabbitmq.Subscription
+}
+
+type Publisher struct {
+	Publishing      rabbitmq.Publishing
+	Name            string
+	ProtobufMessage string
 }
 
 type Variable struct {

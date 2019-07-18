@@ -21,7 +21,7 @@ type subscriber struct {
 
 func InitializeSubscriber() (*subscriber, error) {
 	sub := rabbitmq.Subscription{}
-	err := promptValues(&sub)
+	err := promptSubscriberValues(&sub)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func SubscriberFileName(topic string) string {
 	return fmt.Sprintf("%s.go", name)
 }
 
-func promptValues(sub *rabbitmq.Subscription) (err error) {
+func promptSubscriberValues(sub *rabbitmq.Subscription) (err error) {
 	// Topic
 	p := prompt.NewPrompt(
 		"AMQP subscription Topic",

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"os"
 
 	"github.com/lukasjarosch/godin/internal/bundle"
@@ -161,14 +162,25 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	// AMQP TRANSPORT BUNDLE
+	if config.GetBool(transport.AMQPTransportEnabledKey) {
+		amqpEncodeDecode := generate.NewAMQPEncodeDecode(TemplateFilesystem, service.Interface, tplContext)
+		fs.MakeDirs([]string{path.Dir(amqpEncodeDecode.TargetPath())}) // ignore errors, just ensure the path exists
+		if err := amqpEncodeDecode.Update(); err != nil {
+			logrus.Errorf("failed to update internal/amqp/encode_decode.go: %s", err)
+		} else {
+			logrus.Infof("updated %s", amqpEncodeDecode.TargetPath())
+		}
+	}
+
 	// AMQP SUBSCRIBER BUNDLE
-	if config.IsSet(bundle.SubscriberKey) {
+	if len(config.GetStringMap(bundle.SubscriberKey)) > 0 {
 
 		// amqp/subscriptions.go
 		amqpSubscriberInit := generate.NewAMQPSubscriber(TemplateFilesystem, service.Interface, tplContext)
 		fs.MakeDirs([]string{path.Dir(amqpSubscriberInit.TargetPath())}) // ignore errors, just ensure the path exists
 		if err := amqpSubscriberInit.Update(); err != nil {
-			logrus.Errorf("failed to update internal/service/subscriber/initialize.go: %s", err)
+			logrus.Errorf("failed to update internal/amqp/subscribers.go: %s", err)
 		} else {
 			logrus.Infof("updated %s", amqpSubscriberInit.TargetPath())
 		}
@@ -182,6 +194,18 @@ func updateCmd(cmd *cobra.Command, args []string) {
 			} else {
 				logrus.Infof("updated %s", impl.TargetPath())
 			}
+		}
+	}
+
+	// AMQP PUBLISHER BUNDLE
+	if len(config.GetStringMap(bundle.PublisherKey)) > 0 {
+
+		// amqp/publishers.go
+		amqpPublisherInit := generate.NewAMQPPublisher(TemplateFilesystem, service.Interface, tplContext)
+		if err := amqpPublisherInit.Update(); err != nil {
+			logrus.Errorf("failed to update internal/amqp/publishers.go: %s", err)
+		} else {
+			logrus.Infof("updated %s", amqpPublisherInit.TargetPath())
 		}
 	}
 

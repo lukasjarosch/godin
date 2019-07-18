@@ -35,7 +35,7 @@ The available bundles are:
 	Args: cobra.MinimumNArgs(1),
 }
 
-var validBundleTypes = []string{"middleware", "datastore", "transport", "subscriber"}
+var validBundleTypes = []string{"middleware", "datastore", "transport", "subscriber", "publisher"}
 
 func addCmd(cmd *cobra.Command, args []string) {
 	logrus.SetLevel(logrus.DebugLevel)
@@ -78,6 +78,7 @@ func addCmd(cmd *cobra.Command, args []string) {
 			logrus.Info("not yet implemented")
 			os.Exit(1)
 		}
+
 	case "subscriber":
 		_, err := transport.InitializeAMQP()
 		if err != nil {
@@ -89,6 +90,19 @@ func addCmd(cmd *cobra.Command, args []string) {
 			logrus.Errorf("failed to initialize subscriber: %s", err)
 			os.Exit(1)
 		}
+
+	case "publisher":
+		_, err := transport.InitializeAMQP()
+		if err != nil {
+			logrus.Errorf("failed to initialize AMQP transport: %s", err)
+		}
+
+		_, err = bundle.InitializePublisher()
+		if err != nil {
+			logrus.Errorf("failed to initialize publisher: %s", err)
+			os.Exit(1)
+		}
+
 
 		// TODO: godin.json is NOT a service configuration, thus the 'topic', 'queue' and 'exchange' values must be configurable with ENV variables
 	}

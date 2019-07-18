@@ -7,10 +7,9 @@ require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.18.0+incompatible
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
-	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf // indirect
 	github.com/fatih/structtag v1.0.0 // indirect
-	github.com/go-godin/rabbitmq v0.0.0-20190716163246-e909e622b8c7
-	github.com/go-kit/kit v0.8.0
+	github.com/go-godin/rabbitmq v0.0.0-20190718123308-7135d018437c
+	github.com/go-kit/kit v0.9.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/gobuffalo/genny v0.0.0-20190403191548-3ca520ef0d9e // indirect
 	github.com/gobuffalo/packr v1.26.0
@@ -29,4 +28,5 @@ require (
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 	github.com/vetcher/go-astra v1.2.0
 	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
+	gopkg.in/errgo.v2 v2.1.0
 )

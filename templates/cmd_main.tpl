@@ -34,10 +34,32 @@ var g group.Group
 
 func main() {
     logger := log.NewLoggerFromEnv()
+	{{- if gt (len .Service.Subscriber) 0 }}
+	rabbitmqSubConn := initRabbitMQ(logger)
+	defer rabbitmqSubConn.Close()
+	{{- end }}
+	{{- if gt (len .Service.Publisher) 0 }}
+	rabbitmqPubConn := initRabbitMQ(logger)
+	defer rabbitmqPubConn.Close()
+	{{- end }}
+
+	{{- if gt (len .Service.Publisher) 0 }}
+	// init publishers
+	publishers := amqp.Publishers(rabbitmqPubConn, logger)
+	{{- end }}
 
 	// initialize service including middleware
 	var svc service.{{ title .Service.Name }}
+	{{/*
+		Depending on which bundles are activated, the parameter list of the service implementation is going to change.
+		This is a tricky bit as all combinations need to be taken care of.
+	*/}}
+	{{- if gt (len .Service.Publisher) 0 }}
+	svc = usecase.NewServiceImplementation(logger, publishers)
+	{{- else }}
 	svc = usecase.NewServiceImplementation(logger)
+	{{- end }}
+
 	{{- if .Service.LoggingMiddleware }}
 	svc = middleware.LoggingMiddleware(logger)(svc)
 	{{- end }}
@@ -46,14 +68,11 @@ func main() {
 	var (
 		endpoints   = endpoint.Endpoints(svc, logger)
 		grpcHandler = svcGrpc.NewServer(endpoints, logger)
-		{{- if .Service.Transport.AMQP }}
-		rabbitmqConn = initRabbitMQ(logger)
-		{{- end }}
 	)
 
-	{{- if .Service.Transport.AMQP }}
+	{{- if gt (len .Service.Subscriber) 0 }}
 	// setup AMQP subscriptions
-	subscriptions := amqp.Subscriptions(rabbitmqConn.Channel)
+	subscriptions := amqp.Subscriptions(rabbitmqSubConn)
 	{{- range .Service.Subscriber }}
 	if err := subscriptions.{{ .Handler }}(logger, svc); err != nil {
 		logger.Error("failed to create subscription", "err", err)
@@ -143,7 +162,7 @@ func initRabbitMQ(logger log.Logger) *rabbitmq.RabbitMQ {
 		logger.Error("failed to connect to RabbitMQ", "err", err)
 		os.Exit(-1)
 	}
-	if err := rabbitmqConn.NewChannel(); err != nil {
+	if rabbitmqConn.Channel, err = rabbitmqConn.NewChannel(); err != nil {
 		logger.Error("failed to create AMQP channel", "err", err)
 		os.Exit(-1)
 	}
