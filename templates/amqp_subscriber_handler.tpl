@@ -7,6 +7,9 @@ import (
 	grpc_metadata "github.com/go-godin/grpc-metadata"
 
     "{{ .Service.Module }}/internal/service"
+    {{- range .Service.Subscriber }}
+    {{ untitle .Handler }}Proto "{{ .Protobuf.Import }}"
+    {{- end }}
 )
 
 {{- $serviceName := title .Service.Name -}}
@@ -17,10 +20,19 @@ subscriber only, so we can safely assume that there is only one element in the s
 */}}
 {{ range .Service.Subscriber }}
 // {{ .Handler }} is responsible of handling all incoming AMQP messages with routing key '{{ .Subscription.Topic }}'
-func {{ .Handler }}(logger log.Logger, usecase service.{{ title $serviceName }}) rabbitmq.SubscriptionHandler {
+func {{ .Handler }}Subscriber(logger log.Logger, usecase service.{{ title $serviceName }}, decoder rabbitmq.SubscriberDecoder) rabbitmq.SubscriptionHandler {
 	return func(ctx context.Context, delivery *rabbitmq.Delivery) {
 		// the requestId is injected into the context and should be attached on every log
 		logger = logger.With(string(grpc_metadata.RequestID), ctx.Value(string(grpc_metadata.RequestID)))
+
+		event, err := decoder(delivery)
+		event = event.({{ untitle .Handler }}Proto.{{ .Protobuf.Message }})
+		if err != nil {
+		    logger.Error("failed to decode '{{ .Subscription.Topic }}' event", "err", err)
+		    delivery.NackDelivery(false, false, "{{ .Subscription.Topic }}")
+		    delivery.IncrementTransportErrorCounter("{{ .Subscription.Topic }}")
+		    return
+		}
 
 		// TODO: Handle {{ .Subscription.Topic }} subscription
 		/*

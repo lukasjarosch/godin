@@ -9,17 +9,19 @@ import (
 type amqpEncodeDecodeParser struct {
 	baseParser
 	publisherNames       []string
+	subscriberNames      []string
 	ImplementedFunctions []string
 	MissingFunctions     []string
 	formatStrings        []string
 }
 
-func NewAmqpEncodeDecodeParser(path string, publisherNames []string) *amqpEncodeDecodeParser {
+func NewAmqpEncodeDecodeParser(path string, publisherNames []string, subscriberNames []string) *amqpEncodeDecodeParser {
 	return &amqpEncodeDecodeParser{
 		baseParser: baseParser{
 			Path: path,
 		},
-		publisherNames: publisherNames,
+		publisherNames:  publisherNames,
+		subscriberNames: subscriberNames,
 	}
 }
 

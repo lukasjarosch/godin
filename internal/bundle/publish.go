@@ -20,6 +20,7 @@ type publisher struct {
 	Publishing rabbitmq.Publishing
 }
 
+
 func InitializePublisher() (*publisher, error) {
 	pub := rabbitmq.Publishing{}
 	protoMessage, err := promptPublisherValues(&pub)

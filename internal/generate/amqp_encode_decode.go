@@ -48,11 +48,17 @@ func (s *AmqpEncodeDecode) Update() error {
 
 func (s *AmqpEncodeDecode) GenerateMissing() error {
 	var publishers []string
+	var subscribers []string
+
 	for _, pub := range s.opts.Context.Service.Publisher {
 		publishers = append(publishers, pub.Name)
 	}
 
-	implementation := parse.NewAmqpEncodeDecodeParser(s.opts.TargetFile, publishers)
+	for _, sub := range s.opts.Context.Service.Subscriber {
+		subscribers = append(subscribers, sub.Handler)
+	}
+
+	implementation := parse.NewAmqpEncodeDecodeParser(s.opts.TargetFile, publishers, subscribers)
 	if err := implementation.Parse(); err != nil {
 		return errors.Wrap(err, "Parse")
 	}

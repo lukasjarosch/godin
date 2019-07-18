@@ -12,20 +12,21 @@ import (
 )
 
 var PartialTemplates = map[string]string{
-	"service_method":       "partials/service_method.tpl",
-	"logging_method":       "partials/logging_method.tpl",
-	"request":              "partials/request.tpl",
-	"endpoint":              "partials/endpoint.tpl",
-	"response":             "partials/response.tpl",
-	"grpc_encode_request":  "partials/grpc/request_response/encode_request.tpl",
-	"grpc_encode_response": "partials/grpc/request_response/encode_response.tpl",
-	"grpc_decode_request":  "partials/grpc/request_response/decode_request.tpl",
-	"grpc_decode_response": "partials/grpc/request_response/decode_response.tpl",
-	"grpc_request_decoder": "partials/grpc/encode_decode/request_decoder.tpl",
-	"grpc_request_encoder": "partials/grpc/encode_decode/request_encoder.tpl",
-	"grpc_response_decoder": "partials/grpc/encode_decode/response_decoder.tpl",
-	"grpc_response_encoder": "partials/grpc/encode_decode/response_encoder.tpl",
-	"amqp_publish_encode": "partials/amqp/encode_decode/publish_encode.tpl",
+	"service_method":                    "partials/service_method.tpl",
+	"logging_method":                    "partials/logging_method.tpl",
+	"request":                           "partials/request.tpl",
+	"endpoint":                          "partials/endpoint.tpl",
+	"response":                          "partials/response.tpl",
+	"grpc_encode_request":               "partials/grpc/request_response/encode_request.tpl",
+	"grpc_encode_response":              "partials/grpc/request_response/encode_response.tpl",
+	"grpc_decode_request":               "partials/grpc/request_response/decode_request.tpl",
+	"grpc_decode_response":              "partials/grpc/request_response/decode_response.tpl",
+	"grpc_request_decoder":              "partials/grpc/encode_decode/request_decoder.tpl",
+	"grpc_request_encoder":              "partials/grpc/encode_decode/request_encoder.tpl",
+	"grpc_response_decoder":             "partials/grpc/encode_decode/response_decoder.tpl",
+	"grpc_response_encoder":             "partials/grpc/encode_decode/response_encoder.tpl",
+	"amqp_publish_encode":               "partials/amqp/encode_decode/publish_encode.tpl",
+	"amqp_subscribe_decoder_interfaces": "partials/amqp/encode_decode/subscribe_decoder_interfaces.tpl",
 }
 
 type Partial struct {

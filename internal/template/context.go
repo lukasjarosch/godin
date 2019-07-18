@@ -35,12 +35,16 @@ func NewContextFromConfig() Context {
 	sub := config.GetStringMap(bundle.SubscriberKey)
 	if len(sub) > 0 {
 		for x := range sub {
-			s := &rabbitmq.Subscription{}
-			mapstructure.Decode(sub[x], s)
-			subscribers = append(subscribers, Subscriber{
-				Subscription: *s,
-				Handler:      bundle.SubscriberHandlerName(s.Topic),
-			})
+			cfg := &bundle.SubscriberConfiguration{}
+			mapstructure.Decode(sub[x], cfg)
+
+			sub := Subscriber{}
+			sub.Subscription = cfg.RabbitMQ
+			sub.Handler = cfg.HandlerName
+			sub.Protobuf.Import = cfg.Protobuf.GoModule
+			sub.Protobuf.Message = cfg.Protobuf.MessageName
+
+			subscribers = append(subscribers, sub)
 		}
 	}
 
@@ -174,6 +178,10 @@ type Docker struct {
 type Subscriber struct {
 	Handler      string
 	Subscription rabbitmq.Subscription
+	Protobuf struct {
+		Import string
+		Message string
+	}
 }
 
 type Publisher struct {

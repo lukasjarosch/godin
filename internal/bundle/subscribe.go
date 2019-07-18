@@ -14,39 +14,46 @@ import (
 
 const SubscriberKey = "transport.amqp.subscriber"
 
+type SubscriberConfiguration struct {
+	RabbitMQ    rabbitmq.Subscription
+	HandlerName string `json:"handler_name" mapstructure:"handler_name"`
+	Protobuf    struct {
+		GoModule    string `json:"go_module" mapstructure:"go_module"`
+		MessageName string `json:"message_name" mapstructure:"message_name"`
+	}
+}
+
 type subscriber struct {
-	Subscription rabbitmq.Subscription
-	HandlerName  string `json:"handler_name"`
+	Configuration SubscriberConfiguration
 }
 
 func InitializeSubscriber() (*subscriber, error) {
-	sub := rabbitmq.Subscription{}
-	err := promptSubscriberValues(&sub)
+	cfg := SubscriberConfiguration{}
+	err := promptSubscriberValues(&cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	subscriberKey := strings.Replace(sub.Topic, ".", "_", -1)
+	subscriberKey := strings.Replace(cfg.RabbitMQ.Topic, ".", "_", -1)
 	subscriberKey = strings.ToLower(subscriberKey)
 
-	// defaults
-	sub.AutoAck = false
-	sub.Queue.Durable = true
-	sub.Queue.NoWait = false
-	sub.Queue.Exclusive = false
-	sub.Queue.AutoDelete = false
+	cfg.HandlerName = strcase.ToCamel(subscriberKey)
+	cfg.RabbitMQ.AutoAck = false
+	cfg.RabbitMQ.Queue.Durable = true
+	cfg.RabbitMQ.Queue.NoWait = false
+	cfg.RabbitMQ.Queue.Exclusive = false
+	cfg.RabbitMQ.Queue.AutoDelete = false
 
 	confSub := config.GetStringMap(SubscriberKey)
 	if _, ok := confSub[subscriberKey]; ok == true {
 		return nil, fmt.Errorf("subscriber '%s' is already registered", subscriberKey)
 	}
-	confSub[subscriberKey] = sub
+	confSub[subscriberKey] = cfg
 	config.Set(SubscriberKey, confSub)
 	godin.SaveConfiguration()
 
 	return &subscriber{
-		Subscription: sub,
-		HandlerName:  subscriberKey,
+		Configuration: cfg,
 	}, nil
 }
 
@@ -68,7 +75,7 @@ func SubscriberFileName(topic string) string {
 	return fmt.Sprintf("%s.go", name)
 }
 
-func promptSubscriberValues(sub *rabbitmq.Subscription) (err error) {
+func promptSubscriberValues(cfg *SubscriberConfiguration) (err error) {
 	// Topic
 	p := prompt.NewPrompt(
 		"AMQP subscription Topic",
@@ -79,7 +86,7 @@ func promptSubscriberValues(sub *rabbitmq.Subscription) (err error) {
 	if err != nil {
 		return err
 	}
-	sub.Topic = topic
+	cfg.RabbitMQ.Topic = topic
 
 	// Exchange
 	p = prompt.NewPrompt(
@@ -91,7 +98,7 @@ func promptSubscriberValues(sub *rabbitmq.Subscription) (err error) {
 	if err != nil {
 		return err
 	}
-	sub.Exchange = exchange
+	cfg.RabbitMQ.Exchange = exchange
 
 	// Queue
 	p = prompt.NewPrompt(
@@ -103,7 +110,31 @@ func promptSubscriberValues(sub *rabbitmq.Subscription) (err error) {
 	if err != nil {
 		return err
 	}
-	sub.Queue.Name = queue
+	cfg.RabbitMQ.Queue.Name = queue
+
+	// Protobuf module
+	p = prompt.NewPrompt(
+		"Import of the target protobuf",
+		"github.com/user/some-other-service-protobuf",
+		prompt.Validate(),
+	)
+	protoModule, err := p.Run()
+	if err != nil {
+		return err
+	}
+	cfg.Protobuf.GoModule = protoModule
+
+	// Protobuf message
+	p = prompt.NewPrompt(
+		"Name of the protobuf message of the subscribed event",
+		"AnotherServiceMessage",
+		prompt.Validate(),
+	)
+	protoMessage, err := p.Run()
+	if err != nil {
+		return err
+	}
+	cfg.Protobuf.MessageName = protoMessage
 
 	return nil
 }

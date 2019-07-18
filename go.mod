@@ -8,7 +8,7 @@ require (
 	github.com/Masterminds/sprig v2.18.0+incompatible
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
 	github.com/fatih/structtag v1.0.0 // indirect
-	github.com/go-godin/rabbitmq v0.0.0-20190718123308-7135d018437c
+	github.com/go-godin/rabbitmq v0.0.0-20190718163615-1e522570d2b0
 	github.com/go-kit/kit v0.9.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/gobuffalo/genny v0.0.0-20190403191548-3ca520ef0d9e // indirect
