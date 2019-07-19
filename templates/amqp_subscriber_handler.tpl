@@ -59,7 +59,7 @@ func decode{{ .Handler }}(delivery *rabbitmq.Delivery, decoder rabbitmq.Subscrib
 	}
 	logger.Debug("decoded {{ .Protobuf.Message }}", "event", event)
 
-	return event, nil
+	return event.(*{{ untitle .Handler }}Proto.{{ .Protobuf.Message }}), nil
 }
 {{ end }}
 
