@@ -225,6 +225,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated k8s/deployment.yaml")
 	}
 
+	// Makefile // TODO: remove and move to init
+	makefile := template.NewGenerator(template.MakefileOptions())
+	if err := makefile.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Error(fmt.Sprintf("failed to generate Makefile: %s", err.Error()))
+	} else {
+		logrus.Info("generated Makefile")
+	}
+
 	// README.md
 	readme := generate.NewReadme(TemplateFilesystem, service.Interface, tplContext)
 	if err := readme.Update(); err != nil {

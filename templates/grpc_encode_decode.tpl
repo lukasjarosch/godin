@@ -27,7 +27,7 @@ func EncodeError(err error) error {
 // TODO: this is a nice spot for convenience mapping functions :)
 
 // ----------------[ ENCODER / DECODER ]----------------
-{{- range .Service.Methods }}
+{{ range .Service.Methods }}
 {{- template "grpc_request_decoder" . }}
 {{- template "grpc_response_encoder" . }}
 {{- template "grpc_request_encoder" . }}

@@ -2,7 +2,7 @@
 {{- range .Comments }}
 {{ . }}
 {{- end }}
-func (s *serviceImplementation) {{ .Name }}( {{ .ParamList }}) ({{ .ReturnList }}) {
+func (uc *UseCase) {{ .Name }}( {{ .ParamList }}) ({{ .ReturnList }}) {
     return {{ .ReturnImplementationMissing }}
 }
 {{ end }}

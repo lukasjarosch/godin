@@ -59,6 +59,12 @@ var fileOptions = map[string]GenerateOptions{
 		TargetFile: "k8s/deployment.yaml",
 		Overwrite:  true,
 	},
+	"makefile": {
+		Template:   "makefile",
+		IsGoSource: false,
+		TargetFile: "Makefile",
+		Overwrite:  false,
+	},
 	"errors": {
 		Template:   "domain_errors",
 		IsGoSource: true,
@@ -99,6 +105,19 @@ func K8sServiceOptions() GenerateOptions {
 		},
 	}
 	opts := fileOptions["k8s_service"]
+	opts.Context = ctx
+
+	return opts
+}
+
+func MakefileOptions() GenerateOptions {
+	ctx := Context{
+		Service: Service{
+			Name:      config.GetString("service.name"),
+			Namespace: config.GetString("service.namespace"),
+		},
+	}
+	opts := fileOptions["makefile"]
 	opts.Context = ctx
 
 	return opts

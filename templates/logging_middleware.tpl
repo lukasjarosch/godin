@@ -16,6 +16,7 @@ type loggingMiddleware struct {
     logger log.Logger
 }
 
+// LoggingMiddleware logs every request and response of the service.
 func LoggingMiddleware(logger log.Logger) Middleware {
     return func(next service.{{ title .Service.Name }}) service.{{ title .Service.Name }} {
         return &loggingMiddleware{next, logger}

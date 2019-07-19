@@ -20,7 +20,7 @@ Loop over all subscribers. The slice is faked, tho. The generator will replace t
 subscriber only, so we can safely assume that there is only one element in the slice.
 */}}
 {{ range .Service.Subscriber }}
-// {{ .Handler }} is responsible of handling all incoming AMQP messages with routing key '{{ .Subscription.Topic }}'
+// {{ .Handler }}Subscriber is responsible of handling all incoming AMQP messages with routing key '{{ .Subscription.Topic }}'
 // It might seem overly complicated at first, but the design is on purpose. You WANT to have access to the Delivery,
 // thus it would not make sense to use a middleware for Decoding it into a DAO or domain-level object as you would
 // loose access to the Delivery.

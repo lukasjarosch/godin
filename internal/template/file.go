@@ -49,6 +49,7 @@ func (f *File) prepare(fs packr.Box) error {
 
 // Render the specified template file
 func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, err error) {
+	skipPartials := false
 	if err := f.prepare(fs); err != nil {
 		return nil, err
 	}
@@ -58,7 +59,7 @@ func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, e
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[0]))
 	}
-	f.tpl, err = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Funcs(map[string]interface{}{
+	f.tpl = template.New(path.Base(f.templates[0])).Funcs(sprig.TxtFuncMap()).Funcs(map[string]interface{}{
 		"ReadmeOptionCheckbox": func(option string) string {
 			if !config.IsSet(option) {
 				img := "![disabled](https://img.icons8.com/color/24/000000/close-window.png)"
@@ -73,20 +74,30 @@ func (f *File) Render(fs packr.Box, templateContext Context) (rendered []byte, e
 			return img
 
 		},
-	}).Parse(tmp)
+	})
+
+	// FIXME: hack to support Makefiles
+	if f.name == "makefile" {
+		f.tpl.Delims("<<", ">>")
+		skipPartials = true
+	}
+
+	f.tpl, err = f.tpl.Parse(tmp)
 	if err != nil {
 		return nil, errors.Wrap(err, "Parse")
 	}
 
 	// parse all loaded partial templates
-	for i := 1; i < len(f.templates); i++ {
-		tmp, err := fs.FindString(f.templates[i])
-		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[i]))
-		}
-		f.tpl, err = f.tpl.Parse(tmp)
-		if err != nil {
-			return nil, errors.Wrap(err, "Parse")
+	if !skipPartials {
+		for i := 1; i < len(f.templates); i++ {
+			tmp, err := fs.FindString(f.templates[i])
+			if err != nil {
+				return nil, errors.Wrap(err, fmt.Sprintf("FindString: %s", f.templates[i]))
+			}
+			f.tpl, err = f.tpl.Parse(tmp)
+			if err != nil {
+				return nil, errors.Wrap(err, "Parse")
+			}
 		}
 	}
 
