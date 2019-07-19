@@ -70,3 +70,12 @@ func CamelCase() promptui.ValidateFunc {
 		return nil
 	}
 }
+
+func ProtoFileExtension() promptui.ValidateFunc {
+	return func(s string) error {
+		if !strings.HasSuffix(s, ".proto") {
+			return fmt.Errorf("must point to a .proto file")
+		}
+		return nil
+	}
+}

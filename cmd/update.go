@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/lukasjarosch/godin/internal/bundle/transport"
 	"os"
+
+	"github.com/lukasjarosch/godin/internal/bundle/transport"
 
 	"github.com/lukasjarosch/godin/internal/bundle"
 
@@ -226,7 +227,7 @@ func updateCmd(cmd *cobra.Command, args []string) {
 	}
 
 	// Makefile // TODO: remove and move to init
-	makefile := template.NewGenerator(template.MakefileOptions())
+	makefile := template.NewGenerator(template.MakefileOptions(tplContext))
 	if err := makefile.GenerateFile(TemplateFilesystem); err != nil {
 		logrus.Error(fmt.Sprintf("failed to generate Makefile: %s", err.Error()))
 	} else {

@@ -78,6 +78,7 @@ func NewContextFromConfig() Context {
 		Protobuf: Protobuf{
 			Package: config.GetString("protobuf.package"),
 			Service: config.GetString("protobuf.service"),
+			Path:    config.GetString("protobuf.path"),
 		},
 		Project: Project{
 			Created: config.GetTime("project.created"),
@@ -164,6 +165,7 @@ type Service struct {
 type Protobuf struct {
 	Package string
 	Service string
+	Path    string
 }
 
 type Transport struct {
@@ -178,8 +180,8 @@ type Docker struct {
 type Subscriber struct {
 	Handler      string
 	Subscription rabbitmq.Subscription
-	Protobuf struct {
-		Import string
+	Protobuf     struct {
+		Import  string
 		Message string
 	}
 }

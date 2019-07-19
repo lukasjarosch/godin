@@ -81,6 +81,22 @@ func ProtoPackage() string {
 	return protoPackage
 }
 
+func ProtoPath() string {
+	prompt := NewPrompt(
+		"Absolute path to the .proto file which defines the service",
+		"/home/lukas/devel/work/protobuf",
+		Validate(
+			MinLengthThree(),
+			ProtoFileExtension(),
+		),
+	)
+	protoPath, err := prompt.Run()
+	if err != nil {
+		os.Exit(1)
+	}
+	return protoPath
+}
+
 func DockerRegistry() string {
 	prompt := NewPrompt(
 		"Enter your docker registry",

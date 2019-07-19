@@ -1,43 +1,31 @@
-SERVICE_NAME=ticket
-
 GOBASE=$(shell pwd)
 GOBIN=$(GOBASE)/bin
 GODIRS = $(shell go list -f '{{.Dir}}' ./...)
-KUBE_CONTEXT=$(cat ~/.kube/config | grep "current-context:" | sed "s/current-context: //")
-
 COMMIT=$(shell git rev-parse --short HEAD)
 
-DOCKER_IMAGE="docker.coozzy.ch/ticket-ticket"
+DOCKER_IMAGE="docker.coozzy.ch/<< .Service.Namespace >>-<< .Service.Name >>"
 DOCKER_TAG="v-${COMMIT}-dev"
-
-MODULE="bitbucket.org/jdbergmann/ticket/ticket"
-PROTO_SRC="/home/lukas/devel/work/protobuf/ticket/ticket"
-PROTO_DST="proto"
+PROTO_SRC="<< .Protobuf.Path >>"
 
 .PHONY: build
 build:
 	@echo "--> building"
-	@go build -o ${GOBIN}/ticket ./cmd/ticket/main.go
+	@go build -o ${GOBIN}/<< .Service.Name >> ./cmd/<< .Service.Name >>/main.go
 
 .PHONY: run
 run:
-	echo "--> starting locally"
-	@LOG_LEVEL=${LOG_LEVEL} AMQP_CONNECTION=${AMQP_CONNECTION} AMQP_EXCHANGE=${AMQP_EXCHANGE} go run cmd/ticket/main.go
+	@echo "--> starting locally"
+	@LOG_LEVEL=debug go run cmd/<< .Service.Name >>/main.go
 
 .PHONY: grpcui
-	grpcui:
-	grpcui -proto ${PROTO_SRC}/ticket.proto -port 5000 -plaintext localhost:50051
+grpcui:
+	@grpcui -proto ${PROTO_SRC} -port 5000 -plaintext localhost:50051
 
 .PHONY: clean
 clean:
-	echo "--> cleaning up binaries"
-	go clean -tags netgo -i ./...
-	rm -rf $(GOBIN)/*
-
-.PHONY: clean
-skaffold:
-	@echo "--> starting skaffold, make sure minikube is running"
-	@skaffold dev
+	@echo "--> cleaning up binaries"
+	@go clean -tags netgo -i ./...
+	@rm -rf $(GOBIN)/*
 
 .PHONY: docker
 docker:
@@ -49,18 +37,9 @@ docker-run:
 	@echo "--> starting container ${DOCKER_IMAGE}:${DOCKER_TAG}"
 	@docker run \
 		--rm \
-		--name ${ticket} \
+		--name << .Service.Name >> \
 		--network host \
 		${DOCKER_IMAGE}:${DOCKER_TAG}
-
-.PHONY: proto
-proto:
-	@rm -rf ${PROTO_DST}
-	@echo "--> fetching proto from ${PROTO_SRC}"
-	@make -C ${PROTO_SRC} go
-	@mkdir ${PROTO_DST}
-	@echo "--< moving stubs into ${PROTO_DST}"
-	@cp ${PROTO_SRC}/go/* ${PROTO_DST}
 
 .PHONY: check
 check: format.check lint

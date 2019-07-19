@@ -110,13 +110,7 @@ func K8sServiceOptions() GenerateOptions {
 	return opts
 }
 
-func MakefileOptions() GenerateOptions {
-	ctx := Context{
-		Service: Service{
-			Name:      config.GetString("service.name"),
-			Namespace: config.GetString("service.namespace"),
-		},
-	}
+func MakefileOptions(ctx Context) GenerateOptions {
 	opts := fileOptions["makefile"]
 	opts.Context = ctx
 

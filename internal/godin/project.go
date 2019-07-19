@@ -58,6 +58,7 @@ func (p *Project) InitializeConfiguration() {
 	config.Set("service.module", prompt.ServiceModule())
 	config.Set("protobuf.service", prompt.ProtoServiceName())
 	config.Set("protobuf.package", prompt.ProtoPackage())
+	config.Set("protobuf.path", prompt.ProtoPath())
 	config.Set("docker.registry", prompt.DockerRegistry())
 
 	SaveConfiguration()
