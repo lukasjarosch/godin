@@ -2,13 +2,14 @@ GOBASE=$(shell pwd)
 GOBIN=$(GOBASE)/bin
 GODIRS = $(shell go list -f '{{.Dir}}' ./...)
 COMMIT=$(shell git rev-parse --short HEAD)
+GOFILES=$(shell go list -f {{.Dir}} ./... | grep -v /vendor/)
 
-DOCKER_IMAGE="docker.coozzy.ch/<< .Service.Namespace >>-<< .Service.Name >>"
+DOCKER_IMAGE="<< .Docker.Registry >>/<< .Service.Namespace >>-<< .Service.Name >>"
 DOCKER_TAG="v-${COMMIT}-dev"
 PROTO_SRC="<< .Protobuf.Path >>"
 
 .PHONY: build
-build:
+build: check vendor
 	@echo "--> building"
 	@go build -o ${GOBIN}/<< .Service.Name >> ./cmd/<< .Service.Name >>/main.go
 
@@ -16,6 +17,11 @@ build:
 run:
 	@echo "--> starting locally"
 	@LOG_LEVEL=debug go run cmd/<< .Service.Name >>/main.go
+
+.PHONY: vendor
+vendor:
+	@echo "--> vendoring dependencies"
+	@go mod vendor
 
 .PHONY: grpcui
 grpcui:
@@ -28,7 +34,7 @@ clean:
 	@rm -rf $(GOBIN)/*
 
 .PHONY: docker
-docker:
+docker: check vendor
 	@echo "--> building docker image"
 	docker build . -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f ./Dockerfile
 
@@ -46,8 +52,10 @@ check: format.check lint
 
 .PHONY: format.check
 format.check: tools.goimports
-	@echo "--> checking code formatting with 'goimports'"
-	@goimports -w -l .
+
+		@echo "--> checking code formatting with 'goimports'"
+		@goimports -w ${GOFILES}
+
 
 .PHONY: lint
 lint: tools.golint
