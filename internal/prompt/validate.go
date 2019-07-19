@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"github.com/manifoldco/promptui"
 	"regexp"
@@ -14,6 +15,21 @@ func Validate(validators ...promptui.ValidateFunc) promptui.ValidateFunc {
 				return err
 			}
 		}
+		return nil
+	}
+}
+
+func PositiveInteger() promptui.ValidateFunc {
+	return func(s string) error {
+		val, err := strconv.Atoi(s);
+		if err != nil {
+			return fmt.Errorf("only positive integers")
+		}
+
+		if val < 0 {
+			return fmt.Errorf("only positive integers")
+		}
+
 		return nil
 	}
 }

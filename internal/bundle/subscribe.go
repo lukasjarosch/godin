@@ -2,6 +2,7 @@ package bundle
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -111,6 +112,19 @@ func promptSubscriberValues(cfg *SubscriberConfiguration) (err error) {
 		return err
 	}
 	cfg.RabbitMQ.Queue.Name = queue
+
+	// Prefetch count
+	p = prompt.NewPrompt(
+		"Prefetch count",
+		"10",
+		prompt.Validate(prompt.PositiveInteger()),
+	)
+	prefetchCount, err := p.Run()
+	if err != nil {
+		return err
+	}
+	count, _ := strconv.Atoi(prefetchCount)
+	cfg.RabbitMQ.PrefetchCount = count
 
 	// Protobuf module
 	p = prompt.NewPrompt(

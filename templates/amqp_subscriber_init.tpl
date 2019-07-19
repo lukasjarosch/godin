@@ -31,6 +31,7 @@ func Subscriptions(conn *rabbitmq.RabbitMQ) SubscriberSet {
             Exchange: "{{ .Subscription.Exchange }}",
 		    Topic: "{{ .Subscription.Topic }}",
             AutoAck:  {{ .Subscription.AutoAck }},
+            PrefetchCount: {{ .Subscription.PrefetchCount }},
             Queue: rabbitmq.SubscriptionQueue{
                 AutoDelete: {{ .Subscription.Queue.AutoDelete }},
                 Durable:    {{ .Subscription.Queue.Durable }},
@@ -65,6 +66,7 @@ func (ss SubscriberSet) {{ .Handler }}(logger log.Logger, usecase service.{{ $se
 		"topic", ss.{{ untitle .Handler }}.Subscription.Topic,
 		"queue", ss.{{ untitle .Handler }}.Subscription.Queue.Name,
 		"exchange", ss.{{ untitle .Handler }}.Subscription.Exchange,
+		"prefetch_count", ss.{{ untitle .Handler }}.Subscription.PrefetchCount,
 		"transport", "AMQP",
 	)
 

@@ -37,8 +37,11 @@ github.com/fatih/structtag v1.0.0 h1:pTHj65+u3RKWYPSGaU290FpI/dXxTaHdVwVwbcPKmEc
 github.com/fatih/structtag v1.0.0/go.mod h1:IKitwq45uXL/yqi5mYghiD3w9H6eTOvI9vnk8tXMphA=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
+github.com/go-godin/grpc-metadata v0.0.0-20190712125646-04ceb265ac8a/go.mod h1:8l5js6oXPPupjhdJrmYVaJuidrUyr+Q3V75iZJAZ974=
 github.com/go-godin/grpc-metadata v0.0.0-20190717081641-be8cff64989a h1:M7HE/lFQQ8zczy6/U6Rl+f+8Do0EdHBsmywWiapF4pk=
 github.com/go-godin/grpc-metadata v0.0.0-20190717081641-be8cff64989a/go.mod h1:8l5js6oXPPupjhdJrmYVaJuidrUyr+Q3V75iZJAZ974=
+github.com/go-godin/log v0.0.0-20190716173926-b62a2fca0801 h1:pL0q4o9YI3KgpazoHN9uYUp3bsE2GBemMMOkREy/zow=
+github.com/go-godin/log v0.0.0-20190716173926-b62a2fca0801/go.mod h1:foeoqZOKhUxkgzb1i/Mn7DPj+3/NKFuLCBN1DxFhv8Y=
 github.com/go-godin/rabbitmq v0.0.0-20190716163246-e909e622b8c7 h1:dYvuqVELcsEcrUD1S+ztnmV5uCis6uh92oFxVcDUQPM=
 github.com/go-godin/rabbitmq v0.0.0-20190716163246-e909e622b8c7/go.mod h1:RC4VtaodR+xZa0/+CDeM1cXCSmkxnOYKvtDntFA4lIw=
 github.com/go-godin/rabbitmq v0.0.0-20190717074815-2a37ca6d6428 h1:i0jRrHiKVPq9mTEXdhR5DY0B4enu1Ma3ZBxEfDEwQt8=
@@ -57,6 +60,8 @@ github.com/go-godin/rabbitmq v0.0.0-20190718123308-7135d018437c h1:WfUK35XMX0AwA
 github.com/go-godin/rabbitmq v0.0.0-20190718123308-7135d018437c/go.mod h1:fO91iywDopq8wdK/EDvQkIXf1pmZBgEgI7Mkg+tiFVc=
 github.com/go-godin/rabbitmq v0.0.0-20190718163615-1e522570d2b0 h1:bTpzUq6qrARFMshpB9nguQNRvi18GS20/U2iIxeZ4pA=
 github.com/go-godin/rabbitmq v0.0.0-20190718163615-1e522570d2b0/go.mod h1:MJrnf5cgsXgUIRmkmcA57XW7pRWlXSXRqZlS0NcdeAY=
+github.com/go-godin/rabbitmq v0.0.0-20190719103636-6b979908c7b1 h1:NlMN7OBauR/Pcail4s2253nrSaOqlKlMNrXFlPqDtiI=
+github.com/go-godin/rabbitmq v0.0.0-20190719103636-6b979908c7b1/go.mod h1:MJrnf5cgsXgUIRmkmcA57XW7pRWlXSXRqZlS0NcdeAY=
 github.com/go-kit/kit v0.8.0 h1:Wz+5lgoB0kkuqLEc6NVmwRknTKP6dTGbSqvhZtBI/j0=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-kit/kit v0.9.0 h1:wDJmvq38kDhkVxi50ni9ykkdUr1PKgqKOoi01fa0Mdk=
@@ -131,7 +136,9 @@ github.com/karrick/godirwalk v1.8.0/go.mod h1:H5KPZjojv4lE+QYImBI8xVtrBRgYrIVsaR
 github.com/karrick/godirwalk v1.10.3/go.mod h1:RoGL9dQei4vP9ilrpETWE8CLOZ1kiN0LhBygSwrAsHA=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1 h1:mweAR1A6xJ3oS2pRaGiHgQ4OO8tzTaLawm8vnODuwDk=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3enTrPXyIXCl+2iCXH/aMAp9s=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 h1:T+h1c/A9Gawja4Y9mFVWj2vyii2bbUNDw3kt9VxK2EY=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
@@ -160,6 +167,7 @@ github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
+github.com/nicksnyder/go-i18n v2.0.2+incompatible h1:Xt6dluut3s2zBUha8/3sj6atWMQbFioi9OMqUGH9khg=
 github.com/pelletier/go-toml v1.2.0 h1:T5zMGML61Wp+FlcbWjRDT7yAxhJNAiPPLOFECq181zc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.3.0 h1:e5+lF2E4Y2WCIxBefVowBuB0iHrUH4HZ8q+6mGF7fJc=
@@ -226,6 +234,7 @@ golang.org/x/crypto v0.0.0-20190422162423-af44ce270edf h1:pZmAoqqjjxp5rjcjFhHcvD
 golang.org/x/crypto v0.0.0-20190422162423-af44ce270edf/go.mod h1:WFFai1msRO1wXaEeE5yQxYXgSfI8pQAWXbQop6sCtWE=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3 h1:x/bBzNauLQAlE3fLku/xy92Y8QwKX5HZymrMz2IiKFc=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
+golang.org/x/lint v0.0.0-20190313153728-d0100b6bd8b3 h1:XQyxROzUlZH+WIQwySDgnISgOivlhjIEwaQaJEJrrN0=
 golang.org/x/lint v0.0.0-20190313153728-d0100b6bd8b3/go.mod h1:6SW0HCj/g11FgYtHlgUYUwCkIfeOF89ocIRzGO/8vkc=
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190311183353-d8887717615a/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
@@ -256,6 +265,7 @@ golang.org/x/tools v0.0.0-20190404132500-923d25813098/go.mod h1:LCzVGOaR6xXOjkQ3
 golang.org/x/tools v0.0.0-20190524140312-2c0ae7006135/go.mod h1:RgjU9mgBXZiqYHBnxXauZ1Gv1EHHAz9KjViQ78xBX0Q=
 golang.org/x/tools v0.0.0-20190613204242-ed0dc450797f h1:+zypR5600WBcnJgA2nzZAsBlM8cArEGa8dhhiNE4u3w=
 golang.org/x/tools v0.0.0-20190613204242-ed0dc450797f/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
+golang.org/x/tools v0.0.0-20190711191110-9a621aea19f8 h1:VZick+NwcqlXXVsD1iFr4Wo6F1FgBbnM4AOMzhwKQ7w=
 golang.org/x/tools v0.0.0-20190711191110-9a621aea19f8/go.mod h1:jcCCGcm9btYwXyDqrUWc6MKQKKGJCWEQ3AfLSRIbEuI=
 google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=
 google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
