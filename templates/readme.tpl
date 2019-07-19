@@ -21,10 +21,10 @@ func {{ .Name }}({{ .ParamList }}) ({{ .ReturnList }})
 All handlers are located in: `./internal/service/subscriber/`
 Each handler has it's own file, named after the subscription topic.
 
-| **Routing key** | **Exchange** | **Queue** | **Handler** |
-|-----------------|--------------|-----------|-------------|
+| **Routing key** | **Exchange** | **Queue** | **Handler** | **Prefetch Count** |
+|-----------------|--------------|-----------|-------------|--------------------|
 {{- range .Service.Subscriber }}
-| {{ .Subscription.Topic }} | {{ .Subscription.Exchange }} | {{ .Subscription.Queue.Name }} | {{ .Handler }} |
+| {{ .Subscription.Topic }} | {{ .Subscription.Exchange }} | {{ .Subscription.Queue.Name }} | {{ .Handler }} | {{ .Subscription.PrefetchCount }}|
 {{- end }}
 {{- end }}
 
