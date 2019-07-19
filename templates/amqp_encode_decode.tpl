@@ -6,6 +6,12 @@ import (
     "github.com/go-godin/rabbitmq"
 
     pb "{{ .Protobuf.Package }}"
+    {{- if gt (len .Service.Subscriber) 0 }}
+    "github.com/golang/protobuf/proto"
+    {{- range .Service.Subscriber }}
+    {{ untitle .Handler }}Proto "{{ .Protobuf.Import }}"
+    {{- end }}
+    {{- end }}
 )
 
 {{- if gt (len .Service.Publisher) 0 }}

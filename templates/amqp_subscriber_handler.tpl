@@ -21,6 +21,9 @@ subscriber only, so we can safely assume that there is only one element in the s
 */}}
 {{ range .Service.Subscriber }}
 // {{ .Handler }} is responsible of handling all incoming AMQP messages with routing key '{{ .Subscription.Topic }}'
+// It might seem overly complicated at first, but the design is on purpose. You WANT to have access to the Delivery,
+// thus it would not make sense to use a middleware for Decoding it into a DAO or domain-level object as you would
+// loose access to the Delivery.
 func {{ .Handler }}Subscriber(logger log.Logger, usecase service.{{ title $serviceName }}, decoder rabbitmq.SubscriberDecoder) rabbitmq.SubscriptionHandler {
 	return func(ctx context.Context, delivery *rabbitmq.Delivery) {
 		logger = logger.With(string(grpcMetadata.RequestID), ctx.Value(string(grpcMetadata.RequestID)))
@@ -56,7 +59,7 @@ func decode{{ .Handler }}(delivery *rabbitmq.Delivery, decoder rabbitmq.Subscrib
 	}
 	logger.Debug("decoded {{ .Protobuf.Message }}", "event", event)
 
-	return event.(*{{ untitle .Handler }}Proto.{{ .Protobuf.Message }}), nil
+	return event, nil
 }
 {{ end }}
 
