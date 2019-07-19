@@ -4,9 +4,10 @@ import (
 	"context"
 	"github.com/go-godin/log"
 	"github.com/go-godin/rabbitmq"
-	grpc_metadata "github.com/go-godin/grpc-metadata"
+	grpcMetadata "github.com/go-godin/grpc-metadata"
+	"github.com/pkg/errors"
 
-    "{{ .Service.Module }}/internal/service"
+	"{{ .Service.Module }}/internal/service"
     {{- range .Service.Subscriber }}
     {{ untitle .Handler }}Proto "{{ .Protobuf.Import }}"
     {{- end }}
@@ -22,30 +23,40 @@ subscriber only, so we can safely assume that there is only one element in the s
 // {{ .Handler }} is responsible of handling all incoming AMQP messages with routing key '{{ .Subscription.Topic }}'
 func {{ .Handler }}Subscriber(logger log.Logger, usecase service.{{ title $serviceName }}, decoder rabbitmq.SubscriberDecoder) rabbitmq.SubscriptionHandler {
 	return func(ctx context.Context, delivery *rabbitmq.Delivery) {
-		// the requestId is injected into the context and should be attached on every log
-		logger = logger.With(string(grpc_metadata.RequestID), ctx.Value(string(grpc_metadata.RequestID)))
+		logger = logger.With(string(grpcMetadata.RequestID), ctx.Value(string(grpcMetadata.RequestID)))
 
-		event, err := decoder(delivery)
-		event = event.({{ untitle .Handler }}Proto.{{ .Protobuf.Message }})
+		event, err := decode{{ .Handler }}(delivery, decoder, logger)
 		if err != nil {
-		    logger.Error("failed to decode '{{ .Subscription.Topic }}' event", "err", err)
-		    delivery.NackDelivery(false, false, "{{ .Subscription.Topic }}")
-		    delivery.IncrementTransportErrorCounter("{{ .Subscription.Topic }}")
 		    return
 		}
 
-		// TODO: Handle {{ .Subscription.Topic }} subscription
+		_ = event // remove this line, it just keeps the compiler calm until you start using the event :)
+
+		// TODO: Handle {{ .Subscription.Topic }} subscription here
 		/*
 			If you want to NACK the delivery, use `delivery.NackDelivery()` instead of Nack().
 			This will ensure that the prometheus amqp_nack_counter is increased.
-
-			Godins delivery wrapper also provides a `delivery.IncrementTransportErrorCounter()` method to grant
-			you access to the amqp_transport_error metric. Call it if the message is incomplete or cannot
-			be unmarshalled for any reason.
 		*/
 
 		_ = delivery.Ack(false)
     }
+}
+
+// decode{{ .Handler }} cleans up the actual handler by providing a cleaner interface for decoding incoming {{ .Protobuf.Message }} deliveries.
+// It will also take care of logging errors and handling metrics.
+func decode{{ .Handler }}(delivery *rabbitmq.Delivery, decoder rabbitmq.SubscriberDecoder, logger log.Logger) (*{{ untitle .Handler }}Proto.{{ .Protobuf.Message }}, error) {
+	event, err := decoder(delivery)
+	if err != nil {
+		if err2 := delivery.NackDelivery(false, false, "{{ .Subscription.Topic }}"); err2 != nil {
+			err = errors.Wrap(err, err2.Error())
+		}
+		delivery.IncrementTransportErrorCounter("{{ .Subscription.Topic }}")
+		logger.Error("failed to decode {{ .Protobuf.Message }}", "err", err)
+		return nil, err
+	}
+	logger.Debug("decoded {{ .Protobuf.Message }}", "event", event)
+
+	return event.(*{{ untitle .Handler }}Proto.{{ .Protobuf.Message }}), nil
 }
 {{ end }}
 

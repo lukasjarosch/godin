@@ -74,7 +74,29 @@ func (s *AmqpEncodeDecode) GenerateMissing() error {
 			// encoders are used by publishers, decoders are used by subscribers
 			// e.g. UserCreatedEncoder => UserCreated; it's the required config key and thus the template context to use
 			if strings.Contains(missingFunction, "Decoder") {
-				// TODO: subscriber
+				var ctx template.Subscriber
+
+				name := strings.Replace(missingFunction, "Decoder", "", 1)
+				for _, registeredSubscriber := range s.opts.Context.Service.Subscriber {
+					if registeredSubscriber.Handler == name {
+						ctx = registeredSubscriber
+						break
+					}
+				}
+
+				tpl := template.NewPartial(templateName, true)
+				data, err := tpl.Render(s.box, ctx)
+				if err != nil {
+					return errors.Wrap(err, "failed to render partial")
+				}
+
+				writer := template.NewFileAppendWriter(s.opts.TargetFile, data)
+				if err := writer.Write(); err != nil {
+					return errors.Wrap(err, fmt.Sprintf("failed to append-write to %s", s.TargetPath()))
+				}
+
+				logrus.Infof("added missing subscribe decoder to %s: %s", s.opts.TargetFile, missingFunction)
+
 			} else if strings.Contains(missingFunction, "Encoder") {
 				var ctx template.Publisher
 
@@ -113,6 +135,9 @@ func (s *AmqpEncodeDecode) GenerateMissing() error {
 func (r *AmqpEncodeDecode) templateFromFunction(name string) (templateName string, err error) {
 	if strings.Contains(name, "Encoder") {
 		return "amqp_publish_encode", nil
+	}
+	if strings.Contains(name, "Decoder") {
+		return "amqp_subscribe_decode", nil
 	}
 
 	return "", fmt.Errorf("function %s does not have a template associated", name)

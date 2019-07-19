@@ -51,5 +51,10 @@ func (p *amqpEncodeDecodeParser) RequiredFunctions() []string {
 		requiredFunctions = append(requiredFunctions, fmt.Sprintf("%sEncoder", pub))
 	}
 
+	// subscribers
+	for _, sub := range p.subscriberNames {
+		requiredFunctions = append(requiredFunctions, fmt.Sprintf("%sDecoder", sub))
+	}
+
 	return requiredFunctions
 }

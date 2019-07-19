@@ -26,6 +26,7 @@ var PartialTemplates = map[string]string{
 	"grpc_response_decoder":             "partials/grpc/encode_decode/response_decoder.tpl",
 	"grpc_response_encoder":             "partials/grpc/encode_decode/response_encoder.tpl",
 	"amqp_publish_encode":               "partials/amqp/encode_decode/publish_encode.tpl",
+	"amqp_subscribe_decode":             "partials/amqp/encode_decode/subscribe_decode.tpl",
 	"amqp_subscribe_decoder_interfaces": "partials/amqp/encode_decode/subscribe_decoder_interfaces.tpl",
 }
 
