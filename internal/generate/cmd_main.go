@@ -17,8 +17,8 @@ func NewCmdMain(box packr.Box, serviceInterface *types.Interface, ctx template.C
 		Context:    ctx,
 		Overwrite:  true,
 		IsGoSource: true,
-		Template:   "cmd_main",
-		TargetFile: fmt.Sprintf("cmd/%s/main.go", strings.ToLower(ctx.Service.Name)),
+		Template:   "cmd_main_gen",
+		TargetFile: fmt.Sprintf("cmd/%s/main.gen.go", strings.ToLower(ctx.Service.Name)),
 	}
 
 	for _, opt := range options {

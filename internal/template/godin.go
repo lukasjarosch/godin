@@ -2,6 +2,7 @@ package template
 
 import (
 	config "github.com/spf13/viper"
+	"path"
 )
 
 var fileOptions = map[string]GenerateOptions{
@@ -10,6 +11,11 @@ var fileOptions = map[string]GenerateOptions{
 		IsGoSource: true,
 		TargetFile: "internal/service/service.go",
 		Overwrite:  true,
+	},
+	"cmd_main": {
+		Template: "cmd_main",
+		IsGoSource: true,
+		Overwrite: false,
 	},
 	"logging_middleware": {
 		Template:   "logging_middleware",
@@ -79,6 +85,14 @@ func FileOptions(name string, tplContext Context, targetPath string) GenerateOpt
 	ctx.Context = tplContext
 
 	return ctx
+}
+
+func MainStubOptions(ctx Context) GenerateOptions {
+	opts := fileOptions["cmd_main"]
+	opts.TargetFile = path.Join("cmd", ctx.Service.Name, "main.go")
+	opts.Context = ctx
+
+	return opts
 }
 
 func K8sDeploymentOptions() GenerateOptions {

@@ -11,12 +11,12 @@ PROTO_SRC="<< .Protobuf.Path >>"
 .PHONY: build
 build: check vendor
 	@echo "--> building"
-	@go build -o ${GOBIN}/<< .Service.Name >> ./cmd/<< .Service.Name >>/main.go
+	@go build -o ${GOBIN}/<< .Service.Name >> ./cmd/<< .Service.Name >>/*.go
 
 .PHONY: run
 run:
 	@echo "--> starting locally"
-	@LOG_LEVEL=debug go run cmd/<< .Service.Name >>/main.go
+	@LOG_LEVEL=debug go run cmd/<< .Service.Name >>/*.go
 
 .PHONY: vendor
 vendor:

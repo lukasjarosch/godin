@@ -210,6 +210,14 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	// cmd/<service>/main.go
+	main := template.NewGenerator(template.MainStubOptions(tplContext))
+	if err := main.GenerateFile(TemplateFilesystem); err != nil {
+		logrus.Warning(fmt.Sprintf("failed to generate cmd/%s/main.go: %s", tplContext.Service.Name, err.Error()))
+	} else {
+		logrus.Info(fmt.Sprintf("generated cmd/%s/main.go", tplContext.Service.Name))
+	}
+
 	// k8s/service.yaml
 	k8sService := template.NewGenerator(template.K8sServiceOptions())
 	if err := k8sService.GenerateFile(TemplateFilesystem); err != nil {
@@ -226,10 +234,10 @@ func updateCmd(cmd *cobra.Command, args []string) {
 		logrus.Info("generated k8s/deployment.yaml")
 	}
 
-	// Makefile // TODO: remove and move to init
+	// Makefile
 	makefile := template.NewGenerator(template.MakefileOptions(tplContext))
 	if err := makefile.GenerateFile(TemplateFilesystem); err != nil {
-		logrus.Error(fmt.Sprintf("failed to generate Makefile: %s", err.Error()))
+		logrus.Warning(fmt.Sprintf("failed to generate Makefile: %s", err.Error()))
 	} else {
 		logrus.Info("generated Makefile")
 	}

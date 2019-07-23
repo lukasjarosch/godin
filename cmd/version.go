@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
+
 	"github.com/lukasjarosch/godin/internal"
+	"github.com/spf13/cobra"
 )
 
 func init() {

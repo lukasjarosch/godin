@@ -91,6 +91,11 @@ func addCmd(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
+		logrus.Warning("User intervention in 'main.go' required:")
+		logrus.Info("Ensure to create a new AMQP connection for the subscribers by calling: initRabbitMQ(logger)")
+		logrus.Info("Use that connection to setup the subscriptions: initSubscriptions(logger, svc, subscriptionConnection")
+		logrus.Info("If you did not modify the main.go, you can also remove it and let Godin generate everything for you.")
+
 	case "publisher":
 		_, err := transport.InitializeAMQP()
 		if err != nil {
@@ -103,6 +108,10 @@ func addCmd(cmd *cobra.Command, args []string) {
 			os.Exit(1)
 		}
 
+		logrus.Warning("User intervention in 'main.go' required:")
+		logrus.Info("Ensure to create a new AMQP connection for the publishers by calling: initRabbitMQ(logger)")
+		logrus.Info("Use that connection to fetch the publishers: publishers := amqp.Publishers(publishConnection, logger)")
+		logrus.Info("If you did not modify the main.go, you can also remove it and let Godin generate everything for you.")
 
 		// TODO: godin.json is NOT a service configuration, thus the 'topic', 'queue' and 'exchange' values must be configurable with ENV variables
 	}
